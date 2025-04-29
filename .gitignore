@@ -1,0 +1,22 @@
+# Node.js dependencies
+node_modules/
+
+# Media files (if not essential)
+media/
+
+# Separate project or template
+sliding_signin_signup-master/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# Other unnecessary files
+link/

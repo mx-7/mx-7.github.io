@@ -1,0 +1,13 @@
+{
+  "folders": [
+	{
+		"path": "../.."
+	},
+	{
+		"path": "../../../lect/hotel"
+	}
+],
+  "settings": {
+    "liveServer.settings.multiRootWorkspaceName": "coding"
+  }
+}

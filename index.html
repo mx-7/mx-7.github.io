@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lafa Hotel</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <style>
+      .bg-light-gray {
+        background-color: #000000; /* Black color */
+        color: #ffffff; /* White text color */
+      }
+      .bg-light-gray a {
+        color: #ffffff; /* Ensure links are white */
+      }
+      .bg-light-gray a:hover {
+        color: #cccccc; /* Slightly lighter on hover */
+      }
+      .bg-light-gray h3,
+      .bg-light-gray h4,
+      .bg-light-gray p,
+      .bg-light-gray li {
+        color: #ffffff; /* Ensure all text elements are white */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <!-- Header -->
+      <header
+        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent py-3 pt-6"
+      >
+        <div class="container mx-auto px-4">
+          <div class="flex items-center justify-between">
+            <span class="text-2xl md:text-3xl font-bold text-white px-2">
+              lafa hotel
+            </span>
+            <nav class="hidden md:flex items-center">
+              <button
+                id="logoutBtn"
+                class="px-5 py-2 rounded-2xl bg-purple-500 text-white hover:bg-purple-600 transition-all duration-300"
+              >
+                Logout
+              </button>
+            </nav>
+
+            <!-- Mobile Logout Button -->
+            <button
+              id="mobileLogoutBtn"
+              class="md:hidden px-4 py-2 bg-purple-500 text-white rounded-2xl hover:bg-purple-600 transition-all duration-300"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="flex-grow">
+        <!-- Hero Section -->
+        <section class="relative w-full flex items-center hero-section">
+          <div class="absolute inset-0 h-full">
+            <img
+              src="https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg"
+              alt="Luxury Hotel"
+              class="w-full h-full object-cover"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-transparent"
+            ></div>
+          </div>
+          <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-2xl text-white" id="hero-text">
+              <h1
+                class="text-4xl md:text-6xl font-bold mb-4 leading-tight transform"
+              >
+                Experience Luxury at Every Destination
+              </h1>
+            </div>
+          </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="py-12 bg-white">
+          <div class="container mx-auto px-4">
+            <div class="flex flex-row justify-around items-center text-center">
+              <div class="px-2">
+                <div
+                  class="text-2xl sm:text-3xl font-bold text-purple-600 mb-1 sm:mb-2"
+                >
+                  500+
+                </div>
+                <div class="text-sm sm:text-base text-gray-600">Cities</div>
+              </div>
+              <div class="px-2">
+                <div
+                  class="text-2xl sm:text-3xl font-bold text-purple-600 mb-1 sm:mb-2"
+                >
+                  1M+
+                </div>
+                <div class="text-sm sm:text-base text-gray-600">
+                  Happy Guests
+                </div>
+              </div>
+              <div class="px-2">
+                <div
+                  class="text-2xl sm:text-3xl font-bold text-purple-600 mb-1 sm:mb-2"
+                >
+                  24/7
+                </div>
+                <div class="text-sm sm:text-base text-gray-600">Support</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Hotel Cards Section -->
+        <section class="py-16 relative overflow-hidden">
+          <div class="container mx-auto px-4">
+            <h2
+              class="text-3xl md:text-4xl font-bold mb-8 text-gray-800 text-center"
+            >
+              Featured Hotels
+            </h2>
+            <div class="relative">
+              <div
+                class="hotel-container flex overflow-x-auto gap-4 snap-x snap-mandatory scrollbar-hide pb-8"
+              >
+                <!-- Cards will be inserted here by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-16 bg-gray-50">
+          <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <!-- Search Simply -->
+              <div
+                class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+              >
+                <div class="text-purple-600 mb-4">
+                  <i class="bx bx-search text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                  Search Simply
+                </h3>
+                <p class="text-gray-600">
+                  Easily search through millions of hotels in seconds. Our
+                  advanced filters help you find exactly what you're looking
+                  for.
+                </p>
+              </div>
+
+              <!-- Compare Confidently -->
+              <div
+                class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+              >
+                <div class="text-purple-600 mb-4">
+                  <i class="bx bx-git-compare text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                  Compare Confidently
+                </h3>
+                <p class="text-gray-600">
+                  Compare hotel prices from over 100 hotels. Get comprehensive
+                  information to make the right choice.
+                </p>
+              </div>
+
+              <!-- Save Big -->
+              <div
+                class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+              >
+                <div class="text-purple-600 mb-4">
+                  <i class="bx bx-tag text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Save Big</h3>
+                <p class="text-gray-600">
+                  Discover great deals to book on our partner sites. Get
+                  exclusive discounts and special offers.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Why Choose Us Section -->
+        <section class="py-16 bg-white">
+          <div class="container mx-auto px-4">
+            <h2
+              class="text-3xl md:text-4xl font-bold mb-12 text-gray-800 text-center"
+            >
+              Why Choose Us
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <!-- Best Rates -->
+              <div
+                class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+              >
+                <div class="text-purple-600 mb-4">
+                  <i class="bx bx-badge-check text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                  Best Price Guaranteed
+                </h3>
+                <p class="text-gray-600">
+                  Find the best rates with our price match guarantee and
+                  exclusive deals.
+                </p>
+              </div>
+
+              <!-- 24/7 Support -->
+              <div
+                class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+              >
+                <div class="text-purple-600 mb-4">
+                  <i class="bx bx-support text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                  24/7 Support
+                </h3>
+                <p class="text-gray-600">
+                  Our travel experts are here to help you 24/7 with any
+                  questions or concerns.
+                </p>
+              </div>
+
+              <!-- Luxury Amenities -->
+              <div
+                class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
+              >
+                <div class="text-purple-600 mb-4">
+                  <i class="bx bx-spa text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">
+                  Luxury Amenities
+                </h3>
+                <p class="text-gray-600">
+                  Enjoy premium amenities and exclusive perks at our partner
+                  hotels.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="bg-light-gray pt-6 pb-4 text-sm">
+        <div class="container mx-auto px-4">
+          <div
+            class="grid grid-cols-1 md:grid-cols-4 gap-4 divide-y md:divide-y-0 md:divide-x divide-gray-600/5"
+          >
+            <div class="pb-4 md:pb-0 md:pr-4">
+              <h3 class="text-xl font-bold text-teal-600 mb-2">lafa hotel</h3>
+              <p class="text-gray-600 mb-2">
+                Luxury accommodations for the discerning traveler. Experience
+                comfort and elegance at every destination you take with us
+                <i class="fa fa-trademark" aria-hidden="true"></i>.
+              </p>
+            </div>
+            <div class="py-4 md:py-0 md:px-4">
+              <h4 class="text-md font-semibold text-gray-800 mb-2">
+                Quick Links
+              </h4>
+              <ul class="space-y-1">
+                <li>
+                  <a
+                    href="about-us.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >About Us</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="cancellation-policy.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >Cancellation Policy</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="special-offers.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >Special Offers</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="py-4 md:py-0 md:px-4">
+              <h4 class="text-md font-semibold text-gray-800 mb-2">Support</h4>
+              <ul class="space-y-1">
+                <li>
+                  <a
+                    href="help-center.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >Help Center</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="terms-and-conditions.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >Terms & Conditions</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="privacy-policy.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >Privacy Policy</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="pt-4 md:pt-0 md:pl-4">
+              <h4 class="text-md font-semibold text-gray-800 mb-2">Contact</h4>
+              <ul class="space-y-1">
+                <li class="text-gray-600">Riadh,644 KSU</li>
+                <li class="text-gray-600">+(966)555555555</li>
+                <li class="text-gray-600">contact@lafahotel.com</li>
+              </ul>
+            </div>
+          </div>
+          <div
+            class="border-t border-gray-600/5 mt-4 pt-4 text-center text-gray-600"
+          >
+            <p>© 2025 Lafa Hotel. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Add Supabase library with correct CDN URL -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+      // Initialize Supabase directly in the HTML to ensure it's available
+      const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
+
+      // Initialize before loading our supabase.js file
+      supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
+    <script src="js/supabase.js"></script>
+
+    <script>
+      // Check authentication on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        try {
+          checkUser();
+
+          // Add event listeners to logout buttons
+          document
+            .getElementById("logoutBtn")
+            .addEventListener("click", signOut);
+          document
+            .getElementById("mobileLogoutBtn")
+            .addEventListener("click", signOut);
+        } catch (error) {
+          console.error("Error checking user status:", error);
+        }
+      });
+
+      // Add scroll effect to header
+      window.addEventListener("scroll", () => {
+        const header = document.querySelector("header");
+        if (window.scrollY > 10) {
+          header.classList.remove("bg-transparent", "pt-6");
+          header.classList.add("bg-white", "shadow-md", "py-3");
+        } else {
+          header.classList.add("bg-transparent", "pt-6");
+          header.classList.remove("bg-white", "shadow-md", "py-3");
+        }
+      });
+
+      // Add scroll effect to footer
+      const footer = document.querySelector("footer");
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            footer.classList.add("animate-pop");
+          }
+        },
+        { threshold: 0.1 }
+      );
+      observer.observe(footer);
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
