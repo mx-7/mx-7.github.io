@@ -1,8 +1,7 @@
 # Node.js dependencies
 node_modules/
 
-# Media files (if not essential)
-media/
+
 
 # Separate project or template
 sliding_signin_signup-master/

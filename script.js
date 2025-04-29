@@ -2,27 +2,30 @@
 const hotels = [
   {
     id: 1,
-    name: "Dar Aleiman Al Haram",
-    location: "Medina, Saudi Arabia",
+    name: "Four Seasons Hotel",
+    location: "Riadh, Saudi Arabia",
     rating: 4.8,
     price: 399,
-    imageUrl: "../../../media/Dar-Aleiman-Al-Haram-Hotel-Medina-Exterior.jpg",
+    imageUrl:
+      "https://cf.bstatic.com/xdata/images/hotel/max1024x768/113857950.jpg?k=93e381e54edcf9147ff2dc5664e869daa49e68d515cc793afb16ba28690f50e3&o=&hp=1",
   },
   {
     id: 2,
-    name: "Royal Madinah Hotel",
-    location: "Medina, Saudi Arabia",
+    name: "Garden Hotel",
+    location: "Abha, Saudi Arabia",
     rating: 4.7,
-    price: 449,
-    imageUrl: "../../../media/exterior.jpg",
+    price: 249,
+    imageUrl:
+      "https://content.skyscnr.com/available/2006082616/2006082616_576x576.jpg",
   },
   {
     id: 3,
     name: "Al Safwah Royale Orchid",
     location: "Makkah, Saudi Arabia",
     rating: 4.9,
-    price: 499,
-    imageUrl: "../../../media/1641894785.jpg",
+    price: 249,
+    imageUrl:
+      "https://content.r9cdn.net/rimg/himg/e2/9a/e9/expedia_group-624030-48b3deb2-422603.jpg?width=1366&height=768&crop=true",
   },
   {
     id: 4,
@@ -30,7 +33,8 @@ const hotels = [
     location: "Medina, Saudi Arabia",
     rating: 4.6,
     price: 379,
-    imageUrl: "../../../media/869918c9da63b2c5685fce05965700da5b0e6617.jpg",
+    imageUrl:
+      "https://cf.bstatic.com/xdata/images/hotel/max1024x768/592320119.jpg?k=7a097dc46180dbe972c76d58e01c5acd91e20b372c63f22fffde0497b62c5492&o=&hp=1",
   },
   {
     id: 5,
@@ -38,7 +42,8 @@ const hotels = [
     location: "Bali, Indonesia",
     rating: 4.8,
     price: 459,
-    imageUrl: "../../../media/photo-1520250497591-112f2f40a3f4.jpg",
+    imageUrl:
+      "https://cf.bstatic.com/xdata/images/hotel/max1024x768/590120309.jpg?k=0b2ee72b873eb00ad066e5cb7d6301c98f62cb86058e99d802d3a0e84f377e3f&o=&hp=1",
   },
   {
     id: 6,
@@ -46,7 +51,8 @@ const hotels = [
     location: "Makkah, Saudi Arabia",
     rating: 4.7,
     price: 429,
-    imageUrl: "../../../media/revato-11636-12822354-315353.jpg",
+    imageUrl:
+      "https://www.il.kayak.com/rimg/himg/01/49/5b/ice-2844332-99756697-185877.jpg?width=1366&height=768&crop=true",
   },
   {
     id: 7,
@@ -54,7 +60,8 @@ const hotels = [
     location: "Makkah, Saudi Arabia",
     rating: 5.0,
     price: 599,
-    imageUrl: "../../../media/welcome-to-a-unique-destinatio.jpg",
+    imageUrl:
+      "https://q-xx.bstatic.com/xdata/images/hotel/max500/659374508.jpg?k=7baffca72e394e4a6d35415926c61252d447c59960a0a8aabe92896f9e07a72d&o=",
   },
   {
     id: 16,
