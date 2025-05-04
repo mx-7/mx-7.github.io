@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/animations.css" />
     <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/custom.css" />
     <style>
       .social_icon:hover {
         color: rgba(139, 92, 246);
@@ -214,6 +215,11 @@
       .login-error-popup button:hover {
         background-color: rgba(139, 92, 246, 0.8);
       }
+
+      /* Username taken popup specific styling */
+      #username-taken-popup h3 {
+        color: #f59e0b; /* Amber/warning color for username taken message */
+      }
     </style>
   </head>
   <body>
@@ -298,7 +304,7 @@
               <i class="bx bx-user"></i>
               <input
                 type="text"
-                placeholder="Full Name"
+                placeholder="Username"
                 id="signUpName"
                 required
               />
@@ -400,6 +406,19 @@
       <button id="close-popup">Got it</button>
     </div>
 
+    <!-- Username taken popup -->
+    <div class="verification-popup" id="username-taken-popup">
+      <h3>Username Already Taken</h3>
+      <p>
+        The username <span id="taken-username" class="font-semibold"></span> is
+        already in use.
+      </p>
+      <p class="text-sm text-gray-500 mb-4">
+        Please choose a different username and try again.
+      </p>
+      <button id="close-username-popup">Try Again</button>
+    </div>
+
     <!-- Login error popup -->
     <div class="login-error-popup" id="login-error-popup">
       <h3>Login Failed</h3>
@@ -423,7 +442,7 @@
       const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
       const SUPABASE_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
-      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
       // hCaptcha variables
       let captchaToken = null;
@@ -484,6 +503,35 @@
             await signInWithEmail(email, password);
           });
 
+        // Function to handle email/password sign in
+        async function signInWithEmail(email, password) {
+          try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email,
+              password,
+            });
+
+            if (error) {
+              console.error("Login error:", error.message);
+              // Show login error popup
+              document.getElementById("overlay").classList.add("show");
+              document
+                .getElementById("login-error-popup")
+                .classList.add("show");
+              return;
+            }
+
+            console.log("Login successful!");
+            // Redirect to main page after successful login
+            window.location.href = "index.html";
+          } catch (err) {
+            console.error("Login exception:", err);
+            // Show login error popup
+            document.getElementById("overlay").classList.add("show");
+            document.getElementById("login-error-popup").classList.add("show");
+          }
+        }
+
         // Handle sign up form submission
         document
           .getElementById("signUpForm")
@@ -491,7 +539,7 @@
             e.preventDefault();
             const email = document.getElementById("signUpEmail").value;
             const password = document.getElementById("signUpPassword").value;
-            const name = document.getElementById("signUpName").value;
+            const username = document.getElementById("signUpName").value;
             const captchaErrorElement =
               document.getElementById("captcha-error");
 
@@ -512,20 +560,25 @@
             captchaErrorElement.classList.remove("show");
 
             try {
-              // Use Supabase signup with captcha token
-              const { data, error } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-                options: {
-                  data: { name: name },
-                  captchaToken: captchaToken,
-                },
-              });
+              // Use our custom signUp function that handles username
+              const result = await signUp(email, password, username);
 
-              console.log("Supabase sign up response:", data, error);
-
-              if (error) {
-                console.error("Sign up error:", error.message);
+              if (!result.success) {
+                console.error("Sign up error:", result.message);
+                if (
+                  result.message.includes("username") ||
+                  result.code === "USERNAME_TAKEN"
+                ) {
+                  // Show username taken popup
+                  document.getElementById("taken-username").textContent =
+                    username;
+                  document.getElementById("overlay").classList.add("show");
+                  document
+                    .getElementById("username-taken-popup")
+                    .classList.add("show");
+                } else {
+                  alert("Sign up failed: " + result.message);
+                }
               } else {
                 console.log("Sign up successful!");
 
@@ -558,6 +611,16 @@
             document.getElementById("overlay").classList.remove("show");
             document
               .getElementById("verification-popup")
+              .classList.remove("show");
+          });
+
+        // Close username taken popup when "Try Again" button is clicked
+        document
+          .getElementById("close-username-popup")
+          .addEventListener("click", function () {
+            document.getElementById("overlay").classList.remove("show");
+            document
+              .getElementById("username-taken-popup")
               .classList.remove("show");
           });
 

@@ -1,300 +1,588 @@
-// Sample hotel data
+// Sample hotel data as fallback when Supabase is not available
 const hotels = [
   {
     id: 1,
     name: "Four Seasons Hotel",
     location: "Riadh, Saudi Arabia",
-    rating: 4.8,
     price: 399,
-    imageUrl:
+    image:
       "https://cf.bstatic.com/xdata/images/hotel/max1024x768/113857950.jpg?k=93e381e54edcf9147ff2dc5664e869daa49e68d515cc793afb16ba28690f50e3&o=&hp=1",
   },
   {
     id: 2,
     name: "Garden Hotel",
     location: "Abha, Saudi Arabia",
-    rating: 4.7,
     price: 249,
-    imageUrl:
+    image:
       "https://content.skyscnr.com/available/2006082616/2006082616_576x576.jpg",
   },
   {
     id: 3,
     name: "Al Safwah Royale Orchid",
     location: "Makkah, Saudi Arabia",
-    rating: 4.9,
     price: 249,
-    imageUrl:
+    image:
       "https://content.r9cdn.net/rimg/himg/e2/9a/e9/expedia_group-624030-48b3deb2-422603.jpg?width=1366&height=768&crop=true",
   },
   {
     id: 4,
     name: "Anwar Al Madinah Mövenpick",
     location: "Medina, Saudi Arabia",
-    rating: 4.6,
     price: 379,
-    imageUrl:
+    image:
       "https://cf.bstatic.com/xdata/images/hotel/max1024x768/592320119.jpg?k=7a097dc46180dbe972c76d58e01c5acd91e20b372c63f22fffde0497b62c5492&o=&hp=1",
   },
   {
     id: 5,
     name: "Le Meridien Bali Jimbaran",
     location: "Bali, Indonesia",
-    rating: 4.8,
     price: 459,
-    imageUrl:
+    image:
       "https://cf.bstatic.com/xdata/images/hotel/max1024x768/590120309.jpg?k=0b2ee72b873eb00ad066e5cb7d6301c98f62cb86058e99d802d3a0e84f377e3f&o=&hp=1",
   },
   {
     id: 6,
     name: "Hilton Suites Makkah",
     location: "Makkah, Saudi Arabia",
-    rating: 4.7,
     price: 429,
-    imageUrl:
+    image:
       "https://www.il.kayak.com/rimg/himg/01/49/5b/ice-2844332-99756697-185877.jpg?width=1366&height=768&crop=true",
   },
   {
     id: 7,
     name: "Raffles Makkah Palace",
     location: "Makkah, Saudi Arabia",
-    rating: 5.0,
     price: 599,
-    imageUrl:
+    image:
       "https://q-xx.bstatic.com/xdata/images/hotel/max500/659374508.jpg?k=7baffca72e394e4a6d35415926c61252d447c59960a0a8aabe92896f9e07a72d&o=",
   },
   {
     id: 16,
     name: "Parisian Elegance Hotel",
     location: "Paris, France",
-    rating: 4.8,
     price: 799,
-    imageUrl:
-      "https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg",
+    image: "https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg",
   },
   {
     id: 17,
     name: "Tokyo Skyline Suites",
     location: "Tokyo, Japan",
-    rating: 4.9,
     price: 899,
-    imageUrl:
-      "https://images.pexels.com/photos/189296/pexels-photo-189296.jpeg",
+    image: "https://images.pexels.com/photos/189296/pexels-photo-189296.jpeg",
   },
   {
     id: 18,
     name: "Sydney Harbour Retreat",
     location: "Sydney, Australia",
-    rating: 4.7,
     price: 699,
-    imageUrl:
-      "https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg",
+    image: "https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg",
   },
   {
     id: 19,
     name: "Cape Town Luxury Lodge",
     location: "Cape Town, South Africa",
-    rating: 4.8,
     price: 649,
-    imageUrl:
-      "https://images.pexels.com/photos/1268855/pexels-photo-1268855.jpeg",
+    image: "https://images.pexels.com/photos/1268855/pexels-photo-1268855.jpeg",
   },
 ];
 
-// Create dynamic star rating HTML
-function createStarRating(rating) {
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 >= 0.5;
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+document.addEventListener("DOMContentLoaded", async () => {
+  // Check if user is logged in
+  const user = await window.checkUser();
+  updateNavigation(user);
 
-  let starsHtml = "";
+  // Get the current page
+  const currentPage = window.location.pathname.split("/").pop();
 
-  // Full stars
-  for (let i = 0; i < fullStars; i++) {
-    starsHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-500">
-      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-    </svg>`;
+  if (currentPage === "index.html" || currentPage === "") {
+    loadAndDisplayHotels();
+    setupHotelCardScrolling(); // Add this line to initialize arrow functionality
+  } else if (currentPage === "hotel-details.html") {
+    loadHotelDetails();
+  } else if (currentPage === "logindex.html") {
+    setupAuthForms();
   }
 
-  // Half star if needed
-  if (hasHalfStar) {
-    starsHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="text-yellow-500">
-      <defs>
-        <linearGradient id="half-${rating}">
-          <stop offset="50%" stop-color="currentColor" />
-          <stop offset="50%" stop-color="#CBD5E0" />
-        </linearGradient>
-      </defs>
-      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="url(#half-${rating})"/>
-    </svg>`;
-  }
+  // Handle logout button
+  document.querySelectorAll(".logout-button").forEach((button) => {
+    button.addEventListener("click", handleLogout);
+  });
 
-  // Empty stars
-  for (let i = 0; i < emptyStars; i++) {
-    starsHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#CBD5E0" class="text-gray-300">
-      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-    </svg>`;
-  }
+  // Initialize hero text scroll effect
+  setupHeroTextEffect();
+});
 
-  return starsHtml;
+// Update navigation based on authentication status
+function updateNavigation(user) {
+  const loginButtons = document.querySelectorAll(".login-button");
+  const logoutButtons = document.querySelectorAll(".logout-button");
+  const userProfileElements = document.querySelectorAll(".user-profile");
+
+  if (user) {
+    // User is logged in
+    loginButtons.forEach((btn) => (btn.style.display = "none"));
+    logoutButtons.forEach((btn) => (btn.style.display = "block"));
+    userProfileElements.forEach((el) => {
+      el.style.display = "flex";
+      // Update user name if the element exists
+      const nameElement = el.querySelector(".user-name");
+      if (nameElement) {
+        nameElement.textContent = user.email.split("@")[0];
+      }
+    });
+  } else {
+    // User is logged out
+    loginButtons.forEach((btn) => (btn.style.display = "block"));
+    logoutButtons.forEach((btn) => (btn.style.display = "none"));
+    userProfileElements.forEach((el) => (el.style.display = "none"));
+  }
 }
 
-// Create hotel cards with horizontal scroll
-function createHotelCards() {
-  const container = document.querySelector(".hotel-container");
-  if (!container) return;
+// Handle user logout
+async function handleLogout(e) {
+  e.preventDefault();
+  await window.signOut();
+}
 
-  hotels.forEach((hotel, index) => {
+// Load and display hotels on the homepage
+async function loadAndDisplayHotels() {
+  try {
+    // Fetch hotels from Supabase
+    const { data: hotels, error } = await window.supabase.from("hotels")
+      .select(`
+                *,
+                ratings(rating)
+            `);
+
+    if (error) {
+      console.error("Error fetching hotels:", error);
+      // Fall back to sample hotels
+      renderHotelList(window.sampleHotels);
+      return;
+    }
+
+    if (hotels && hotels.length > 0) {
+      // Process hotels to include average rating
+      const processedHotels = hotels.map((hotel) => {
+        // Calculate real average rating if ratings exist, otherwise set to 0
+        const hasRatings = hotel.ratings && hotel.ratings.length > 0;
+        const avgRating = hasRatings
+          ? hotel.ratings.reduce((sum, r) => sum + r.rating, 0) /
+            hotel.ratings.length
+          : 0;
+
+        return {
+          ...hotel,
+          rating: avgRating,
+          ratingCount: hasRatings ? hotel.ratings.length : 0,
+        };
+      });
+
+      renderHotelList(processedHotels);
+    } else {
+      // Fall back to sample hotels if no data returned
+      // Ensure all sample hotels have an explicit rating
+      const processedSampleHotels = window.sampleHotels.map((hotel) => ({
+        ...hotel,
+        rating: hotel.rating || 0,
+        ratingCount: hotel.ratingCount || 0,
+      }));
+      renderHotelList(processedSampleHotels);
+    }
+  } catch (error) {
+    console.error("Error in loadAndDisplayHotels:", error);
+    // Ensure all sample hotels have an explicit rating
+    const processedSampleHotels = window.sampleHotels.map((hotel) => ({
+      ...hotel,
+      rating: hotel.rating || 0,
+      ratingCount: hotel.ratingCount || 0,
+    }));
+    renderHotelList(processedSampleHotels);
+  }
+}
+
+// Display hotels in the UI
+async function displayHotels(hotels) {
+  try {
+    // Get hotel ID from URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const hotelId = urlParams.get("id");
+
+    if (!hotelId) {
+      console.error("No hotel ID provided");
+      document.getElementById("hotel-details").innerHTML = `
+                <div class="text-center p-8">
+                    <h2 class="text-2xl font-bold mb-4">Hotel Not Found</h2>
+                    <p class="text-gray-600">The hotel you're looking for doesn't exist or was removed.</p>
+                    <a href="index.html" class="mt-4 inline-block px-6 py-2 bg-purple-600 text-white rounded-lg">
+                        Back to Hotels
+                    </a>
+                </div>
+            `;
+      return;
+    }
+
+    // Fetch hotel details
+    const hotel = await window.getHotelById(hotelId);
+
+    if (!hotel) {
+      document.getElementById("hotel-details").innerHTML = `
+                <div class="text-center p-8">
+                    <h2 class="text-2xl font-bold mb-4">Hotel Not Found</h2>
+                    <p class="text-gray-600">The hotel you're looking for doesn't exist or was removed.</p>
+                    <a href="index.html" class="mt-4 inline-block px-6 py-2 bg-purple-600 text-white rounded-lg">
+                        Back to Hotels
+                    </a>
+                </div>
+            `;
+      return;
+    }
+
+    // Format the price with the Saudi Riyal icon
+    const formattedPrice = `<span class=\"icon-saudi_riyal\">&#xea;</span>${hotel.price}`;
+
+    // Generate star rating HTML
+    const ratingStars = window.generateStarRating
+      ? window.generateStarRating(hotel.rating)
+      : "";
+
+    // Update the hotel details in the DOM
+    document.getElementById("hotel-name").textContent = hotel.name;
+    document.getElementById("hotel-location").textContent = hotel.location;
+    document.getElementById("hotel-image").src = hotel.image;
+    document.getElementById("hotel-image").alt = hotel.name;
+
+    // Update hotel price
+    const priceElement = document.getElementById("hotel-price");
+    if (priceElement) {
+      priceElement.innerHTML = `${formattedPrice}`;
+    }
+
+    // Update hotel rating
+    const ratingElement = document.getElementById("hotel-rating");
+    if (ratingElement) {
+      ratingElement.innerHTML = ratingStars;
+    }
+
+    // Set up rating submission functionality
+    setupRatingSubmission(hotelId);
+  } catch (error) {
+    console.error("Error in loadHotelDetails:", error);
+  }
+}
+
+// Load hotel details
+async function loadHotelDetails() {
+  try {
+    // Get hotel ID from URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const hotelId = urlParams.get("id");
+
+    if (!hotelId) {
+      console.error("No hotel ID provided");
+      document.getElementById("hotel-details").innerHTML = `
+                <div class="text-center p-8">
+                    <h2 class="text-2xl font-bold mb-4">Hotel Not Found</h2>
+                    <p class="text-gray-600">The hotel you're looking for doesn't exist or was removed.</p>
+                    <a href="index.html" class="mt-4 inline-block px-6 py-2 bg-purple-600 text-white rounded-lg">
+                        Back to Hotels
+                    </a>
+                </div>
+            `;
+      return;
+    }
+
+    await renderHotelDetails(hotelId);
+  } catch (error) {
+    console.error("Error in loadHotelDetails:", error);
+  }
+}
+
+// Render hotel details in the UI
+async function renderHotelDetails(hotelId) {
+  try {
+    // Fetch hotel details
+    const hotel = await window.getHotelById(hotelId);
+
+    if (!hotel) {
+      document.getElementById("hotel-details").innerHTML = `
+                <div class="text-center p-8">
+                    <h2 class="text-2xl font-bold mb-4">Hotel Not Found</h2>
+                    <p class="text-gray-600">The hotel you're looking for doesn't exist or was removed.</p>
+                    <a href="index.html" class="mt-4 inline-block px-6 py-2 bg-purple-600 text-white rounded-lg">
+                        Back to Hotels
+                    </a>
+                </div>
+            `;
+      return;
+    }
+
+    // Format the price with the Saudi Riyal icon
+    const formattedPrice = `<span class=\"icon-saudi_riyal\">&#xea;</span>${hotel.price}`;
+
+    // Generate star rating HTML
+    const ratingStars = window.generateDetailStarRating(hotel.rating);
+
+    // Update the hotel details in the DOM
+    document.getElementById("hotel-name").textContent = hotel.name;
+    document.getElementById("hotel-location").textContent = hotel.location;
+    document.getElementById("hotel-image").src = hotel.image;
+    document.getElementById("hotel-image").alt = hotel.name;
+
+    // Update hotel price
+    const priceElement = document.getElementById("hotel-price");
+    if (priceElement) {
+      priceElement.innerHTML = `${formattedPrice}`;
+    }
+
+    // Update hotel rating
+    const ratingElement = document.getElementById("hotel-rating");
+    if (ratingElement) {
+      ratingElement.innerHTML = ratingStars;
+    }
+
+    // Set up rating submission functionality
+    setupRatingSubmission(hotelId);
+  } catch (error) {
+    console.error("Error in renderHotelDetails:", error);
+  }
+}
+
+// Setup rating submission functionality
+function setupRatingSubmission(hotelId) {
+  const ratingStars = document.querySelectorAll(".rating-star");
+  const submitRatingButton = document.getElementById("submit-rating");
+
+  if (!ratingStars.length || !submitRatingButton) return;
+
+  let selectedRating = 0;
+
+  // Handle star selection
+  ratingStars.forEach((star, index) => {
+    const ratingValue = index + 1;
+
+    star.addEventListener("mouseover", () => {
+      // Highlight stars on hover
+      ratingStars.forEach((s, i) => {
+        if (i <= index) {
+          s.classList.add("text-yellow-400");
+          s.classList.remove("text-gray-300");
+        } else {
+          s.classList.add("text-gray-300");
+          s.classList.remove("text-yellow-400");
+        }
+      });
+    });
+
+    star.addEventListener("mouseout", () => {
+      // Reset to selected rating on mouseout
+      ratingStars.forEach((s, i) => {
+        if (i < selectedRating) {
+          s.classList.add("text-yellow-400");
+          s.classList.remove("text-gray-300");
+        } else {
+          s.classList.add("text-gray-300");
+          s.classList.remove("text-yellow-400");
+        }
+      });
+    });
+
+    star.addEventListener("click", () => {
+      selectedRating = ratingValue;
+
+      // Update visual state
+      ratingStars.forEach((s, i) => {
+        if (i < selectedRating) {
+          s.classList.add("text-yellow-400");
+          s.classList.remove("text-gray-300");
+        } else {
+          s.classList.add("text-gray-300");
+          s.classList.remove("text-yellow-400");
+        }
+      });
+    });
+  });
+
+  // Handle rating submission
+  submitRatingButton.addEventListener("click", async () => {
+    if (selectedRating === 0) {
+      alert("Please select a rating before submitting");
+      return;
+    }
+
+    try {
+      const result = await window.submitHotelRating(hotelId, selectedRating);
+
+      if (result.success) {
+        alert(result.message);
+        // Reload the page to see updated rating
+        window.location.reload();
+      } else {
+        alert(result.message || "Failed to submit rating");
+      }
+    } catch (error) {
+      console.error("Error submitting rating:", error);
+      alert("An error occurred while submitting your rating");
+    }
+  });
+}
+
+// Setup authentication forms
+function setupAuthForms() {
+  const loginForm = document.getElementById("login-form");
+  const registerForm = document.getElementById("register-form");
+
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = loginForm.querySelector('input[type="email"]').value;
+      const password = loginForm.querySelector('input[type="password"]').value;
+
+      try {
+        const result = await window.signIn(email, password);
+
+        if (result.success) {
+          window.location.href = "index.html";
+        } else {
+          alert(result.message || "Failed to sign in");
+        }
+      } catch (error) {
+        console.error("Error signing in:", error);
+        alert("An error occurred while signing in");
+      }
+    });
+  }
+
+  if (registerForm) {
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = registerForm.querySelector('input[name="name"]').value;
+      const email = registerForm.querySelector('input[type="email"]').value;
+      const password = registerForm.querySelector(
+        'input[type="password"]'
+      ).value;
+
+      try {
+        const result = await window.signUp(email, password, name);
+
+        if (result.success) {
+          alert(
+            "Registration successful! Please check your email to verify your account."
+          );
+          // Switch to login panel
+          document
+            .querySelector(".sign-in-container")
+            .classList.add("right-panel-active");
+        } else {
+          alert(result.message || "Failed to register");
+        }
+      } catch (error) {
+        console.error("Error registering:", error);
+        alert("An error occurred while registering");
+      }
+    });
+  }
+}
+
+// Hero text scroll and fade effect
+function setupHeroTextEffect() {
+  const heroHeading = document.getElementById("hero-heading");
+  const heroSection = document.querySelector(".hero-section");
+  if (!heroHeading || !heroSection) return;
+
+  // Get the bottom position of the hero section relative to the viewport
+  function getHeroSectionEnd() {
+    const rect = heroSection.getBoundingClientRect();
+    return rect.top + window.scrollY + rect.height;
+  }
+
+  window.addEventListener("scroll", () => {
+    const sectionTop = heroSection.offsetTop;
+    const sectionHeight = heroSection.offsetHeight;
+    const scrollY = window.scrollY;
+    // Calculate progress: 0 at top, 1 at bottom of hero section
+    let progress = (scrollY - sectionTop) / sectionHeight;
+    progress = Math.min(Math.max(progress, 0), 1);
+    // Fade out and move down as you scroll through the hero section
+    heroHeading.style.opacity = 1 - progress;
+    heroHeading.style.transform = `translateY(${
+      progress * sectionHeight * 0.5
+    }px)`;
+  });
+}
+
+// Setup hotel card scrolling with arrow buttons
+function setupHotelCardScrolling() {
+  const arrowLeft = document.getElementById("arrow-left");
+  const arrowRight = document.getElementById("arrow-right");
+  const hotelsContainer = document.getElementById("hotels-container");
+
+  if (!arrowLeft || !arrowRight || !hotelsContainer) return;
+
+  // Scroll left when left arrow is clicked
+  arrowLeft.addEventListener("click", () => {
+    hotelsContainer.scrollBy({
+      left: -300,
+      behavior: "smooth",
+    });
+  });
+
+  // Scroll right when right arrow is clicked
+  arrowRight.addEventListener("click", () => {
+    hotelsContainer.scrollBy({
+      left: 300,
+      behavior: "smooth",
+    });
+  });
+}
+
+// Render hotel list in the UI
+function renderHotelList(hotels) {
+  const hotelsContainer = document.getElementById("hotels-container");
+  if (!hotelsContainer) return;
+
+  hotelsContainer.innerHTML = ""; // Clear existing content
+
+  hotels.forEach((hotel) => {
     const card = document.createElement("div");
     card.className =
-      "hotel-card snap-center min-w-[300px] md:min-w-[350px] flex-shrink-0 mx-2";
-    card.style.animation = `fadeIn 0.6s ease-in forwards ${index * 0.2}s`;
+      "snap-start flex-shrink-0 w-80 sm:w-72 md:w-80 lg:w-96 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden";
+
+    // Format the price with the Saudi Riyal icon
+    const formattedPrice = `<span class="icon-saudi_riyal">&#xea;</span>${hotel.price}`;
+
+    // Generate star rating
+    const rating = hotel.rating || 0.0;
+    const ratingStars = window.generateDetailStarRating(rating);
+
+    // Determine the correct link based on login status
+    const hotelLink = window.isLoggedIn
+      ? `hotel-details.html?id=${hotel.id}`
+      : `logindex.html`;
 
     card.innerHTML = `
-      <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-        <div class="relative h-48 overflow-hidden">
-          <img src="${hotel.imageUrl}" alt="${
-      hotel.name
-    }" class="w-full h-full object-cover">
+      <div class="relative w-full h-48">
+        <img src="${hotel.image}" alt="${hotel.name}" class="w-full h-full object-cover">
+      </div>
+      <div class="p-5">
+        <h3 class="text-xl font-bold text-gray-800 mb-2">${hotel.name}</h3>
+        <div class="flex items-center mb-2">
+          <i class="bx bx-map text-gray-600 mr-1"></i>
+          <span class="text-gray-600">${hotel.location}</span>
         </div>
-        <div class="p-5">
-          <h3 class="text-xl font-semibold text-gray-800 mb-2">${
-            hotel.name
-          }</h3>
-          <div class="flex items-center space-x-1 mb-4">
-            <div class="flex items-center bg-yellow-100 px-2 py-1 rounded text-sm">
-              <span class="font-medium">${hotel.rating}</span>
-            </div>
-            ${createStarRating(hotel.rating)}
-          </div>
-          <div class="flex items-center text-gray-600 mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="mr-1">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-            <span class="text-sm">${hotel.location}</span>
-          </div>
-          <div class="flex items-center justify-between mt-4">
-            <div class="flex flex-col">
-              <span class="text-2xl font-bold text-gray-800">$${
-                hotel.price
-              }</span>
-              <span class="text-sm text-gray-500">per night</span>
-            </div>
-            <button class="px-4 py-2 bg-purple-500 text-white rounded-2xl hover:bg-purple-600 transition-colors duration-300">
-              Book Now
-            </button>
-          </div>
+        <div class="flex items-center text-amber-500 mb-4">
+          ${ratingStars}
+          <span class="ml-1 text-sm text-gray-600">(${rating})</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <div class="text-lg font-bold text-gray-800">${formattedPrice}<span class="text-sm font-medium text-gray-600"> /night</span></div>
+          <a href="${hotelLink}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">View Details</a>
         </div>
       </div>
     `;
 
-    container.appendChild(card);
+    hotelsContainer.appendChild(card);
   });
-
-  // Add scroll buttons
-  const scrollLeftBtn = document.createElement("button");
-  scrollLeftBtn.className = "scroll-btn left-2";
-  scrollLeftBtn.innerHTML = "◀";
-
-  const scrollRightBtn = document.createElement("button");
-  scrollRightBtn.className = "scroll-btn right-2";
-  scrollRightBtn.innerHTML = "▶";
-
-  const scrollWrapper = container.parentElement;
-  if (scrollWrapper) {
-    scrollWrapper.appendChild(scrollLeftBtn);
-    scrollWrapper.appendChild(scrollRightBtn);
-
-    scrollLeftBtn.addEventListener("click", () => {
-      container.scrollBy({ left: -300, behavior: "smooth" });
-    });
-
-    scrollRightBtn.addEventListener("click", () => {
-      container.scrollBy({ left: 300, behavior: "smooth" });
-    });
-  }
 }
-
-// Add scroll effect to header and hero text
-window.addEventListener("scroll", () => {
-  const header = document.querySelector("header");
-  const heroText = document.querySelector("#hero-text");
-  const gradientOverlay = document.querySelector(".bg-gradient-to-b");
-  const scrolled = window.scrollY;
-
-  // Header effects
-  if (scrolled > 10) {
-    header.classList.remove("bg-transparent", "pt-6");
-    header.classList.add("bg-white/90", "backdrop-blur-sm", "shadow-md");
-  } else {
-    header.classList.add("bg-transparent", "pt-6");
-    header.classList.remove("bg-white/90", "backdrop-blur-sm", "shadow-md");
-  }
-
-  // Update text color and button styles based on scroll position
-  const headerText = header.querySelector("span");
-  const desktopLoginButton = header.querySelector("nav a[href='/login']");
-  const mobileLoginButton = header.querySelector(
-    "a[href='/login'].md\\:hidden"
-  );
-
-  if (scrolled > 10) {
-    headerText.classList.remove("text-white");
-    headerText.classList.add("text-purple-600");
-
-    // Desktop button
-    if (desktopLoginButton) {
-      desktopLoginButton.classList.remove("bg-purple-500");
-      desktopLoginButton.classList.add("bg-purple-600");
-    }
-
-    // Mobile button
-    if (mobileLoginButton) {
-      mobileLoginButton.classList.remove("bg-purple-500");
-      mobileLoginButton.classList.add("bg-purple-600");
-    }
-  } else {
-    headerText.classList.add("text-white");
-    headerText.classList.remove("text-purple-600");
-
-    // Desktop button
-    if (desktopLoginButton) {
-      desktopLoginButton.classList.add("bg-purple-500");
-      desktopLoginButton.classList.remove("bg-purple-600");
-    }
-
-    // Mobile button
-    if (mobileLoginButton) {
-      mobileLoginButton.classList.add("bg-purple-500");
-      mobileLoginButton.classList.remove("bg-purple-600");
-    }
-  }
-
-  // Hero text animation
-  if (heroText && gradientOverlay) {
-    const gradientBottom = gradientOverlay.getBoundingClientRect().bottom;
-    const maxScroll = window.innerHeight * 0.7; // 70% of viewport height
-    const scrollPercent = Math.min(scrolled / maxScroll, 1);
-
-    // Calculate translation based on scroll position
-    const translateY = Math.min(scrolled * 0.5, gradientBottom); // Move at half the scroll speed
-
-    // Apply the transform
-    heroText.style.transform = `translateY(${translateY}px)`;
-
-    // Fade out as it reaches the gradient end
-    if (translateY >= gradientBottom - 200) {
-      // Start fading 200px before gradient end
-      const fadePercent = (gradientBottom - translateY) / 200;
-      heroText.style.opacity = Math.max(fadePercent, 0);
-    } else {
-      heroText.style.opacity = 1;
-    }
-  }
-});
-
-// Initialize
-document.addEventListener("DOMContentLoaded", () => {
-  createHotelCards();
-});

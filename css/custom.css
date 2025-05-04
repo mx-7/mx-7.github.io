@@ -1,0 +1,63 @@
+/* Custom CSS with specific color values */
+:root {
+  --lafa-purple: rgb(124, 58, 237);
+  --lafa-purple-hover: rgba(124, 58, 237, 0.8);
+  --lafa-purple-light: rgba(124, 58, 237, 0.1);
+}
+
+/* Background color classes */
+.bg-lafa-purple {
+  background-color: var(--lafa-purple) !important;
+}
+.bg-lafa-purple-light {
+  background-color: var(--lafa-purple-light) !important;
+}
+.hover\:bg-lafa-purple:hover {
+  background-color: var(--lafa-purple) !important;
+}
+.hover\:bg-lafa-purple-hover:hover {
+  background-color: var(--lafa-purple-hover) !important;
+}
+
+/* Text color classes */
+.text-lafa-purple {
+  color: var(--lafa-purple) !important;
+}
+.hover\:text-lafa-purple:hover {
+  color: var(--lafa-purple) !important;
+}
+
+/* Border color classes */
+.border-lafa-purple {
+  border-color: var(--lafa-purple) !important;
+}
+.hover\:border-lafa-purple:hover {
+  border-color: var(--lafa-purple) !important;
+}
+
+/* Replace any Tailwind purple classes */
+.bg-purple-500,
+.bg-purple-600,
+.bg-purple-700,
+.bg-purple-800 {
+  background-color: var(--lafa-purple) !important;
+}
+.text-purple-500,
+.text-purple-600,
+.text-purple-700,
+.text-purple-800 {
+  color: var(--lafa-purple) !important;
+}
+.hover\:bg-purple-500:hover,
+.hover\:bg-purple-600:hover,
+.hover\:bg-purple-700:hover {
+  background-color: var(--lafa-purple-hover) !important;
+}
+.hover\:text-purple-500:hover,
+.hover\:text-purple-600:hover {
+  color: var(--lafa-purple) !important;
+}
+.border-purple-500,
+.border-purple-600 {
+  border-color: var(--lafa-purple) !important;
+}

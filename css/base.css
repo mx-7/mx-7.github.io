@@ -2,6 +2,9 @@
 body {
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   margin-top: 0;
+  /* Remove or override the black background and dark gradient */
+  background: #f9fafb !important; /* Light gray typical for modern sites */
+  color: #222;
 }
 
 html {

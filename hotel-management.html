@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hotel Management - Lafa Hotel</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <style>
+      .hotel-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .hotel-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+      .form-control {
+        transition: border-color 0.2s;
+      }
+      .form-control:focus {
+        border-color: #8b5cf6;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+      }
+      .image-preview {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+      .image-upload-area {
+        border: 2px dashed #d1d5db;
+        border-radius: 4px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.2s;
+      }
+      .image-upload-area:hover,
+      .image-upload-area.drag-over {
+        border-color: #8b5cf6;
+        background-color: rgba(139, 92, 246, 0.05);
+      }
+      .sub-images-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+      .sub-image-item {
+        position: relative;
+        height: 80px;
+      }
+      .sub-image-preview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+      .remove-image {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: #ef4444;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px;
+        border-radius: 5px;
+        color: white;
+        z-index: 1000;
+        display: none;
+      }
+      .notification.success {
+        background-color: #4caf50;
+      }
+      .notification.error {
+        background-color: #f44336;
+      }
+      .notification.info {
+        background-color: #2196f3;
+      }
+      .hotel-sub-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        margin: 5px;
+        border-radius: 5px;
+      }
+      .sub-image-wrapper {
+        position: relative;
+        display: inline-block;
+      }
+      .delete-sub-image-btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: rgba(255, 0, 0, 0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-3">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between">
+          <a
+            href="index.html"
+            style="color: rgba(139, 92, 246)"
+            class="text-2xl md:text-3xl font-bold hover:opacity-80 transition-colors px-2"
+          >
+            lafa hotel
+          </a>
+          <nav class="hidden md:flex items-center space-x-4">
+            <a
+              href="profile.html"
+              class="px-4 py-2 text-gray-600 hover:text-purple-600 transition-colors"
+              >My Profile</a
+            >
+            <button
+              id="logoutBtn"
+              class="px-5 py-2 rounded-2xl bg-purple-500 text-white hover:bg-purple-600 transition-all duration-300"
+            >
+              Logout
+            </button>
+          </nav>
+
+          <!-- Mobile Menu Button -->
+          <button
+            id="mobileMenuBtn"
+            class="md:hidden text-gray-600 hover:text-purple-600 focus:outline-none"
+          >
+            <i class="bx bx-menu text-2xl"></i>
+          </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div
+          id="mobileMenu"
+          class="md:hidden hidden bg-white border-t mt-3 py-2"
+        >
+          <a
+            href="profile.html"
+            class="block px-4 py-2 text-gray-600 hover:text-purple-600 transition-colors"
+            >My Profile</a
+          >
+          <button
+            id="mobileLogoutBtn"
+            class="w-full text-left px-4 py-2 text-gray-600 hover:text-purple-600 transition-colors"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 pt-24 pb-12">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+          Hotel Management
+        </h1>
+        <button
+          id="addNewHotelBtn"
+          class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors flex items-center"
+        >
+          <i class="bx bx-plus mr-2"></i>Add New Hotel
+        </button>
+      </div>
+
+      <!-- Hotels List Section -->
+      <div id="hotels-list-section">
+        <div class="bg-purple-50 p-4 rounded-lg mb-6">
+          <p class="text-purple-800">
+            <i class="bx bx-info-circle mr-2"></i>
+            <span class="font-medium">Manage your hotels</span> - Click on a
+            hotel to edit its details
+          </p>
+        </div>
+
+        <div id="loading" class="text-center py-10">
+          <div
+            class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-700"
+          ></div>
+          <p class="mt-3 text-gray-600">Loading your hotels...</p>
+        </div>
+
+        <div id="no-hotels" class="hidden text-center py-10">
+          <div class="text-5xl text-gray-300 mb-3">
+            <i class="bx bx-building-house"></i>
+          </div>
+          <p class="text-gray-500">You don't have any hotels yet</p>
+          <button
+            id="createFirstHotelBtn"
+            class="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+          >
+            Create your first hotel
+          </button>
+        </div>
+
+        <!-- Hotels Grid -->
+        <div
+          id="hotels-grid"
+          class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        ></div>
+      </div>
+
+      <!-- Add/Edit Hotel Form Section -->
+      <div id="hotel-form-section" class="hidden">
+        <div class="flex justify-between items-center mb-4">
+          <h2 id="form-title" class="text-xl font-bold text-gray-800">
+            Add New Hotel
+          </h2>
+          <button
+            id="backToListBtn"
+            class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors flex items-center text-sm"
+          >
+            <i class="bx bx-arrow-back mr-1"></i>Back to List
+          </button>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <form id="hotel-form" class="space-y-6">
+            <input type="hidden" id="hotel-id" />
+            <input type="hidden" id="hotel-main-image" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Basic Info -->
+              <div>
+                <div class="mb-4">
+                  <label
+                    for="hotel-name"
+                    class="block text-sm font-medium text-gray-700 mb-1"
+                    >Hotel Name *</label
+                  >
+                  <input
+                    type="text"
+                    id="hotel-name"
+                    class="form-control w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+                    required
+                  />
+                </div>
+
+                <div class="mb-4">
+                  <label
+                    for="hotel-location"
+                    class="block text-sm font-medium text-gray-700 mb-1"
+                    >Location *</label
+                  >
+                  <input
+                    type="text"
+                    id="hotel-location"
+                    class="form-control w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+                    required
+                  />
+                </div>
+
+                <div class="mb-4">
+                  <label
+                    for="hotel-price"
+                    class="block text-sm font-medium text-gray-700 mb-1"
+                    >Price per Night (in SAR) *</label
+                  >
+                  <input
+                    type="number"
+                    id="hotel-price"
+                    class="form-control w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+                    required
+                    min="1"
+                  />
+                </div>
+
+                <div class="mb-4">
+                  <label
+                    for="hotel-rating"
+                    class="block text-sm font-medium text-gray-700 mb-1"
+                    >Rating (0-5) *</label
+                  >
+                  <input
+                    type="number"
+                    id="hotel-rating"
+                    class="form-control w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+                    required
+                    min="0"
+                    max="5"
+                    step="0.1"
+                  />
+                </div>
+              </div>
+
+              <!-- Image Upload and Description -->
+              <div>
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >Main Image *</label
+                  >
+                  <div class="mb-2">
+                    <div id="main-image-preview-container" class="mb-2 hidden">
+                      <img
+                        id="main-image-preview"
+                        src=""
+                        alt="Hotel preview"
+                        class="image-preview mb-2"
+                      />
+                      <button
+                        type="button"
+                        id="remove-main-image"
+                        class="text-sm text-red-600 hover:text-red-800"
+                      >
+                        <i class="bx bx-trash mr-1"></i>Remove
+                      </button>
+                    </div>
+                    <div id="main-image-upload" class="image-upload-area">
+                      <input
+                        type="file"
+                        id="main-image-input"
+                        class="hidden"
+                        accept="image/*"
+                      />
+                      <label
+                        for="main-image-input"
+                        class="cursor-pointer block"
+                      >
+                        <i class="bx bx-upload text-2xl text-gray-400"></i>
+                        <p class="mt-1 text-sm text-gray-500">
+                          Upload main image
+                        </p>
+                        <p class="text-xs text-gray-400">
+                          Click to browse or drag and drop
+                        </p>
+                      </label>
+                      <div id="main-image-upload-progress" class="hidden mt-2">
+                        <div
+                          class="h-1 w-full bg-gray-200 rounded overflow-hidden"
+                        >
+                          <div
+                            id="main-image-upload-progress-bar"
+                            class="h-full bg-purple-600"
+                            style="width: 0%"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-1"
+                    >Additional Images</label
+                  >
+                  <div
+                    id="sub-images-container"
+                    class="sub-images-container mb-2"
+                  ></div>
+                  <div id="sub-image-upload" class="image-upload-area">
+                    <input
+                      type="file"
+                      id="sub-image-input"
+                      class="hidden"
+                      accept="image/*"
+                      multiple
+                    />
+                    <label for="sub-image-input" class="cursor-pointer block">
+                      <i class="bx bx-images text-2xl text-gray-400"></i>
+                      <p class="mt-1 text-sm text-gray-500">
+                        Upload additional images
+                      </p>
+                      <p class="text-xs text-gray-400">
+                        Click to browse or drag and drop
+                      </p>
+                    </label>
+                  </div>
+                  <input type="hidden" id="sub-images-data" value="[]" />
+                </div>
+
+                <div class="mb-4">
+                  <label
+                    for="hotel-description"
+                    class="block text-sm font-medium text-gray-700 mb-1"
+                    >Description *</label
+                  >
+                  <textarea
+                    id="hotel-description"
+                    rows="5"
+                    class="form-control w-full p-2 border border-gray-300 rounded-md focus:outline-none"
+                    required
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+              <button
+                type="button"
+                id="cancel-form-btn"
+                class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+              >
+                <i class="bx bx-save mr-2"></i>
+                <span id="submit-btn-text">Save Hotel</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Status message -->
+      <div
+        id="status-message"
+        class="fixed bottom-4 right-4 p-4 rounded-lg shadow-lg hidden"
+      ></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white pt-6 pb-4 text-sm">
+      <div class="container mx-auto px-4">
+        <div
+          class="border-t border-gray-700 mt-4 pt-4 text-center text-gray-400"
+        >
+          <p>© 2025 Lafa Hotel. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Add Supabase library -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+      // Initialize Supabase
+      const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
+
+      // Initialize before loading our supabase.js file
+      window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+      // Function to compress image before upload
+      async function compressImage(file, quality = 0.7) {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+              // Create a canvas element
+              const canvas = document.createElement("canvas");
+              const ctx = canvas.getContext("2d");
+
+              // Calculate new dimensions while maintaining aspect ratio
+              let width = img.width;
+              let height = img.height;
+              const maxWidth = 1920; // Maximum width for images
+              const maxHeight = 1080; // Maximum height for images
+
+              if (width > height) {
+                if (width > maxWidth) {
+                  height *= maxWidth / width;
+                  width = maxWidth;
+                }
+              } else {
+                if (height > maxHeight) {
+                  width *= maxHeight / height;
+                  height = maxHeight;
+                }
+              }
+
+              // Set canvas dimensions
+              canvas.width = width;
+              canvas.height = height;
+
+              // Draw image on canvas with new dimensions
+              ctx.drawImage(img, 0, 0, width, height);
+
+              // Get file extension
+              const extension = file.name.split(".").pop().toLowerCase();
+              let mimeType;
+              switch (extension) {
+                case "png":
+                  mimeType = "image/png";
+                  break;
+                case "gif":
+                  mimeType = "image/gif";
+                  break;
+                default:
+                  mimeType = "image/jpeg";
+              }
+
+              // Convert canvas to blob
+              canvas.toBlob(
+                (blob) => {
+                  // Create a new file from the blob
+                  const compressedFile = new File([blob], file.name, {
+                    type: mimeType,
+                    lastModified: new Date().getTime(),
+                  });
+                  resolve(compressedFile);
+                },
+                mimeType,
+                quality
+              );
+            };
+          };
+        });
+      }
+
+      // Image upload functions
+      async function handleMainImageUpload(event, hotelId) {
+        try {
+          const file = event.target.files[0];
+          if (!file) return;
+
+          // Show loading indicator
+          showNotification("Uploading main image...", "info");
+
+          // Upload the main image
+          const imageUrl = await window.uploadHotelImage(file, hotelId, true);
+
+          // Save the URL to the hotels table
+          const result = await window.saveMainImageUrl(hotelId, imageUrl);
+
+          if (result.success) {
+            showNotification("Main image uploaded successfully!", "success");
+            // Update the image preview
+            document.getElementById(`hotel-main-image-${hotelId}`).src =
+              imageUrl;
+          } else {
+            showNotification("Failed to upload main image.", "error");
+          }
+        } catch (error) {
+          console.error("Error uploading main image:", error);
+          showNotification("Error uploading main image.", "error");
+        }
+      }
+
+      async function handleSubImageUpload(event, hotelId) {
+        try {
+          const files = event.target.files;
+          if (!files || files.length === 0) return;
+
+          // Show loading indicator
+          showNotification(`Uploading ${files.length} sub-image(s)...`, "info");
+
+          for (let i = 0; i < files.length; i++) {
+            // Upload the sub-image
+            const imageUrl = await window.uploadHotelImage(
+              files[i],
+              hotelId,
+              false
+            );
+
+            // Save the URL to the hotel_images table
+            await window.saveSubImageUrl(hotelId, imageUrl);
+          }
+
+          // Refresh the sub-images display
+          await loadHotelSubImages(hotelId);
+
+          showNotification("Sub-images uploaded successfully!", "success");
+        } catch (error) {
+          console.error("Error uploading sub-images:", error);
+          showNotification("Error uploading sub-images.", "error");
+        }
+      }
+
+      async function loadHotelSubImages(hotelId) {
+        try {
+          // Get all sub-images for this hotel
+          const subImages = await window.getHotelSubImages(hotelId);
+
+          // Get the container for this hotel's sub-images
+          const container = document.getElementById(
+            `hotel-sub-images-${hotelId}`
+          );
+          if (!container) return;
+
+          // Clear the container
+          container.innerHTML = "";
+
+          // Add each sub-image to the container
+          subImages.forEach((image) => {
+            const imgWrapper = document.createElement("div");
+            imgWrapper.className = "sub-image-wrapper";
+
+            const img = document.createElement("img");
+            img.src = image.image_url;
+            img.alt = "Hotel sub-image";
+            img.className = "hotel-sub-image";
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.innerHTML = "&times;";
+            deleteBtn.className = "delete-sub-image-btn";
+            deleteBtn.onclick = () => deleteSubImage(image.id, image.image_url);
+
+            imgWrapper.appendChild(img);
+            imgWrapper.appendChild(deleteBtn);
+            container.appendChild(imgWrapper);
+          });
+        } catch (error) {
+          console.error("Error loading sub-images:", error);
+        }
+      }
+
+      async function deleteSubImage(imageId, imageUrl) {
+        try {
+          if (!confirm("Are you sure you want to delete this image?")) return;
+
+          // Extract the path from the URL
+          const urlParts = imageUrl.split("hotel-images/");
+          if (urlParts.length < 2) {
+            showNotification("Invalid image URL format.", "error");
+            return;
+          }
+
+          const path = urlParts[1];
+
+          // Delete the image file from storage
+          const deleteResult = await window.deleteHotelImage(path);
+
+          // Delete the record from the database
+          const recordResult = await window.deleteSubImageRecord(imageId);
+
+          if (deleteResult.success && recordResult.success) {
+            showNotification("Image deleted successfully!", "success");
+
+            // Refresh the sub-images display
+            const hotelId = path.split("/")[0]; // Extract hotel ID from path
+            await loadHotelSubImages(hotelId);
+          } else {
+            showNotification("Failed to delete image.", "error");
+          }
+        } catch (error) {
+          console.error("Error deleting sub-image:", error);
+          showNotification("Error deleting image.", "error");
+        }
+      }
+
+      function showNotification(message, type = "info") {
+        // Create notification element if it doesn't exist
+        let notification = document.getElementById("notification");
+        if (!notification) {
+          notification = document.createElement("div");
+          notification.id = "notification";
+          document.body.appendChild(notification);
+        }
+
+        // Set the message and type
+        notification.textContent = message;
+        notification.className = `notification ${type}`;
+
+        // Show the notification
+        notification.style.display = "block";
+
+        // Hide after 3 seconds
+        setTimeout(() => {
+          notification.style.display = "none";
+        }, 3000);
+      }
+
+      // Call this function when loading hotels
+      function setupImageUploadHandlers() {
+        const hotels = document.querySelectorAll(".hotel-item");
+
+        hotels.forEach((hotel) => {
+          const hotelId = hotel.dataset.hotelId;
+
+          // Set up main image upload handler
+          const mainImageInput = document.getElementById(
+            `main-image-upload-${hotelId}`
+          );
+          if (mainImageInput) {
+            mainImageInput.addEventListener("change", (event) =>
+              handleMainImageUpload(event, hotelId)
+            );
+          }
+
+          // Set up sub-image upload handler
+          const subImageInput = document.getElementById(
+            `sub-image-upload-${hotelId}`
+          );
+          if (subImageInput) {
+            subImageInput.addEventListener("change", (event) =>
+              handleSubImageUpload(event, hotelId)
+            );
+          }
+
+          // Load sub-images
+          loadHotelSubImages(hotelId);
+        });
+      }
+
+      // Add event listeners for buttons after DOM content is loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        // Add event listener for "Add New Hotel" button
+        const addNewHotelBtn = document.getElementById("addNewHotelBtn");
+        if (addNewHotelBtn) {
+          addNewHotelBtn.addEventListener("click", () => {
+            showAddHotelForm();
+          });
+        }
+
+        // Add event listener for "Create your first hotel" button
+        const createFirstHotelBtn = document.getElementById(
+          "createFirstHotelBtn"
+        );
+        if (createFirstHotelBtn) {
+          createFirstHotelBtn.addEventListener("click", () => {
+            showAddHotelForm();
+          });
+        }
+
+        // Add event listener for "Back to List" button
+        const backToListBtn = document.getElementById("backToListBtn");
+        if (backToListBtn) {
+          backToListBtn.addEventListener("click", () => {
+            showHotelsList();
+          });
+        }
+
+        // Add event listener for "Cancel" button in form
+        const cancelFormBtn = document.getElementById("cancel-form-btn");
+        if (cancelFormBtn) {
+          cancelFormBtn.addEventListener("click", () => {
+            showHotelsList();
+          });
+        }
+
+        // Add event listener for hotel form submission
+        const hotelForm = document.getElementById("hotel-form");
+        if (hotelForm) {
+          hotelForm.addEventListener("submit", handleHotelFormSubmit);
+        }
+
+        // Setup image upload handlers after hotel data is loaded
+        loadHotelData().then(() => {
+          setupImageUploadHandlers();
+        });
+      });
+
+      // Function to show the add hotel form
+      function showAddHotelForm() {
+        // Get the form sections
+        const listSection = document.getElementById("hotels-list-section");
+        const formSection = document.getElementById("hotel-form-section");
+        const formTitle = document.getElementById("form-title");
+
+        // Show the form and hide the list
+        if (listSection) listSection.classList.add("hidden");
+        if (formSection) formSection.classList.remove("hidden");
+        if (formTitle) formTitle.textContent = "Add New Hotel";
+
+        // Reset form fields
+        document.getElementById("hotel-id").value = "";
+        document.getElementById("hotel-name").value = "";
+        document.getElementById("hotel-location").value = "";
+        document.getElementById("hotel-price").value = "";
+        document.getElementById("hotel-rating").value = "";
+        document.getElementById("hotel-description").value = "";
+        document.getElementById("hotel-main-image").value = "";
+
+        // Handle main image preview
+        const mainImagePreviewContainer = document.getElementById(
+          "main-image-preview-container"
+        );
+        const mainImageUpload = document.getElementById("main-image-upload");
+
+        mainImagePreviewContainer.classList.add("hidden");
+        mainImageUpload.classList.remove("hidden");
+
+        // Set the form submit button text
+        document.getElementById("submit-btn-text").textContent = "Save Hotel";
+      }
+
+      // Function to show the hotels list view
+      function showHotelsList() {
+        const listSection = document.getElementById("hotels-list-section");
+        const formSection = document.getElementById("hotel-form-section");
+
+        if (listSection) listSection.classList.remove("hidden");
+        if (formSection) formSection.classList.add("hidden");
+
+        // Refresh hotel data
+        loadHotelData();
+      }
+
+      // Function to handle hotel form submission
+      async function handleHotelFormSubmit(event) {
+        event.preventDefault();
+
+        try {
+          // Show loading notification
+          showNotification("Saving hotel data...", "info");
+
+          // Get form values
+          const hotelId = document.getElementById("hotel-id").value;
+          const hotelName = document.getElementById("hotel-name").value;
+          const hotelLocation = document.getElementById("hotel-location").value;
+          const hotelPrice = document.getElementById("hotel-price").value;
+          const hotelRating = document.getElementById("hotel-rating").value;
+          const hotelDescription =
+            document.getElementById("hotel-description").value;
+          const hotelMainImage =
+            document.getElementById("hotel-main-image").value;
+
+          // Validate required fields
+          if (
+            !hotelName ||
+            !hotelLocation ||
+            !hotelPrice ||
+            !hotelDescription
+          ) {
+            showNotification("Please fill in all required fields", "error");
+            return;
+          }
+
+          // Get current user
+          const user = await checkUser(true);
+          if (!user) {
+            showNotification("You must be logged in to save a hotel", "error");
+            return;
+          }
+
+          // Prepare hotel data
+          const hotelData = {
+            name: hotelName,
+            location: hotelLocation,
+            price: parseFloat(hotelPrice),
+            description: hotelDescription,
+            owner_id: user.id,
+          };
+
+          // Add rating if provided
+          if (hotelRating) {
+            hotelData.rating = parseFloat(hotelRating);
+          }
+
+          // Add main image if provided
+          if (hotelMainImage) {
+            hotelData.image = hotelMainImage;
+          }
+
+          let result;
+
+          // If hotelId exists, update existing hotel, otherwise create new one
+          if (hotelId) {
+            // Update existing hotel
+            const { error } = await supabase
+              .from("hotels")
+              .update(hotelData)
+              .eq("id", hotelId);
+
+            if (error) {
+              throw error;
+            }
+
+            result = { success: true, message: "Hotel updated successfully" };
+          } else {
+            // Create new hotel
+            const { data, error } = await supabase
+              .from("hotels")
+              .insert([hotelData])
+              .select();
+
+            if (error) {
+              throw error;
+            }
+
+            result = {
+              success: true,
+              message: "Hotel created successfully",
+              hotelId: data[0].id,
+            };
+          }
+
+          // Show success notification
+          showNotification(result.message, "success");
+
+          // Go back to hotels list
+          showHotelsList();
+        } catch (error) {
+          console.error("Error saving hotel:", error);
+          showNotification("Failed to save hotel: " + error.message, "error");
+        }
+      }
+
+      function showNotification(message, type = "info") {
+        const statusMessage = document.getElementById("status-message");
+        if (!statusMessage) return;
+
+        // Set the message and styling
+        statusMessage.textContent = message;
+        statusMessage.className =
+          "fixed bottom-4 right-4 p-4 rounded-lg shadow-lg";
+
+        // Add appropriate color based on type
+        switch (type) {
+          case "success":
+            statusMessage.classList.add("bg-green-600", "text-white");
+            break;
+          case "error":
+            statusMessage.classList.add("bg-red-600", "text-white");
+            break;
+          case "info":
+          default:
+            statusMessage.classList.add("bg-blue-600", "text-white");
+            break;
+        }
+
+        // Show the message
+        statusMessage.classList.remove("hidden");
+
+        // Hide after 3 seconds
+        setTimeout(() => {
+          statusMessage.classList.add("hidden");
+        }, 3000);
+      }
+
+      // Image upload functions
+      // ...existing code...
+    </script>
+    <script src="js/supabase.js"></script>
+  </body>
+</html>
