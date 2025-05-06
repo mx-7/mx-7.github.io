@@ -898,25 +898,47 @@ function generateDetailStarRating(rating) {
 
 async function initializeStorage() {
   try {
+    // First check if the bucket already exists
     try {
       const { data, error } = await window.supabase.storage
         .from("hotel-image")
         .list();
-      if (error) {
-        const { data: newBucket, error: createError } =
-          await window.supabase.storage.createBucket("hotel-image", {
-            public: true,
-            fileSizeLimit: 10485760,
-          });
-        if (createError) return false;
-        else return true;
-      } else return true;
+      
+      // If we can list files, the bucket exists and is accessible
+      if (!error) {
+        console.log("Storage bucket already exists and is accessible");
+        return true;
+      }
+      
+      // If there's an error, it might be that the bucket doesn't exist
+      console.log("Attempting to create storage bucket");
+      
+      // Try to create the bucket with proper error handling
+      const { data: newBucket, error: createError } = await window.supabase.storage
+        .createBucket("hotel-image", {
+          public: true,
+          fileSizeLimit: 10485760
+        });
+        
+      if (createError) {
+        // Handle specific error types
+        if (createError.message && createError.message.includes("already exists")) {
+          console.log("Bucket already exists but might have permission issues");
+          return true;
+        }
+        
+        console.error("Failed to create storage bucket:", createError);
+        return false;
+      } else {
+        console.log("Storage bucket created successfully");
+        return true;
+      }
     } catch (listError) {
-      console.error(listError);
+      console.error("Error checking storage bucket:", listError);
       return false;
     }
   } catch (error) {
-    console.error(error);
+    console.error("Unexpected error initializing storage:", error);
     return false;
   }
 }
@@ -935,7 +957,6 @@ window.submitHotelRating = submitHotelRating;
 window.submitComment = submitComment;
 window.fetchHotelComments = fetchHotelComments;
 window.displayHotels = displayHotels;
-window.sampleHotels = sampleHotels;
 window.getUserProfile = getUserProfile;
 window.updateUserAvatar = updateUserAvatar;
 window.updateAvatar = updateAvatar;
