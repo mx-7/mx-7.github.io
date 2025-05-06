@@ -1,66 +1,59 @@
-const sampleHotels = [
-  {
-    id: 1,
-    name: "Lafa Luxury Hotel & Spa",
-    location: "Riyadh, Saudi Arabia",
-    price: 350,
-    image: "media/exterior.jpg",
-    rating: 4.8,
-  },
-  {
-    id: 2,
-    name: "Dar Aleiman Al Haram Hotel",
-    location: "Medina, Saudi Arabia",
-    price: 280,
-    image: "media/Dar-Aleiman-Al-Haram-Hotel-Medina-Exterior.jpg",
-    rating: 4.5,
-  },
-  {
-    id: 3,
-    name: "Royal Fountain Hotel",
-    location: "Jeddah, Saudi Arabia",
-    price: 320,
-    image: "media/1641894785.jpg",
-    rating: 4.7,
-  },
-  {
-    id: 4,
-    name: "Grand Oasis Resort",
-    location: "Dammam, Saudi Arabia",
-    price: 290,
-    image: "media/869918c9da63b2c5685fce05965700da5b0e6617.jpg",
-    rating: 4.6,
-  },
-];
-
 window.isLoggedIn = false;
 window.userAvatarUrl = null;
 
-async function checkUser(requireAuth = false) {
+async function checkUser(redirectWhenLoggedOut = true) {
   try {
     const {
-      data: { session },
-      error,
-    } = await window.supabase.auth.getSession();
-    if (error) {
-      console.error(error);
-      window.isLoggedIn = false;
+      data: { user },
+    } = await window.supabase.auth.getUser();
+
+    window.isLoggedIn = !!user;
+
+    if (user) {
+      // Get the user's profile data including avatar_url
+      const { data: profileData, error: profileError } = await window.supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (profileError) {
+        console.error("Error fetching profile:", profileError);
+      } else if (profileData) {
+        // Save avatar URL to window object
+        window.userAvatarUrl = profileData.avatar_url;
+        window.userName = profileData.full_name || user.email;
+      }
+
+      return user;
+    } else if (redirectWhenLoggedOut) {
+      window.location.href = "logindex.html";
       return null;
     }
-    if (!session?.user) {
-      window.isLoggedIn = false;
-      if (requireAuth) window.location.href = "logindex.html";
-      return null;
-    }
-    window.isLoggedIn = true;
-    await loadUserAvatar(session.user.id);
-    return session.user;
+
+    return null;
   } catch (error) {
-    console.error(error);
-    window.isLoggedIn = false;
+    console.error("Error checking authentication", error);
     return null;
   }
 }
+
+// Helper function to fetch the avatar URL directly when needed
+window.getAvatarUrl = async (userId) => {
+  try {
+    const { data, error } = await window.supabase
+      .from("profiles")
+      .select("avatar_url")
+      .eq("id", userId)
+      .single();
+
+    if (error) throw error;
+    return data?.avatar_url;
+  } catch (error) {
+    console.error("Error fetching avatar:", error);
+    return null;
+  }
+};
 
 async function loadUserAvatar(userId) {
   try {
@@ -111,7 +104,12 @@ async function updateUserAvatar(userId, avatarUrl) {
       console.error(error);
       return { success: false, message: error.message };
     }
-    window.userAvatarUrl = avatarUrl;
+
+    // Add cache-busting to prevent old images from showing
+    window.userAvatarUrl = avatarUrl
+      ? avatarUrl + "?t=" + new Date().getTime()
+      : null;
+
     return {
       success: true,
       message: avatarUrl
@@ -134,7 +132,9 @@ async function updateAvatar(avatarUrl) {
       const placeholder = document.getElementById("avatar-placeholder");
       if (avatarImg && placeholder) {
         if (avatarUrl) {
-          avatarImg.src = avatarUrl;
+          // Add cache-busting query parameter
+          const cacheBustedUrl = avatarUrl + "?t=" + new Date().getTime();
+          avatarImg.src = cacheBustedUrl;
           avatarImg.classList.remove("hidden");
           placeholder.classList.add("hidden");
         } else {
@@ -143,7 +143,6 @@ async function updateAvatar(avatarUrl) {
           placeholder.classList.add("pulse-animation");
         }
       }
-      window.userAvatarUrl = avatarUrl;
       return true;
     } else {
       throw new Error(result.message);
@@ -386,13 +385,11 @@ async function submitHotelRating(hotelId, rating) {
       }
       return { success: true, message: "Your rating has been updated" };
     } else {
-      result = await window.supabase
-        .from("ratings")
-        .insert({
-          user_id: user.id,
-          hotel_id: parseInt(hotelId),
-          rating: rating,
-        });
+      result = await window.supabase.from("ratings").insert({
+        user_id: user.id,
+        hotel_id: parseInt(hotelId),
+        rating: rating,
+      });
       if (result.error) {
         console.error(result.error);
         return { success: false, message: "Failed to add your rating" };
@@ -448,14 +445,12 @@ async function submitComment(hotelId, comment, rating) {
         message: "Your comment and rating have been updated",
       };
     } else {
-      result = await window.supabase
-        .from("ratings")
-        .insert({
-          user_id: user.id,
-          hotel_id: parseInt(hotelId),
-          comment: comment,
-          rating: validRating,
-        });
+      result = await window.supabase.from("ratings").insert({
+        user_id: user.id,
+        hotel_id: parseInt(hotelId),
+        comment: comment,
+        rating: validRating,
+      });
       if (result.error) {
         console.error(result.error);
         return { success: false, message: "Failed to add your comment" };
@@ -694,21 +689,35 @@ async function loadHotelData() {
     if (loadingElement) loadingElement.classList.remove("hidden");
     if (noHotelsElement) noHotelsElement.classList.add("hidden");
     if (hotelsGridElement) hotelsGridElement.classList.add("hidden");
+
+    // Fetch hotels with ratings data
     const { data: hotels, error } = await window.supabase
       .from("hotels")
-      .select("*")
+      .select(`*, ratings(rating)`)
       .eq("owner_id", user.id);
+
     if (loadingElement) loadingElement.classList.add("hidden");
     if (error) {
       console.error(error);
       return [];
     }
+
     if (hotels && hotels.length > 0) {
       if (hotelsGridElement) {
         hotelsGridElement.innerHTML = "";
         for (const hotel of hotels) {
+          // Process the hotel's ratings data
           const mainImageUrl = await getHotelMainImage(hotel.id);
+
+          // Calculate average rating and count
           hotel.image = mainImageUrl;
+          hotel.rating =
+            hotel.ratings && hotel.ratings.length > 0
+              ? hotel.ratings.reduce((sum, r) => sum + r.rating, 0) /
+                hotel.ratings.length
+              : 0.0;
+          hotel.totalRatings = hotel.ratings ? hotel.ratings.length : 0;
+
           const hotelCard = createHotelCard(hotel);
           hotelsGridElement.appendChild(hotelCard);
         }
@@ -729,59 +738,48 @@ async function loadHotelData() {
 function createHotelCard(hotel) {
   const card = document.createElement("div");
   card.className =
-    "hotel-card bg-white rounded-lg shadow-md overflow-hidden cursor-pointer";
+    "hotel-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow";
   card.dataset.hotelId = hotel.id;
   const imageUrl = hotel.image || "media/placeholder-hotel.jpg";
+
+  // Calculate hotel rating info
+  const ratingValue = hotel.rating || 0;
+  const totalRatings = hotel.totalRatings || 0;
+  const starsHtml = generateDetailStarRating(ratingValue);
+
   card.innerHTML = `
     <div class="relative h-48">
       <img src="${imageUrl}" alt="${
     hotel.name
   }" class="w-full h-full object-cover" id="hotel-main-image-${hotel.id}">
-      <div class="absolute top-2 right-2">
-        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-white text-gray-800">
-          <i class="bx bxs-star text-yellow-500 mr-1"></i>${hotel.rating || 0}
-        </span>
-      </div>
     </div>
-    <div class="p-4">
-      <h3 class="font-bold text-gray-800">${hotel.name}</h3>
-      <p class="text-gray-600 text-sm mb-2">
-        <i class="bx bx-map text-gray-400 mr-1"></i>${hotel.location}
-      </p>
-      <div class="flex justify-between items-center mt-2">
-        <p class="text-purple-600 font-medium">SAR ${
-          hotel.price || 0
-        } / night</p>
-        <button class="edit-hotel-btn text-sm text-gray-500 hover:text-purple-600">
-          <i class="bx bx-edit"></i> Edit
-        </button>
+    <div class="p-5">
+      <h3 class="text-xl font-bold text-gray-800 mb-2">${hotel.name}</h3>
+      <div class="flex items-center mb-2">
+        <i class="bx bx-map text-gray-600 mr-1"></i>
+        <span class="text-gray-600">${hotel.location}</span>
       </div>
-      <div class="mt-3 pt-3 border-t border-gray-100">
-        <div id="hotel-sub-images-${
-          hotel.id
-        }" class="flex overflow-x-auto pb-2"></div>
-        <label for="sub-image-upload-${
-          hotel.id
-        }" class="mt-2 inline-block cursor-pointer text-xs text-purple-600 hover:text-purple-700">
-          <i class="bx bx-plus"></i> Add Images
-        </label>
-        <input type="file" id="sub-image-upload-${
-          hotel.id
-        }" class="hidden" accept="image/*" multiple>
+      <div class="flex items-center mb-4">
+        <span class="text-lg font-bold text-gray-800 mr-2">${Number(
+          ratingValue
+        ).toFixed(1)}</span>
+        <div class="flex items-center text-amber-500">
+          ${starsHtml}
+        </div>
+        <span class="ml-2 text-sm text-gray-600">(${totalRatings})</span>
+      </div>
+      <div class="flex justify-between items-center">
+        <div class="text-lg font-bold text-gray-800">SAR ${
+          hotel.price || 0
+        }<span class="text-sm font-medium text-gray-600"> /night</span></div>
       </div>
     </div>
   `;
-  card.addEventListener("click", (e) => {
-    if (
-      e.target.closest(".edit-hotel-btn") ||
-      e.target.closest('input[type="file"]')
-    )
-      return;
+
+  card.addEventListener("click", () => {
     showEditHotelForm(hotel);
   });
-  const editBtn = card.querySelector(".edit-hotel-btn");
-  if (editBtn)
-    editBtn.addEventListener("click", () => showEditHotelForm(hotel));
+
   return card;
 }
 
@@ -954,3 +952,4 @@ window.loadHotelData = loadHotelData;
 window.initializeStorage = initializeStorage;
 window.getHotelMainImage = getHotelMainImage;
 window.getHotelAdditionalImages = getHotelAdditionalImages;
+window.getAvatarUrl = window.getAvatarUrl;

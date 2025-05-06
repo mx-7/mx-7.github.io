@@ -23,10 +23,19 @@
     <style>
       .hotel-card {
         transition: transform 0.2s, box-shadow 0.2s;
+        height: auto;
+        min-height: 420px; /* Increased card height */
       }
       .hotel-card:hover {
         transform: translateY(-3px);
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+      .hotel-card .p-5 {
+        padding-bottom: 1.5rem;
+      }
+      /* Reduce space between rating and price */
+      .hotel-card .mb-4 {
+        margin-bottom: 0.75rem;
       }
       .form-control {
         transition: border-color 0.2s;

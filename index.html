@@ -440,6 +440,9 @@
           mobileAvatarButton.classList.remove("hidden");
           logoutBtn.addEventListener("click", signOut);
           mobileLogoutBtn.addEventListener("click", signOut);
+
+          console.log("Avatar URL:", window.userAvatarUrl); // Debug line to check avatar URL
+
           if (window.userAvatarUrl && window.userAvatarUrl.trim() !== "") {
             userAvatar.src = window.userAvatarUrl;
             mobileUserAvatar.src = window.userAvatarUrl;

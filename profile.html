@@ -180,7 +180,7 @@
                       src=""
                       alt="Profile Avatar"
                       class="w-full h-full object-cover hidden"
-                      onerror="this.classList.add('hidden'); document.getElementById('avatar-placeholder').classList.remove('hidden'); console.error('Failed to load avatar image:', this.src);"
+                      onerror="this.classList.add('hidden'); document.getElementById('avatar-placeholder').classList.remove('hidden');"
                     />
                     <div
                       id="avatar-placeholder"
@@ -409,6 +409,10 @@
           }
           const publicUrl = publicUrlData.publicUrl;
           const secureUrl = publicUrl.replace("http:", "https:");
+
+          // Add cache-busting query parameter to force browser to reload the image
+          const cacheBustedUrl = secureUrl + "?t=" + new Date().getTime();
+
           await updateAvatar(secureUrl);
           const avatarImg = document.getElementById("profile-avatar");
           avatarImg.onload = function () {
@@ -423,7 +427,7 @@
               .getElementById("avatar-placeholder")
               .classList.remove("hidden");
           };
-          avatarImg.src = secureUrl;
+          avatarImg.src = cacheBustedUrl; // Use the cache-busted URL here
           return secureUrl;
         } catch (error) {
           console.error("Error uploading avatar:", error);
@@ -527,6 +531,8 @@
                   }, 500);
                 }
               };
+
+              // Process avatar URL
               let avatarUrl = profile.avatar_url;
               if (
                 avatarUrl.includes("supabase") &&
@@ -534,8 +540,12 @@
               ) {
                 avatarUrl = avatarUrl.replace("http:", "https:");
               }
-              avatarImg.src = avatarUrl;
-              window.userAvatarUrl = avatarUrl;
+
+              // Add cache busting parameter
+              const cacheBustedUrl = avatarUrl + "?t=" + new Date().getTime();
+
+              avatarImg.src = cacheBustedUrl;
+              window.userAvatarUrl = avatarUrl; // Store original URL without cache busting
             } else {
               document.getElementById("profile-avatar").classList.add("hidden");
               document
@@ -578,6 +588,9 @@
           const avatarImg = document.getElementById("profile-avatar");
           const placeholder = document.getElementById("avatar-placeholder");
           if (avatarUrl) {
+            // Add cache-busting parameter here too
+            const cacheBustedUrl = avatarUrl + "?t=" + new Date().getTime();
+
             avatarImg.onload = function () {
               avatarImg.classList.remove("hidden");
               placeholder.classList.add("hidden");
@@ -586,7 +599,7 @@
               this.classList.add("hidden");
               placeholder.classList.remove("hidden");
             };
-            avatarImg.src = avatarUrl;
+            avatarImg.src = cacheBustedUrl;
           } else {
             avatarImg.classList.add("hidden");
             placeholder.classList.remove("hidden");

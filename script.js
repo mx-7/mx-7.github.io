@@ -34,6 +34,16 @@ function updateNavigation(user) {
   const loginButtons = document.querySelectorAll(".login-button");
   const logoutButtons = document.querySelectorAll(".logout-button");
   const userProfileElements = document.querySelectorAll(".user-profile");
+  const avatarButtons = document.querySelectorAll(
+    "#avatarButton, #mobileAvatarButton"
+  );
+  const userAvatars = document.querySelectorAll(
+    "#userAvatar, #mobileUserAvatar"
+  );
+  const defaultAvatars = document.querySelectorAll(
+    "#defaultAvatar, #mobileDefaultAvatar"
+  );
+
   if (user) {
     loginButtons.forEach((btn) => (btn.style.display = "none"));
     logoutButtons.forEach((btn) => (btn.style.display = "block"));
@@ -44,10 +54,41 @@ function updateNavigation(user) {
         nameElement.textContent = user.email.split("@")[0];
       }
     });
+
+    // Handle avatar display with cache-busting
+    if (window.userAvatarUrl) {
+      const cacheBustedUrl = window.userAvatarUrl.includes("?")
+        ? window.userAvatarUrl
+        : window.userAvatarUrl + "?t=" + new Date().getTime();
+
+      avatarButtons.forEach((btn) => btn.classList.remove("hidden"));
+      userAvatars.forEach((avatar) => {
+        avatar.src = cacheBustedUrl;
+        avatar.onload = () => {
+          avatar.classList.remove("hidden");
+          defaultAvatars.forEach(
+            (defaultAvatar) => (defaultAvatar.style.display = "none")
+          );
+        };
+        avatar.onerror = () => {
+          avatar.classList.add("hidden");
+          defaultAvatars.forEach(
+            (defaultAvatar) => (defaultAvatar.style.display = "block")
+          );
+        };
+      });
+    } else {
+      avatarButtons.forEach((btn) => btn.classList.remove("hidden"));
+      userAvatars.forEach((avatar) => avatar.classList.add("hidden"));
+      defaultAvatars.forEach(
+        (defaultAvatar) => (defaultAvatar.style.display = "block")
+      );
+    }
   } else {
     loginButtons.forEach((btn) => (btn.style.display = "block"));
     logoutButtons.forEach((btn) => (btn.style.display = "none"));
     userProfileElements.forEach((el) => (el.style.display = "none"));
+    avatarButtons.forEach((btn) => btn.classList.add("hidden"));
   }
 }
 
