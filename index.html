@@ -28,23 +28,21 @@
     />
     <style>
       .bg-light-gray {
-        background-color: #000000; /* Black color */
-        color: #ffffff; /* White text color */
+        background-color: #000;
+        color: #fff;
       }
       .bg-light-gray a {
-        color: #ffffff; /* Ensure links are white */
+        color: #fff;
       }
       .bg-light-gray a:hover {
-        color: #cccccc; /* Slightly lighter on hover */
+        color: #ccc;
       }
       .bg-light-gray h3,
       .bg-light-gray h4,
       .bg-light-gray p,
       .bg-light-gray li {
-        color: #ffffff; /* Ensure all text elements are white */
+        color: #fff;
       }
-
-      /* Improved avatar button styling */
       .avatar-button {
         display: flex;
         align-items: center;
@@ -57,7 +55,6 @@
         overflow: hidden;
         position: relative;
       }
-
       .avatar-button img {
         width: 100%;
         height: 100%;
@@ -66,7 +63,6 @@
         top: 0;
         left: 0;
       }
-
       .avatar-button i {
         font-size: 1.2rem;
         color: #6b7280;
@@ -75,7 +71,6 @@
   </head>
   <body>
     <div id="root">
-      <!-- Header -->
       <header
         class="fixed top-0 left-0 right-0 z-50 transition-all duration-700 bg-transparent py-3 pt-6"
         style="transition-property: background-color, box-shadow, padding"
@@ -89,7 +84,6 @@
               lafa hotel
             </span>
             <nav class="hidden md:flex items-center space-x-4">
-              <!-- Avatar button - only shown when logged in -->
               <a
                 id="avatarButton"
                 href="profile.html"
@@ -113,10 +107,7 @@
                 Logout
               </button>
             </nav>
-
-            <!-- Mobile Logout Button -->
             <div class="md:hidden flex items-center space-x-2">
-              <!-- Mobile avatar button - only shown when logged in -->
               <a
                 id="mobileAvatarButton"
                 href="profile.html"
@@ -143,10 +134,7 @@
           </div>
         </div>
       </header>
-
-      <!-- Main Content -->
       <main class="flex-grow">
-        <!-- Hero Section -->
         <section class="relative w-full flex items-center hero-section">
           <div class="absolute inset-0 h-full">
             <img
@@ -169,8 +157,6 @@
             </div>
           </div>
         </section>
-
-        <!-- Stats Section -->
         <section class="py-12 bg-white">
           <div class="container mx-auto px-4">
             <div class="flex flex-row justify-around items-center text-center">
@@ -203,8 +189,6 @@
             </div>
           </div>
         </section>
-
-        <!-- Hotel Cards Section -->
         <section class="py-16 relative overflow-hidden">
           <div class="container mx-auto px-4">
             <h2
@@ -213,7 +197,6 @@
               Featured Hotels
             </h2>
             <div class="relative">
-              <!-- Left Arrow -->
               <button
                 id="arrow-left"
                 class="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white bg-opacity-80 rounded-full shadow p-2 hover:bg-purple-100 transition hidden md:block"
@@ -221,7 +204,6 @@
               >
                 <i class="bx bx-chevron-left text-3xl text-purple-600"></i>
               </button>
-              <!-- Right Arrow -->
               <button
                 id="arrow-right"
                 class="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white bg-opacity-80 rounded-full shadow p-2 hover:bg-purple-100 transition hidden md:block"
@@ -232,18 +214,13 @@
               <div
                 id="hotels-container"
                 class="hotel-container flex overflow-x-auto gap-4 snap-x snap-mandatory scrollbar-hide pb-8"
-              >
-                <!-- Cards will be inserted here by JavaScript -->
-              </div>
+              ></div>
             </div>
           </div>
         </section>
-
-        <!-- Features Section -->
         <section class="py-16 bg-gray-50">
           <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <!-- Search Simply -->
               <div
                 class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
@@ -259,8 +236,6 @@
                   for.
                 </p>
               </div>
-
-              <!-- Compare Confidently -->
               <div
                 class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
@@ -275,8 +250,6 @@
                   information to make the right choice.
                 </p>
               </div>
-
-              <!-- Save Big -->
               <div
                 class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
@@ -292,8 +265,6 @@
             </div>
           </div>
         </section>
-
-        <!-- Why Choose Us Section -->
         <section class="py-16 bg-white">
           <div class="container mx-auto px-4">
             <h2
@@ -302,7 +273,6 @@
               Why Choose Us
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <!-- Best Rates -->
               <div
                 class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
@@ -317,8 +287,6 @@
                   exclusive deals.
                 </p>
               </div>
-
-              <!-- 24/7 Support -->
               <div
                 class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
@@ -333,8 +301,6 @@
                   questions or concerns.
                 </p>
               </div>
-
-              <!-- Luxury Amenities -->
               <div
                 class="text-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
@@ -353,8 +319,6 @@
           </div>
         </section>
       </main>
-
-      <!-- Footer -->
       <footer class="bg-light-gray pt-6 pb-4 text-sm">
         <div class="container mx-auto px-4">
           <div
@@ -439,39 +403,24 @@
         </div>
       </footer>
     </div>
-
-    <!-- Add Supabase library with correct CDN URL -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-      // Initialize Supabase directly in the HTML to ensure it's available
       const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
       const SUPABASE_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
-
-      // Initialize before loading our supabase.js file
-      // Fix the naming conflict by using the createClient from the supabaseJs global variable
       window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     </script>
     <script src="js/supabase.js"></script>
-
     <script>
-      // Check authentication on page load
       document.addEventListener("DOMContentLoaded", function () {
         try {
-          // Check user without requiring authentication
           checkUser(false).then(() => {
-            // Update the header buttons based on login status
             updateAuthButtons();
           });
-
-          // Load hotels on page load
-          loadHotels();
         } catch (error) {
           console.error("Error checking user status:", error);
         }
       });
-
-      // Function to update authentication buttons based on login status
       function updateAuthButtons() {
         const logoutBtn = document.getElementById("logoutBtn");
         const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
@@ -484,19 +433,13 @@
         const mobileDefaultAvatar = document.getElementById(
           "mobileDefaultAvatar"
         );
-
         if (window.isLoggedIn) {
-          // User is logged in - show logout buttons and avatar buttons
           logoutBtn.textContent = "Logout";
           mobileLogoutBtn.textContent = "Logout";
           avatarButton.classList.remove("hidden");
           mobileAvatarButton.classList.remove("hidden");
-
-          // Add event listeners for logout
           logoutBtn.addEventListener("click", signOut);
           mobileLogoutBtn.addEventListener("click", signOut);
-
-          // Set avatar image if available
           if (window.userAvatarUrl && window.userAvatarUrl.trim() !== "") {
             userAvatar.src = window.userAvatarUrl;
             mobileUserAvatar.src = window.userAvatarUrl;
@@ -511,13 +454,10 @@
             mobileDefaultAvatar.classList.remove("hidden");
           }
         } else {
-          // User is not logged in - show login buttons and hide avatar buttons
           logoutBtn.textContent = "Login";
           mobileLogoutBtn.textContent = "Login";
           avatarButton.classList.add("hidden");
           mobileAvatarButton.classList.add("hidden");
-
-          // Add event listeners to redirect to login page
           logoutBtn.addEventListener("click", function () {
             window.location.href = "logindex.html";
           });
@@ -526,8 +466,6 @@
           });
         }
       }
-
-      // Add scroll effect to header
       window.addEventListener("scroll", () => {
         const header = document.querySelector("header");
         if (window.scrollY > 10) {
@@ -538,8 +476,6 @@
           header.classList.remove("bg-white", "shadow-md", "py-3");
         }
       });
-
-      // Add scroll effect to footer
       const footer = document.querySelector("footer");
       const observer = new IntersectionObserver(
         ([entry]) => {
@@ -550,8 +486,6 @@
         { threshold: 0.1 }
       );
       observer.observe(footer);
-
-      // Load hotels from Supabase database
       async function loadHotels() {
         try {
           const hotelsContainer = document.getElementById("hotels-container");
@@ -562,50 +496,51 @@
               </div>
             </div>
           `;
-
-          const { data, error } = await window.supabase
-            .from("hotels")
+          const { data: hotels, error } = await window.supabase
+            .from("hotel_ratings_view")
             .select("*");
-
           if (error) {
+            console.error("Error fetching hotels:", error);
             throw error;
           }
-
-          if (data && data.length > 0) {
+          if (hotels && hotels.length > 0) {
             hotelsContainer.innerHTML = "";
-
-            data.forEach((hotel) => {
+            for (const hotel of hotels) {
+              const mainImageUrl = await window.getHotelMainImage(hotel.id);
               const card = document.createElement("div");
               card.className =
                 "snap-start flex-shrink-0 w-80 sm:w-72 md:w-80 lg:w-96 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow overflow-hidden";
-
-              // Format the price with the Saudi Riyal icon
               const formattedPrice = `<span class="icon-saudi_riyal">&#xea;</span>${hotel.price}`;
-
-              // Create stars based on rating
-              const rating = hotel.rating || 0.0;
-              const ratingStars = generateDetailStarRating
+              const rating = hotel.average_rating || 0;
+              const totalRatings = hotel.total_ratings || 0;
+              const starsHtml = generateDetailStarRating
                 ? generateDetailStarRating(rating)
-                : "";
-
-              // Determine the correct link based on login status
+                : '<div class="text-amber-500">★★★★★</div>';
               const hotelLink = window.isLoggedIn
                 ? `hotel-details.html?id=${hotel.id}`
                 : `logindex.html`;
-
               card.innerHTML = `
                 <div class="relative w-full h-48">
-                  <img src="${hotel.image}" alt="${hotel.name}" class="w-full h-full object-cover">
+                  <img src="${
+                    mainImageUrl || "media/placeholder-hotel.jpg"
+                  }" alt="${hotel.name}" class="w-full h-full object-cover">
                 </div>
                 <div class="p-5">
-                  <h3 class="text-xl font-bold text-gray-800 mb-2">${hotel.name}</h3>
+                  <h3 class="text-xl font-bold text-gray-800 mb-2">${
+                    hotel.name
+                  }</h3>
                   <div class="flex items-center mb-2">
                     <i class="bx bx-map text-gray-600 mr-1"></i>
                     <span class="text-gray-600">${hotel.location}</span>
                   </div>
-                  <div class="flex items-center text-amber-500 mb-4">
-                    ${ratingStars}
-                    <span class="ml-1 text-sm text-gray-600">(${rating})</span>
+                  <div class="flex items-center mb-4">
+                    <span class="text-lg font-bold text-gray-800 mr-2">${rating.toFixed(
+                      1
+                    )}</span>
+                    <div class="flex items-center text-amber-500">
+                      ${starsHtml}
+                    </div>
+                    <span class="ml-2 text-sm text-gray-600">(${totalRatings})</span>
                   </div>
                   <div class="flex justify-between items-center">
                     <div class="text-lg font-bold text-gray-800">${formattedPrice}<span class="text-sm font-medium text-gray-600"> /night</span></div>
@@ -613,14 +548,26 @@
                   </div>
                 </div>
               `;
-
               hotelsContainer.appendChild(card);
-            });
+            }
           } else {
-            hotelsContainer.innerHTML = `<p>No hotels available.</p>`;
+            hotelsContainer.innerHTML = `
+              <div class="col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4 flex justify-center">
+                <div class="text-center p-8">
+                  <p class="text-lg text-gray-600">No hotels available at this time.</p>
+                </div>
+              </div>
+            `;
           }
         } catch (error) {
           console.error("Error loading hotels:", error);
+          document.getElementById("hotels-container").innerHTML = `
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4 flex justify-center">
+              <div class="text-center p-8">
+                <p class="text-lg text-red-600">Error loading hotels. Please try again later.</p>
+              </div>
+            </div>
+          `;
         }
       }
     </script>

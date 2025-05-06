@@ -1,11 +1,9 @@
-/* Custom CSS with specific color values */
 :root {
   --lafa-purple: rgb(124, 58, 237);
   --lafa-purple-hover: rgba(124, 58, 237, 0.8);
   --lafa-purple-light: rgba(124, 58, 237, 0.1);
 }
 
-/* Background color classes */
 .bg-lafa-purple {
   background-color: var(--lafa-purple) !important;
 }
@@ -19,7 +17,6 @@
   background-color: var(--lafa-purple-hover) !important;
 }
 
-/* Text color classes */
 .text-lafa-purple {
   color: var(--lafa-purple) !important;
 }
@@ -27,7 +24,6 @@
   color: var(--lafa-purple) !important;
 }
 
-/* Border color classes */
 .border-lafa-purple {
   border-color: var(--lafa-purple) !important;
 }
@@ -35,7 +31,6 @@
   border-color: var(--lafa-purple) !important;
 }
 
-/* Replace any Tailwind purple classes */
 .bg-purple-500,
 .bg-purple-600,
 .bg-purple-700,
@@ -60,4 +55,39 @@
 .border-purple-500,
 .border-purple-600 {
   border-color: var(--lafa-purple) !important;
+}
+
+@font-face {
+  font-family: "SaudiRiyalSymbol";
+  src: url("../fonts/saudi-riyal-symbol.woff2") format("woff2"),
+    url("../fonts/saudi-riyal-symbol.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.icon-saudi_riyal {
+  font-family: "SaudiRiyalSymbol", sans-serif;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 2px;
+}
+
+.saudi-riyal-symbol {
+  font-weight: bold;
+  display: inline-block;
+  margin-right: 2px;
+}
+
+@media (max-width: 768px) {
+  .icon-saudi_riyal:empty:before {
+    content: "SAR ";
+    font-family: sans-serif;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .saudi-riyal-symbol {
+    font-size: 0.95em;
+  }
 }

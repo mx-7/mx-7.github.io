@@ -138,7 +138,6 @@
     </style>
   </head>
   <body>
-    <!-- Header -->
     <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-3">
       <div class="container mx-auto px-4">
         <div class="flex items-center justify-between">
@@ -157,8 +156,6 @@
               Logout
             </button>
           </nav>
-
-          <!-- Mobile Logout Button -->
           <button
             id="mobileLogoutBtn"
             class="md:hidden px-4 py-2 bg-purple-500 text-white rounded-2xl hover:bg-purple-600 transition-all duration-300"
@@ -168,16 +165,12 @@
         </div>
       </div>
     </header>
-
-    <!-- Profile Section -->
     <div class="profile-container bg-gray-50">
       <div class="container mx-auto px-4 py-8">
         <div class="max-w-3xl mx-auto">
           <div class="profile-card">
-            <!-- Profile Header -->
             <div class="profile-header">
               <div class="flex flex-col items-center">
-                <!-- Clickable avatar for upload -->
                 <div class="avatar-container">
                   <div
                     class="avatar-upload w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg mb-2 relative"
@@ -196,8 +189,6 @@
                       <i class="bx bx-user"></i>
                     </div>
                   </div>
-
-                  <!-- Explicit button for avatar upload that will work better with Live Server -->
                   <div
                     class="direct-upload-btn"
                     id="upload-avatar-btn"
@@ -205,8 +196,6 @@
                   >
                     <i class="bx bx-camera"></i>
                   </div>
-
-                  <!-- Keep the hidden file input but don't rely on label click -->
                   <input
                     type="file"
                     id="avatar-file-input"
@@ -225,8 +214,6 @@
                   Loading...
                 </h1>
                 <p class="text-white/80 mb-2" id="profile-email">Loading...</p>
-
-                <!-- Remove Avatar button -->
                 <button
                   type="button"
                   id="remove-avatar"
@@ -236,8 +223,6 @@
                 </button>
               </div>
             </div>
-
-            <!-- Profile Content -->
             <div class="p-6">
               <div class="mb-8">
                 <h2 class="text-lg font-semibold text-gray-800 mb-2">
@@ -272,12 +257,7 @@
                   </div>
                 </div>
               </div>
-
-              <div id="update-status" class="hidden mt-4 p-3 rounded-lg">
-                <!-- Status message will be inserted here -->
-              </div>
-
-              <!-- Hotel Management Button - only visible for admin/owner -->
+              <div id="update-status" class="hidden mt-4 p-3 rounded-lg"></div>
               <div class="mt-8 text-center">
                 <a
                   id="hotel-management-btn"
@@ -288,8 +268,6 @@
                   Hotel Management
                 </a>
               </div>
-
-              <!-- Back to Home Button -->
               <div class="mt-8 text-center">
                 <a
                   href="index.html"
@@ -304,8 +282,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Footer -->
     <footer class="bg-gray-800 text-white pt-6 pb-4 text-sm">
       <div class="container mx-auto px-4">
         <div
@@ -315,86 +291,57 @@
         </div>
       </div>
     </footer>
-
-    <!-- Add Supabase library with correct CDN URL -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-      // Initialize Supabase directly in the HTML to ensure it's available
       const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
       const SUPABASE_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
-
-      // Initialize before loading our supabase.js file
       window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     </script>
     <script src="js/supabase.js"></script>
-
     <script>
       document.addEventListener("DOMContentLoaded", async function () {
-        // Require authentication for this page
         const user = await checkUser(true);
         if (!user) {
-          // If checkUser redirects to login page, we don't need to do anything else
           return;
         }
-
-        // Add event listener for logout button
         document.getElementById("logoutBtn").addEventListener("click", signOut);
         document
           .getElementById("mobileLogoutBtn")
           .addEventListener("click", signOut);
-
-        // Load profile data
         await loadProfileData(user);
-
-        // Add direct click handler for the upload button
         document
           .getElementById("upload-avatar-btn")
           .addEventListener("click", function () {
-            // Programmatically click the hidden file input
             document.getElementById("avatar-file-input").click();
           });
-
-        // Set up file input for avatar upload
         document
           .getElementById("avatar-file-input")
           .addEventListener("change", async function (e) {
             if (!e.target.files || !e.target.files[0]) return;
-
             const file = e.target.files[0];
             const statusElement = document.getElementById("file-upload-status");
-
-            // Validate file type
             if (!file.type.match("image.*")) {
               statusElement.textContent = "Please select an image file";
               statusElement.style.color = "#f87171";
               return;
             }
-
-            // Validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
               statusElement.textContent = "Image must be less than 5MB";
               statusElement.style.color = "#f87171";
               return;
             }
-
-            // Show loading spinner
             statusElement.innerHTML =
               '<span class="loading-spinner mr-2"></span> Uploading...';
             statusElement.style.color = "#ffffff";
-
             try {
               await uploadAvatar(file);
               statusElement.textContent = "✓ Upload successful!";
               statusElement.style.color = "#a3e635";
-
-              // Stop the placeholder pulse animation if it was active
               const placeholder = document.getElementById("avatar-placeholder");
               if (placeholder) {
                 placeholder.classList.remove("pulse-animation");
               }
-
-              // Clear status message after 3 seconds
               setTimeout(() => {
                 statusElement.textContent = "";
               }, 3000);
@@ -403,8 +350,6 @@
               statusElement.style.color = "#f87171";
             }
           });
-
-        // Set up remove avatar button
         document
           .getElementById("remove-avatar")
           .addEventListener("click", async function () {
@@ -412,13 +357,10 @@
             statusElement.innerHTML =
               '<span class="loading-spinner mr-2"></span> Removing...';
             statusElement.style.color = "#ffffff";
-
             try {
               await updateAvatar(null);
               statusElement.textContent = "✓ Avatar removed";
               statusElement.style.color = "#a3e635";
-
-              // Clear status message after 3 seconds
               setTimeout(() => {
                 statusElement.textContent = "";
               }, 3000);
@@ -428,83 +370,60 @@
             }
           });
       });
-
-      // Function to upload avatar file to Supabase Storage and update profile
       async function uploadAvatar(file) {
         try {
           const user = await checkUser();
           if (!user) {
             throw new Error("You must be logged in to upload an avatar");
           }
-
-          // Compress the image if it's large
           let fileToUpload = file;
           if (file.size > 1 * 1024 * 1024) {
-            // If larger than 1MB
             fileToUpload = await compressImage(file);
           }
-
-          // Generate a unique file path for the avatar
           const fileExt = file.name.split(".").pop();
-          const fileName = `avatar-${user.id}.${fileExt}`;
-          const filePath = fileName; // Store directly in bucket root
-
-          // Upload the file to Supabase Storage
+          const fileName = `${user.id}/avatar.${fileExt}`;
+          const filePath = fileName;
+          const {
+            data: { session },
+          } = await window.supabase.auth.getSession();
+          if (!session) {
+            throw new Error(
+              "Authentication session expired. Please log in again."
+            );
+          }
           const { data, error } = await window.supabase.storage
             .from("avatars")
             .upload(filePath, fileToUpload, {
               cacheControl: "3600",
-              upsert: true, // Overwrite any existing file
+              upsert: true,
             });
-
           if (error) {
             console.error("Storage upload error:", error);
             throw new Error(error.message);
           }
-
-          console.log("File uploaded successfully:", data);
-
-          // Get the public URL for the uploaded file
           const { data: publicUrlData } = window.supabase.storage
             .from("avatars")
             .getPublicUrl(filePath);
-
           if (!publicUrlData || !publicUrlData.publicUrl) {
             throw new Error("Failed to generate public URL");
           }
-
           const publicUrl = publicUrlData.publicUrl;
-          console.log("Generated public URL:", publicUrl);
-
-          // Force URL to use HTTPS
           const secureUrl = publicUrl.replace("http:", "https:");
-          console.log("Secure URL being used:", secureUrl);
-
-          // Update the user's profile with the new avatar URL
           await updateAvatar(secureUrl);
-
-          // Update the UI to show the new avatar
           const avatarImg = document.getElementById("profile-avatar");
           avatarImg.onload = function () {
-            // Only show the image once it's successfully loaded
             avatarImg.classList.remove("hidden");
             document
               .getElementById("avatar-placeholder")
               .classList.add("hidden");
           };
-
-          // Add error handler for the image
           avatarImg.onerror = function () {
-            console.error("Failed to load newly uploaded avatar:", secureUrl);
             avatarImg.classList.add("hidden");
             document
               .getElementById("avatar-placeholder")
               .classList.remove("hidden");
           };
-
-          // Set the source after adding handlers
           avatarImg.src = secureUrl;
-
           return secureUrl;
         } catch (error) {
           console.error("Error uploading avatar:", error);
@@ -512,8 +431,6 @@
           throw error;
         }
       }
-
-      // Helper function to compress images before upload
       async function compressImage(file) {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
@@ -525,9 +442,7 @@
               const canvas = document.createElement("canvas");
               let width = img.width;
               let height = img.height;
-
-              // Calculate new dimensions while maintaining aspect ratio
-              const maxDimension = 800; // Max width or height
+              const maxDimension = 800;
               if (width > height) {
                 if (width > maxDimension) {
                   height = Math.round((height * maxDimension) / width);
@@ -539,17 +454,13 @@
                   height = maxDimension;
                 }
               }
-
               canvas.width = width;
               canvas.height = height;
               const ctx = canvas.getContext("2d");
               ctx.drawImage(img, 0, 0, width, height);
-
-              // Convert to blob
               canvas.toBlob(
                 (blob) => {
                   if (blob) {
-                    // Create a new file with the same name
                     resolve(
                       new File([blob], file.name, {
                         type: "image/jpeg",
@@ -561,87 +472,61 @@
                   }
                 },
                 "image/jpeg",
-                0.85 // Use 0.85 quality JPEG
+                0.85
               );
             };
           };
           reader.onerror = (error) => reject(error);
         });
       }
-
-      // Function to load profile data
       async function loadProfileData(user) {
         try {
-          // Get profile information from Supabase
           const { data: profile, error } = await window.supabase
             .from("profiles")
             .select("*")
             .eq("id", user.id)
             .single();
-
           if (error) {
             console.error("Error fetching profile:", error);
             showStatus("error", "Failed to load profile information");
             return;
           }
-
           if (profile) {
-            // Update profile information in the UI
             document.getElementById("profile-username").textContent =
               profile.username || "No Username Set";
             document.getElementById("profile-email").textContent = user.email;
-
             document.getElementById("info-username").textContent =
               profile.username || "Not set";
             document.getElementById("info-email").textContent = user.email;
             document.getElementById("info-role").textContent =
               profile.role || "User";
-
-            // Format date if available
             const createdAt = user.created_at
               ? new Date(user.created_at).toLocaleDateString()
               : "Unknown";
             document.getElementById("info-created").textContent = createdAt;
-
-            // Handle avatar display
             if (profile.avatar_url) {
               const avatarImg = document.getElementById("profile-avatar");
-
-              // Set up handlers before setting src to avoid race conditions
               avatarImg.onload = function () {
-                console.log("Avatar loaded successfully:", profile.avatar_url);
                 avatarImg.classList.remove("hidden");
                 document
                   .getElementById("avatar-placeholder")
                   .classList.add("hidden");
               };
-
               avatarImg.onerror = function () {
-                console.error(
-                  "Failed to load avatar image:",
-                  profile.avatar_url
-                );
                 this.classList.add("hidden");
                 document
                   .getElementById("avatar-placeholder")
                   .classList.remove("hidden");
-
-                // Check if we need to fix the URL (http vs https)
                 if (profile.avatar_url.startsWith("http:")) {
                   const secureUrl = profile.avatar_url.replace(
                     "http:",
                     "https:"
                   );
-                  console.log("Trying secure URL instead:", secureUrl);
-
-                  // Try again with https URL
                   setTimeout(() => {
                     this.src = secureUrl;
                   }, 500);
                 }
               };
-
-              // Force HTTPS for Supabase URLs
               let avatarUrl = profile.avatar_url;
               if (
                 avatarUrl.includes("supabase") &&
@@ -649,11 +534,7 @@
               ) {
                 avatarUrl = avatarUrl.replace("http:", "https:");
               }
-
-              // Set the source after adding handlers
               avatarImg.src = avatarUrl;
-
-              // Store avatar URL for other pages
               window.userAvatarUrl = avatarUrl;
             } else {
               document.getElementById("profile-avatar").classList.add("hidden");
@@ -661,8 +542,6 @@
                 .getElementById("avatar-placeholder")
                 .classList.remove("hidden");
             }
-
-            // Show Hotel Management button for admin/owner roles
             const hotelManagementBtn = document.getElementById(
               "hotel-management-btn"
             );
@@ -677,19 +556,13 @@
           showStatus("error", "An unexpected error occurred");
         }
       }
-
-      // Function to update avatar
       async function updateAvatar(avatarUrl) {
         try {
-          // Get current user
           const user = await checkUser();
-
           if (!user) {
             showStatus("error", "You must be logged in to update your avatar");
             return;
           }
-
-          // Update the profile
           const { error } = await window.supabase
             .from("profiles")
             .update({
@@ -697,38 +570,28 @@
               updated_at: new Date().toISOString(),
             })
             .eq("id", user.id);
-
           if (error) {
             console.error("Error updating avatar:", error);
             showStatus("error", "Failed to update avatar: " + error.message);
             return;
           }
-
-          // Update UI with the new avatar or placeholder
           const avatarImg = document.getElementById("profile-avatar");
           const placeholder = document.getElementById("avatar-placeholder");
-
           if (avatarUrl) {
-            // Set up handlers before setting src
             avatarImg.onload = function () {
               avatarImg.classList.remove("hidden");
               placeholder.classList.add("hidden");
             };
-
             avatarImg.onerror = function () {
-              console.error("Failed to load avatar after update:", avatarUrl);
               this.classList.add("hidden");
               placeholder.classList.remove("hidden");
             };
-
-            // Set the source
             avatarImg.src = avatarUrl;
           } else {
             avatarImg.classList.add("hidden");
             placeholder.classList.remove("hidden");
             placeholder.classList.add("pulse-animation");
           }
-
           showStatus(
             "success",
             avatarUrl
@@ -740,8 +603,6 @@
           showStatus("error", "An unexpected error occurred");
         }
       }
-
-      // Utility function to show status messages
       function showStatus(type, message) {
         const statusElement = document.getElementById("update-status");
         statusElement.classList.remove(
@@ -751,17 +612,13 @@
           "bg-red-100",
           "text-red-800"
         );
-
         if (type === "success") {
           statusElement.classList.add("bg-green-100", "text-green-800");
         } else if (type === "error") {
           statusElement.classList.add("bg-red-100", "text-red-800");
         }
-
         statusElement.textContent = message;
         statusElement.classList.remove("hidden");
-
-        // Hide the message after 3 seconds
         setTimeout(() => {
           statusElement.classList.add("hidden");
         }, 3000);

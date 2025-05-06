@@ -1,8 +1,5 @@
-/* Component styles */
-
 @import "/node_modules/@abdulrysr/saudi-riyal-new-symbol-font/style.css";
 
-/* Scroll buttons */
 .scroll-btn {
   position: absolute;
   top: 50%;
@@ -27,17 +24,14 @@
   transform: translateY(-50%) scale(1.1);
 }
 
-/* Hero section */
 .hero-section {
   height: 90vh;
 }
 
-/* Hero text transitions */
 #hero-text {
   transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 
-/* Hotel card shadow */
 .hotel-container > div {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
   transition: box-shadow 0.2s;
@@ -46,25 +40,22 @@
   box-shadow: rgba(0, 0, 0, 0.35) 0px 8px 24px !important;
 }
 
-/* Add shadow to feature and why-choose-us boxes (no hover) */
 .text-center.p-6.bg-white.rounded-lg.shadow-md,
 .text-center.p-6.bg-white.rounded-lg.shadow-md.hover\:shadow-lg,
 .text-center.p-6.bg-white.rounded-lg.shadow-md.hover\:shadow-lg.transition-shadow {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
 }
 
-/* Rating star */
 .rating-star {
   position: relative;
   z-index: 0;
 }
 
-/* Rating star selected */
 .rating-star.selected {
   color: #000 !important;
 }
 .rating-star.selected::before {
-  content: "\2605"; /* Unicode for filled star */
+  content: "\2605";
   color: #000;
   position: absolute;
   left: 0;
@@ -75,7 +66,7 @@
   display: block;
   z-index: 1;
 }
-/* Converted star-rating styles from Sass to plain CSS */
+
 .rating {
   display: flex;
   flex-direction: row-reverse;
@@ -86,7 +77,6 @@
   margin: 0;
   padding: 0;
   transform: none;
-  /* Align to the left of the parent container */
   margin-left: 0 !important;
   margin-right: auto !important;
 }
@@ -113,7 +103,7 @@
   transition: all 0.4s ease-out;
   -webkit-font-smoothing: antialiased;
   position: absolute;
-  content: "☆"; /* Empty star */
+  content: "☆";
   color: #444;
   top: 0;
   left: 0;
@@ -141,7 +131,7 @@
 
 .rating input:checked + label:after,
 .rating input:checked ~ label:after {
-  content: "★"; /* Filled star */
+  content: "★";
   color: #f9bf3b;
   text-shadow: 0 0 20px #f9bf3b;
 }
@@ -164,7 +154,6 @@ body {
   background-color: #111;
 }
 
-/* Hotel card styles */
 .hotel-card {
   display: flex;
   flex-direction: column;

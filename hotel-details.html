@@ -24,29 +24,28 @@
     <link rel="stylesheet" href="css/custom.css" />
     <link
       rel="stylesheet"
-      href="/node_modules/@abdulrysr/saudi-riyal-new-symbol-font/style.css"
+      href="https://unpkg.com/@abdulrysr/saudi-riyal-new-symbol-font/style.css"
     />
-    <!-- Add flatpickr CSS -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
     />
     <style>
       .bg-light-gray {
-        background-color: #000000; /* Black color */
-        color: #ffffff; /* White text color */
+        background-color: #000000;
+        color: #ffffff;
       }
       .bg-light-gray a {
-        color: #ffffff; /* Ensure links are white */
+        color: #ffffff;
       }
       .bg-light-gray a:hover {
-        color: #cccccc; /* Slightly lighter on hover */
+        color: #cccccc;
       }
       .bg-light-gray h3,
       .bg-light-gray h4,
       .bg-light-gray p,
       .bg-light-gray li {
-        color: #ffffff; /* Ensure all text elements are white */
+        color: #ffffff;
       }
       .hotel-details-container {
         min-height: 70vh;
@@ -57,11 +56,88 @@
         border-radius: 10px;
         padding: 20px;
       }
+      .carousel-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+      }
+      .carousel-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      .carousel-item {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        top: 0;
+        left: 0;
+      }
+      .carousel-item.active {
+        opacity: 1;
+      }
+      .carousel-control {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        z-index: 10;
+      }
+      .carousel-control:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      .carousel-control.prev {
+        left: 10px;
+      }
+      .carousel-control.next {
+        right: 10px;
+      }
+      .carousel-indicators {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+      }
+      .carousel-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+      }
+      .carousel-indicator.active {
+        background-color: white;
+      }
+      .image-count-badge {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        z-index: 5;
+      }
     </style>
   </head>
   <body>
     <div id="root">
-      <!-- Header -->
       <header
         class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white py-3 shadow-md"
       >
@@ -81,8 +157,6 @@
                 Logout
               </button>
             </nav>
-
-            <!-- Mobile Logout Button -->
             <button
               id="mobileLogoutBtn"
               class="md:hidden px-4 py-2 bg-purple-500 text-white rounded-2xl hover:bg-purple-600 transition-all duration-300"
@@ -92,12 +166,9 @@
           </div>
         </div>
       </header>
-
-      <!-- Main Content -->
       <main class="flex-grow">
         <div class="container mx-auto px-4 hotel-details-container">
           <div id="hotel-details" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Hotel details will be loaded dynamically -->
             <div
               class="flex justify-center items-center col-span-1 md:col-span-2"
             >
@@ -106,8 +177,6 @@
           </div>
         </div>
       </main>
-
-      <!-- Footer -->
       <footer class="bg-light-gray pt-6 pb-4 text-sm">
         <div class="container mx-auto px-4">
           <div
@@ -192,36 +261,23 @@
         </div>
       </footer>
     </div>
-
-    <!-- Ensure Supabase is initialized before other scripts -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-      // Initialize Supabase directly in the HTML to ensure it's available
       const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
       const SUPABASE_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
-
-      // Initialize the client properly using window.supabase to avoid the naming conflict
       window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     </script>
     <script src="js/supabase.js"></script>
-    <!-- Load the main script after Supabase is initialized -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
       document.addEventListener("DOMContentLoaded", async function () {
         try {
-          // Force authentication check for hotel details page
-          const user = await checkUser(true); // Require authentication
-
+          const user = await checkUser(true);
           if (!user) {
-            // If not authenticated, the checkUser function will already redirect to login page
             return;
           }
-
-          // Update the login/logout buttons based on authentication status
           updateAuthButtons();
-
-          // Load hotel details
           if (hotelId) {
             loadHotelDetails(hotelId);
           } else {
@@ -239,26 +295,17 @@
           console.error("Error checking user status:", error);
         }
       });
-
-      // Function to update authentication buttons based on login status
       function updateAuthButtons() {
         const logoutBtn = document.getElementById("logoutBtn");
         const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
-
         if (window.isLoggedIn) {
-          // User is logged in - show logout buttons
           logoutBtn.textContent = "Logout";
           mobileLogoutBtn.textContent = "Logout";
-
-          // Add event listeners for logout
           logoutBtn.addEventListener("click", signOut);
           mobileLogoutBtn.addEventListener("click", signOut);
         } else {
-          // User is not logged in - show login buttons
           logoutBtn.textContent = "Login";
           mobileLogoutBtn.textContent = "Login";
-
-          // Add event listeners to redirect to login page
           logoutBtn.addEventListener("click", function () {
             window.location.href = "logindex.html";
           });
@@ -267,22 +314,51 @@
           });
         }
       }
-
-      // Parse URL parameters to get hotel ID
       const urlParams = new URLSearchParams(window.location.search);
       const hotelId = urlParams.get("id");
-
+      async function getHotelMainImage(hotelId) {
+        try {
+          const { data, error } = await window.supabase
+            .from("hotel_images")
+            .select("image_url")
+            .eq("hotel_id", hotelId)
+            .eq("is_main", true)
+            .single();
+          if (error) {
+            console.error("Error fetching main image:", error);
+            return null;
+          }
+          return data?.image_url || null;
+        } catch (error) {
+          console.error("Error in getHotelMainImage function:", error);
+          return null;
+        }
+      }
+      async function getHotelAdditionalImages(hotelId) {
+        try {
+          const { data, error } = await window.supabase
+            .from("hotel_images")
+            .select("image_url")
+            .eq("hotel_id", hotelId)
+            .eq("is_main", false);
+          if (error) {
+            console.error("Error fetching additional images:", error);
+            return [];
+          }
+          return data || [];
+        } catch (error) {
+          console.error("Error in getHotelAdditionalImages function:", error);
+          return [];
+        }
+      }
       async function loadHotelDetails(id) {
         try {
           let hotel = null;
-
-          // Fetch hotel details and ratings from Supabase
           const { data, error } = await window.supabase
             .from("hotel_ratings_view")
             .select("*")
             .eq("id", parseInt(id))
             .single();
-
           if (error) {
             console.error("Error fetching hotel details:", error);
             document.getElementById(
@@ -296,7 +372,6 @@
               </div>`;
             return;
           }
-
           if (data) {
             hotel = {
               ...data,
@@ -304,17 +379,13 @@
               totalRatings: data.total_ratings || 0,
             };
           } else {
-            // Fallback to sample data if needed
             console.log("Using sample data instead");
             hotel = window.sampleHotels.find((h) => h.id === parseInt(id));
-
             if (hotel && !hotel.rating) {
               hotel.rating = 4.5;
             }
-
             hotel.totalRatings = 0;
           }
-
           if (!hotel) {
             document.getElementById(
               "hotel-details"
@@ -327,22 +398,26 @@
               </div>`;
             return;
           }
-
-          // Create star rating HTML
+          const mainImageUrl = await getHotelMainImage(hotel.id);
+          const additionalImages = await window.getHotelAdditionalImages(
+            hotel.id
+          );
+          const allImages = [
+            {
+              id: "main",
+              image_url: mainImageUrl || "media/placeholder-hotel.jpg",
+            },
+            ...additionalImages,
+          ];
           const fullStars = Math.floor(hotel.rating);
           const hasHalfStar = hotel.rating % 1 >= 0.5;
           const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-
           let starsHtml = "";
-
-          // Full stars
           for (let i = 0; i < fullStars; i++) {
             starsHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-500">
               <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
             </svg>`;
           }
-
-          // Half star if needed
           if (hasHalfStar) {
             starsHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="text-yellow-500">
               <defs>
@@ -354,26 +429,51 @@
               <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="url(#half-${hotel.rating})"/>
             </svg>`;
           }
-
-          // Empty stars
           for (let i = 0; i < emptyStars; i++) {
             starsHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#CBD5E0" class="text-gray-300">
               <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
             </svg>`;
           }
-
-          // Use the image URL from the hotel object, or a default if not available
-          const imageUrl =
-            hotel.image ||
-            "https://placehold.co/600x400?text=No+Image+Available";
-
-          // Populate the hotel details
           document.getElementById("hotel-details").innerHTML = `
             <div class="md:col-span-1">
               <div class="rounded-xl overflow-hidden shadow-lg">
-                <img src="${imageUrl}" alt="${
-            hotel.name
-          }" class="w-full h-80 object-cover">
+                <div class="carousel-container h-80">
+                  <div class="carousel-inner">
+                    ${allImages
+                      .map(
+                        (img, index) => `
+                      <div class="carousel-item ${index === 0 ? "active" : ""}">
+                        <img src="${img.image_url}" alt="${
+                          hotel.name
+                        } - Image ${
+                          index + 1
+                        }" class="w-full h-80 object-cover">
+                      </div>
+                    `
+                      )
+                      .join("")}
+                  </div>
+                  ${
+                    allImages.length > 1
+                      ? `
+                    <button class="carousel-control prev" aria-label="Previous image">&lt;</button>
+                    <button class="carousel-control next" aria-label="Next image">&gt;</button>
+                    <div class="carousel-indicators">
+                      ${allImages
+                        .map(
+                          (_, index) => `
+                        <div class="carousel-indicator ${
+                          index === 0 ? "active" : ""
+                        }" data-index="${index}"></div>
+                      `
+                        )
+                        .join("")}
+                    </div>
+                  `
+                      : ""
+                  }
+                  <div class="image-count-badge">1/${allImages.length}</div>
+                </div>
               </div>
             </div>
             <div class="md:col-span-1">
@@ -398,7 +498,6 @@
                 </svg>
                 <span>${hotel.location}</span>
               </div>
-              
               <div class="booking-section mt-4">
                 <h3 class="text-xl font-semibold text-gray-800 mb-4">Book Your Stay</h3>
                 <div class="flex flex-col gap-2 mb-4">
@@ -442,23 +541,19 @@
                 </div>
               </div>
             </div>
-            
             <div class="md:col-span-2 mt-8">
               <h2 class="text-2xl font-semibold text-gray-800 mb-4">Hotel Description</h2>
               <p class="text-gray-600 mb-6">
-                Experience luxury and comfort at ${
-                  hotel.name
-                }. Our prime location in ${hotel.location} 
+                ${
+                  hotel.description ||
+                  `Experience luxury and comfort at ${hotel.name}. Our prime location in ${hotel.location} 
                 offers easy access to local attractions and business centers. Enjoy our world-class 
-                amenities including a swimming pool, fitness center, spa, and gourmet restaurants.
+                amenities including a swimming pool, fitness center, spa, and gourmet restaurants.`
+                }
               </p>
-              
-              <!-- Compact Feedback Form -->
               <div class="mb-6 p-5 bg-gray-50 rounded-lg shadow-sm">
                 <h3 class="text-xl font-semibold text-gray-800 mb-3">Rate & Review</h3>
-                
                 <div class="space-y-4">
-                  <!-- Combined Rating and Comment in one form -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Your Rating</label>
                     <div class="flex gap-1 mb-3" id="ratingStarsContainer">
@@ -469,10 +564,8 @@
                       <i class="bx bxs-star text-2xl text-gray-300 rating-star cursor-pointer hover:text-amber-500" data-value="5"></i>
                     </div>
                     <input type="hidden" id="ratingValue">
-                    
                     <label class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
                     <textarea id="commentText" rows="2" placeholder="Tell us about your stay..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 resize-none"></textarea>
-                    
                     <div class="mt-3 flex items-center justify-between">
                       <p id="combinedMessage" class="text-sm"></p>
                       <button id="submitFeedbackBtn" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
@@ -480,12 +573,9 @@
                       </button>
                     </div>
                   </div>
-                  
-                  <!-- Hidden containers for existing feedback -->
                   <div id="existingFeedback" class="hidden"></div>
                 </div>
               </div>
-              
               <h3 class="text-xl font-semibold text-gray-800 mb-3">Amenities</h3>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
                 <div class="flex items-center">
@@ -521,12 +611,9 @@
                   <span>Air Conditioning</span>
                 </div>
               </div>
-
-              <!-- Guest Reviews Section -->
               <div class="mt-10">
                 <h3 class="text-xl font-semibold text-gray-800 mb-5">Guest Reviews</h3>
                 <div id="reviewsContainer" class="space-y-4">
-                  <!-- Reviews will be loaded here -->
                   <div class="animate-pulse text-center py-6 text-gray-500">
                     Loading reviews...
                   </div>
@@ -534,8 +621,27 @@
               </div>
             </div>
           `;
-
-          // Add event listener to the Book Now button
+          setupImageCarousel();
+          setTimeout(() => {
+            if (document.getElementById("checkin")) {
+              const checkinPicker = flatpickr("#checkin", {
+                dateFormat: "Y-m-d",
+                minDate: "today",
+                onChange: function (selectedDates, dateStr) {
+                  if (checkoutPicker) {
+                    checkoutPicker.set("minDate", dateStr);
+                  }
+                },
+              });
+              const checkoutPicker = flatpickr("#checkout", {
+                dateFormat: "Y-m-d",
+                minDate: "today",
+              });
+              console.log("Calendar initialized successfully");
+            } else {
+              console.error("Check-in element not found");
+            }
+          }, 100);
           document
             .getElementById("bookNowBtn")
             .addEventListener("click", function () {
@@ -544,11 +650,7 @@
                   hotel.name
               );
             });
-
-          // Setup the combined rating and comment system
           setupRatingSystem();
-
-          // Load hotel reviews with user names and avatars
           loadHotelReviews();
         } catch (error) {
           console.error("Error loading hotel details:", error);
@@ -563,109 +665,48 @@
             </div>`;
         }
       }
-
-      // Update: Render stars for rating section in the same style as index
-      function renderRatingStars(rating) {
-        if (!window.generateStarRating) return "";
-        return window.generateStarRating(rating);
-      }
-
-      function setupRatingSection() {
-        const ratingStarsContainer = document.getElementById("ratingStars");
-        // Check if element exists before attempting to use it
-        if (!ratingStarsContainer) {
-          console.warn("Rating stars container not found in the DOM");
-          return;
+      function setupImageCarousel() {
+        const carouselContainer = document.querySelector(".carousel-container");
+        const carouselItems = document.querySelectorAll(".carousel-item");
+        const prevButton = document.querySelector(".carousel-control.prev");
+        const nextButton = document.querySelector(".carousel-control.next");
+        const indicators = document.querySelectorAll(".carousel-indicator");
+        const imageCountBadge = document.querySelector(".image-count-badge");
+        let currentIndex = 0;
+        function updateCarousel() {
+          carouselItems.forEach((item, index) => {
+            item.classList.toggle("active", index === currentIndex);
+          });
+          indicators.forEach((indicator, index) => {
+            indicator.classList.toggle("active", index === currentIndex);
+          });
+          if (imageCountBadge) {
+            imageCountBadge.textContent = `${currentIndex + 1}/${
+              carouselItems.length
+            }`;
+          }
         }
-
-        const submitRatingBtn = document.getElementById("submitRatingBtn");
-        let selectedRating = 0;
-
-        // Render 5 clickable stars
-        ratingStarsContainer.innerHTML = "";
-        for (let i = 1; i <= 5; i++) {
-          const star = document.createElement("i");
-          star.className =
-            "bx bx-star text-3xl text-gray-300 rating-star cursor-pointer hover:text-yellow-500";
-          star.dataset.value = i;
-          star.addEventListener("mouseenter", () => {
-            for (let j = 0; j < 5; j++) {
-              ratingStarsContainer.children[j].classList.toggle(
-                "text-amber-500",
-                j < i
-              );
-              ratingStarsContainer.children[j].classList.toggle(
-                "text-gray-300",
-                j >= i
-              );
-            }
+        if (prevButton) {
+          prevButton.addEventListener("click", () => {
+            currentIndex =
+              (currentIndex - 1 + carouselItems.length) % carouselItems.length;
+            updateCarousel();
           });
-          star.addEventListener("mouseleave", () => {
-            for (let j = 0; j < 5; j++) {
-              ratingStarsContainer.children[j].classList.toggle(
-                "text-amber-500",
-                j < selectedRating
-              );
-              ratingStarsContainer.children[j].classList.toggle(
-                "text-gray-300",
-                j >= selectedRating
-              );
-            }
-          });
-          star.addEventListener("click", () => {
-            selectedRating = i;
-            submitRatingBtn.disabled = false;
-            for (let j = 0; j < 5; j++) {
-              ratingStarsContainer.children[j].classList.toggle(
-                "text-amber-500",
-                j < selectedRating
-              );
-              ratingStarsContainer.children[j].classList.toggle(
-                "text-gray-300",
-                j >= selectedRating
-              );
-            }
-          });
-          ratingStarsContainer.appendChild(star);
         }
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        setupRatingSection();
-      });
-
-      // Restore interactive star rating logic for 'Rate This Hotel'
-      document.addEventListener("DOMContentLoaded", function () {
-        const ratingStars = document.querySelectorAll(".rating-star");
-        const ratingValue = document.getElementById("ratingValue");
-        const submitRatingBtn = document.getElementById("submitRatingBtn");
-        let selectedRating = 0;
-        ratingStars.forEach((star, idx) => {
-          star.addEventListener("mouseenter", () => {
-            ratingStars.forEach((s, i) => {
-              s.classList.toggle("text-amber-500", i <= idx);
-              s.classList.toggle("text-gray-300", i > idx);
-            });
+        if (nextButton) {
+          nextButton.addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % carouselItems.length;
+            updateCarousel();
           });
-          star.addEventListener("mouseleave", () => {
-            ratingStars.forEach((s, i) => {
-              s.classList.toggle("text-amber-500", i < selectedRating);
-              s.classList.toggle("text-gray-300", i >= selectedRating);
-            });
-          });
-          star.addEventListener("click", () => {
-            selectedRating = idx + 1;
-            ratingValue.textContent = selectedRating;
-            submitRatingBtn.disabled = false;
-            ratingStars.forEach((s, i) => {
-              s.classList.toggle("text-amber-500", i < selectedRating);
-              s.classList.toggle("text-gray-300", i >= selectedRating);
-            });
+        }
+        indicators.forEach((indicator, index) => {
+          indicator.addEventListener("click", () => {
+            currentIndex = index;
+            updateCarousel();
           });
         });
-      });
-
-      // Combined rating and comment system implementation
+        updateCarousel();
+      }
       async function setupRatingSystem() {
         const stars = document.querySelectorAll(
           "#ratingStarsContainer .rating-star"
@@ -673,13 +714,11 @@
         const submitBtn = document.getElementById("submitFeedbackBtn");
         const combinedMessage = document.getElementById("combinedMessage");
         const commentInput = document.getElementById("commentText");
+        const ratingValueInput = document.getElementById("ratingValue");
         const existingFeedback = document.getElementById("existingFeedback");
-
         let selectedRating = 0;
         let hasRated = false;
         let hasCommented = false;
-
-        // Check if user has already rated/commented on this hotel
         try {
           const user = await checkUser();
           if (!user) {
@@ -691,199 +730,132 @@
             combinedMessage.className = "text-sm text-red-600";
             return;
           }
-
-          // Get user's rating for this hotel
-          // Fixed query structure to prevent 406 error by using a proper select statement
           const { data, error } = await window.supabase
             .from("ratings")
             .select("id, rating, comment, created_at")
             .eq("user_id", user.id)
             .eq("hotel_id", parseInt(hotelId))
-            .maybeSingle();
-
+            .limit(1);
           if (error) {
             console.error("Error checking existing rating:", error);
             combinedMessage.textContent = "Error checking your rating status";
             combinedMessage.className = "text-sm text-red-600";
             return;
           }
-
-          if (data) {
-            // User has already rated this hotel
-            selectedRating = data.rating;
+          if (data && data.length > 0) {
+            const ratingData = data[0];
+            selectedRating = ratingData.rating;
             hasRated = true;
-
-            // Update the star display to show their rating
-            updateStarDisplay(selectedRating);
-
-            // Check if they've also commented
-            if (data.comment) {
+            ratingValueInput.value = selectedRating;
+            stars.forEach((star, i) => {
+              star.classList.toggle("text-amber-500", i < selectedRating);
+              star.classList.toggle("text-gray-300", i >= selectedRating);
+            });
+            if (ratingData.comment) {
               hasCommented = true;
-              commentInput.value = data.comment;
-
-              // Removing "You can update your feedback below" message
-              combinedMessage.textContent = "";
-            }
-
-            // Update button state
-            submitBtn.disabled = false;
-            submitBtn.textContent = hasCommented
-              ? "Update Feedback"
-              : "Submit Feedback";
-          }
-        } catch (err) {
-          console.error("Error in setupRatingSystem:", err);
-          combinedMessage.textContent = "Error setting up rating system";
-          combinedMessage.className = "text-sm text-red-600";
-        }
-
-        // Function to update the visual display of stars
-        function updateStarDisplay(rating) {
-          stars.forEach((star, index) => {
-            star.classList.toggle("text-amber-500", index < rating);
-            star.classList.toggle("text-gray-300", index >= rating);
-          });
-        }
-
-        // Add event listeners to stars
-        stars.forEach((star, index) => {
-          star.addEventListener("mouseenter", () => {
-            updateStarDisplay(index + 1);
-          });
-
-          star.addEventListener("mouseleave", () => {
-            updateStarDisplay(selectedRating);
-          });
-
-          star.addEventListener("click", () => {
-            selectedRating = index + 1;
-            updateStarDisplay(selectedRating);
-            submitBtn.disabled = false;
-          });
-        });
-
-        // Handle submit button click
-        submitBtn.addEventListener("click", async () => {
-          const comment = commentInput.value.trim();
-
-          if (!selectedRating) {
-            combinedMessage.textContent = "Please select a rating first";
-            combinedMessage.className = "text-sm text-red-600";
-            return;
-          }
-
-          if (!comment) {
-            combinedMessage.textContent = "Please write a comment";
-            combinedMessage.className = "text-sm text-red-600";
-            return;
-          }
-
-          // Disable button and show loading message
-          submitBtn.disabled = true;
-          combinedMessage.textContent = hasRated
-            ? "Updating your feedback..."
-            : "Submitting your feedback...";
-          combinedMessage.className = "text-sm text-gray-600";
-
-          try {
-            const user = await checkUser();
-            if (!user) {
-              combinedMessage.textContent = "You must be logged in";
-              combinedMessage.className = "text-sm text-red-600";
+              commentInput.value = ratingData.comment;
+              commentInput.disabled = false;
               submitBtn.disabled = false;
+              combinedMessage.textContent =
+                "You can update your feedback if you'd like";
+              combinedMessage.className = "text-sm text-blue-600";
+            } else {
+              combinedMessage.textContent =
+                "You've rated this hotel. Add a comment if you'd like";
+              combinedMessage.className = "text-sm text-blue-600";
+            }
+          }
+          stars.forEach((star, idx) => {
+            const starValue = parseInt(star.getAttribute("data-value"));
+            star.addEventListener("mouseenter", () => {
+              stars.forEach((s, i) => {
+                s.classList.toggle("text-amber-500", i < starValue);
+                s.classList.toggle("text-gray-300", i >= starValue);
+              });
+            });
+            star.addEventListener("mouseleave", () => {
+              stars.forEach((s, i) => {
+                s.classList.toggle("text-amber-500", i < selectedRating);
+                s.classList.toggle("text-gray-300", i >= selectedRating);
+              });
+            });
+            star.addEventListener("click", () => {
+              selectedRating = starValue;
+              ratingValueInput.value = selectedRating;
+              submitBtn.disabled = false;
+              stars.forEach((s, i) => {
+                s.classList.toggle("text-amber-500", i < selectedRating);
+                s.classList.toggle("text-gray-300", i >= selectedRating);
+              });
+              combinedMessage.textContent = "";
+              combinedMessage.className = "text-sm text-blue-600";
+              console.log("Star clicked, rating set to:", selectedRating);
+            });
+          });
+          submitBtn.addEventListener("click", async () => {
+            const rating = parseInt(ratingValueInput.value) || 0;
+            const comment = commentInput.value.trim();
+            console.log("Submitting rating:", rating);
+            console.log("Submitting comment:", comment);
+            if (rating === 0 && comment === "") {
+              combinedMessage.textContent =
+                "Please rate and/or comment before submitting";
+              combinedMessage.className = "text-sm text-red-600";
               return;
             }
-
-            let result;
-
-            if (hasRated) {
-              // Update existing rating and comment using the correct filter pattern
-              const { error } = await window.supabase
-                .from("ratings")
-                .update({
-                  rating: selectedRating,
-                  comment: comment,
-                })
-                .eq("user_id", user.id)
-                .eq("hotel_id", parseInt(hotelId));
-
-              if (error) {
-                throw error;
+            submitBtn.disabled = true;
+            stars.forEach((star) => star.classList.add("pointer-events-none"));
+            commentInput.disabled = true;
+            combinedMessage.textContent = "Submitting your feedback...";
+            combinedMessage.className = "text-sm text-blue-600";
+            try {
+              let result;
+              if (comment) {
+                result = await window.submitComment(hotelId, comment, rating);
+              } else {
+                result = await window.submitHotelRating(hotelId, rating);
               }
-
-              result = {
-                success: true,
-                message: "Your feedback has been updated!",
-              };
-            } else {
-              // Insert new rating with comment
-              const { error } = await window.supabase.from("ratings").insert({
-                user_id: user.id,
-                hotel_id: parseInt(hotelId),
-                rating: selectedRating,
-                comment: comment,
-              });
-
-              if (error) {
-                throw error;
+              if (result.success) {
+                combinedMessage.textContent = result.message;
+                combinedMessage.className = "text-sm text-green-600";
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1500);
+              } else {
+                combinedMessage.textContent = result.message;
+                combinedMessage.className = "text-sm text-red-600";
+                submitBtn.disabled = false;
+                stars.forEach((star) =>
+                  star.classList.remove("pointer-events-none")
+                );
+                commentInput.disabled = false;
               }
-
-              result = {
-                success: true,
-                message: "Thank you for your feedback!",
-              };
+            } catch (error) {
+              console.error("Error submitting feedback:", error);
+              combinedMessage.textContent =
+                "An error occurred while submitting your feedback";
+              combinedMessage.className = "text-sm text-red-600";
+              submitBtn.disabled = false;
+              stars.forEach((star) =>
+                star.classList.remove("pointer-events-none")
+              );
+              commentInput.disabled = false;
             }
-
-            if (result.success) {
-              combinedMessage.textContent = result.message;
-              combinedMessage.className = "text-sm text-green-600";
-
-              // Reload the page after 2 seconds to show updated ratings
-              setTimeout(() => {
-                window.location.reload();
-              }, 2000);
-            }
-          } catch (error) {
-            console.error("Error submitting feedback:", error);
-            combinedMessage.textContent =
-              "Error submitting feedback. Please try again.";
-            combinedMessage.className = "text-sm text-red-600";
-            submitBtn.disabled = false;
-          }
-        });
+          });
+        } catch (error) {
+          console.error("Error in setupRatingSystem:", error);
+        }
       }
-
-      // Helper function to escape HTML and prevent XSS
-      function escapeHTML(str) {
-        if (!str) return "";
-        return str
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#039;");
-      }
-
-      // Function to load hotel reviews with user info
       async function loadHotelReviews() {
-        const reviewsContainer = document.getElementById("reviewsContainer");
-        if (!reviewsContainer) return;
-
         try {
-          // Get all ratings with comments for this hotel
-          const { data: ratings, error: ratingsError } = await window.supabase
-            .from("ratings")
-            .select("*, profiles:user_id(username, avatar_url)")
-            .eq("hotel_id", parseInt(hotelId))
-            .not("comment", "is", null)
-            .order("created_at", { ascending: false });
-
-          if (ratingsError) {
-            throw ratingsError;
+          const comments = await window.fetchHotelComments(hotelId);
+          const reviewsContainer = document.getElementById("reviewsContainer");
+          if (!reviewsContainer) {
+            console.error("Reviews container not found");
+            return;
           }
-
-          // If no reviews found
-          if (!ratings || ratings.length === 0) {
+          reviewsContainer.innerHTML = "";
+          if (comments.length === 0) {
             reviewsContainer.innerHTML = `
               <div class="text-center py-6">
                 <p class="text-gray-500">No reviews yet. Be the first to leave a review!</p>
@@ -891,81 +863,80 @@
             `;
             return;
           }
-
-          // Clear the container
-          reviewsContainer.innerHTML = "";
-
-          // Add each review to the container
-          for (const review of ratings) {
-            const formattedDate = new Date(
-              review.created_at
-            ).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            });
-
-            // Get username and avatar
-            const username = review.profiles?.username || "Anonymous User";
-            const avatarUrl =
-              review.profiles?.avatar_url ||
-              "https://ui-avatars.com/api/?name=" +
-                encodeURIComponent(username.charAt(0)) +
-                "&background=random";
-
-            // Create stars for the rating
-            const stars = Array.from(
-              { length: 5 },
-              (_, i) =>
-                `<i class="bx ${
-                  i < review.rating
-                    ? "bxs-star text-amber-500"
-                    : "bx-star text-gray-300"
-                }"></i>`
-            ).join("");
-
-            // Create review element
-            const reviewElement = document.createElement("div");
-            reviewElement.className =
-              "bg-white p-4 rounded-lg shadow-sm border border-gray-100";
-            reviewElement.innerHTML = `
-              <div class="flex items-start">
-                <div class="flex-shrink-0 mr-4">
-                  <img src="${escapeHTML(avatarUrl)}" alt="${escapeHTML(
-              username
-            )}" class="w-12 h-12 rounded-full object-cover">
-                </div>
-                <div class="flex-1">
-                  <div class="flex justify-between items-center mb-1">
-                    <h4 class="text-md font-medium text-gray-800">${escapeHTML(
-                      username
-                    )}</h4>
-                    <span class="text-xs text-gray-500">${formattedDate}</span>
+          const reviewElements = [];
+          for (const comment of comments) {
+            try {
+              const profile = await window.getUserProfile(comment.user_id);
+              const commentDate = new Date(comment.created_at);
+              const formattedDate = `${commentDate.toLocaleDateString()} at ${commentDate.toLocaleTimeString(
+                [],
+                { hour: "2-digit", minute: "2-digit" }
+              )}`;
+              const reviewElement = document.createElement("div");
+              reviewElement.className = "bg-white rounded-lg p-5 shadow-sm";
+              reviewElement.innerHTML = `
+                <div class="flex items-start">
+                  <div class="mr-4">
+                    ${
+                      profile && profile.avatar_url
+                        ? `<img src="${profile.avatar_url}" alt="${
+                            profile.username || "User"
+                          }" class="w-12 h-12 rounded-full object-cover">`
+                        : `<div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-lg font-semibold">
+                        ${
+                          profile && profile.username
+                            ? profile.username.substring(0, 1).toUpperCase()
+                            : "G"
+                        }
+                      </div>`
+                    }
                   </div>
-                  <div class="flex items-center mb-2">
-                    ${stars}
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                      <h4 class="font-semibold text-gray-800">${
+                        profile ? profile.username || "Anonymous User" : "Guest"
+                      }</h4>
+                      <div class="flex items-center">
+                        <span class="text-amber-500 mr-1">${comment.rating.toFixed(
+                          1
+                        )}</span>
+                        <div class="flex">
+                          ${Array.from(
+                            { length: 5 },
+                            (_, i) =>
+                              `<i class="bx ${
+                                i < comment.rating
+                                  ? "bxs-star text-amber-500"
+                                  : "bx-star text-gray-300"
+                              } text-sm"></i>`
+                          ).join("")}
+                        </div>
+                      </div>
+                    </div>
+                    <p class="text-gray-600 mb-2">${comment.comment}</p>
+                    <p class="text-xs text-gray-400">${formattedDate}</p>
                   </div>
-                  <p class="text-gray-600">${escapeHTML(review.comment)}</p>
                 </div>
+              `;
+              reviewElements.push(reviewElement);
+            } catch (error) {
+              console.error("Error processing comment:", error);
+            }
+          }
+          reviewElements.forEach((element) => {
+            reviewsContainer.appendChild(element);
+          });
+        } catch (error) {
+          console.error("Error loading hotel reviews:", error);
+          const reviewsContainer = document.getElementById("reviewsContainer");
+          if (reviewsContainer) {
+            reviewsContainer.innerHTML = `
+              <div class="text-center py-6">
+                <p class="text-red-500">Error loading reviews. Please try again later.</p>
               </div>
             `;
-
-            reviewsContainer.appendChild(reviewElement);
           }
-        } catch (error) {
-          console.error("Error loading reviews:", error);
-          reviewsContainer.innerHTML = `
-            <div class="text-center py-4">
-              <p class="text-red-500">Error loading reviews. Please try again later.</p>
-            </div>
-          `;
         }
-      }
-
-      // Function to display existing feedback - now emptied to hide the section
-      function showExistingFeedback(data) {
-        // Don't show any existing feedback UI
-        return;
       }
     </script>
   </body>
