@@ -1,4 +1,4 @@
-@import "/node_modules/@abdulrysr/saudi-riyal-new-symbol-font/style.css";
+@import "https://unpkg.com/@abdulrysr/saudi-riyal-new-symbol-font/style.css";
 
 .scroll-btn {
   position: absolute;
