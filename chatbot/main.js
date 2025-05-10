@@ -80,7 +80,7 @@ const sendChatBtn = document.querySelector(".chat-input span");
 const API_KEY = "AIzaSyAVq3tymFF_-9u72nnZy8uWYCi4_70zJ28";
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-pro",
+  model: "gemini-1.5-flash",
   systemInstruction: businessInfo,
 });
 
