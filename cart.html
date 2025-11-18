@@ -226,6 +226,15 @@
           </div>
         </div>
 
+        <!-- Preparing Orders -->
+        <div id="preparingOrdersSection" class="mt-8 bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-4">Preparing Orders</h2>
+          <div id="preparingOrders" class="space-y-2">
+            <!-- Preparing orders will be loaded here -->
+            <p class="text-gray-500 text-center py-4">No preparing orders</p>
+          </div>
+        </div>
+
         <!-- Order History -->
         <div class="mt-8 bg-white rounded-lg shadow-md p-6">
           <h2 class="text-xl font-bold text-gray-800 mb-4">Order History</h2>
@@ -637,34 +646,80 @@
             return;
           }
 
+          const statusColors = {
+            'pending': 'bg-yellow-100 text-yellow-800',
+            'confirmed': 'bg-blue-100 text-blue-800',
+            'preparing': 'bg-orange-500 text-white font-bold',
+            'ready': 'bg-green-100 text-green-800',
+            'completed': 'bg-green-500 text-white font-bold',
+            'cancelled': 'bg-red-100 text-red-800'
+          };
+
+          // Separate preparing orders from history orders
+          const preparingOrders = orders?.filter(o => o.status === 'preparing') || [];
+          const historyOrders = orders?.filter(o => o.status !== 'preparing') || [];
+
+          // Handle Preparing Orders section
+          const preparingDiv = document.getElementById("preparingOrders");
+          
+          if (preparingOrders.length > 0) {
+            let preparingHtml = '';
+            preparingOrders.forEach(order => {
+              const date = new Date(order.created_at).toLocaleDateString();
+              const orderNumber = generateOrderNumber(order.id);
+              const parkingNumber = order.parking_lots?.spot_number || "—";
+              
+              let statusStyle = '';
+              if (order.status === 'preparing') {
+                statusStyle = 'style="background-color: #f97316; color: white;"';
+              } else if (order.status === 'completed') {
+                statusStyle = 'style="background-color: #22c55e; color: white;"';
+              }
+              
+              preparingHtml += `
+                <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
+                  <div class="flex-1">
+                    <p class="text-gray-800"><strong>Order #${orderNumber}</strong> • ${date}</p>
+                  </div>
+                  <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold" ${statusStyle}>
+                    ${order.status}
+                  </span>
+                  <div class="w-20 text-right text-gray-700 text-sm font-semibold">Lot: ${parkingNumber}</div>
+                </div>
+              `;
+            });
+            preparingDiv.innerHTML = preparingHtml;
+          } else {
+            preparingDiv.innerHTML = '<p class="text-gray-500 text-center py-4">No preparing orders</p>';
+          }
+
+          // Handle Order History section
           const orderHistoryDiv = document.getElementById("orderHistory");
           
-          if (!orders || orders.length === 0) {
+          if (!historyOrders || historyOrders.length === 0) {
             orderHistoryDiv.innerHTML = '<p class="text-gray-500 text-center py-4">No orders yet</p>';
             return;
           }
 
           let html = '';
-          orders.forEach(order => {
+          historyOrders.forEach(order => {
             const date = new Date(order.created_at).toLocaleDateString();
             const orderNumber = generateOrderNumber(order.id);
             const parkingNumber = order.parking_lots?.spot_number || "—";
-            const statusColors = {
-              'pending': 'bg-yellow-100 text-yellow-800',
-              'confirmed': 'bg-blue-100 text-blue-800',
-              'preparing': 'bg-orange-100 text-orange-800',
-              'ready': 'bg-green-100 text-green-800',
-              'completed': 'bg-emerald-100 text-emerald-800',
-              'cancelled': 'bg-red-100 text-red-800'
-            };
-            const colorClass = statusColors[order.status] || 'bg-gray-100 text-gray-800';
+            
+            let statusStyle = '';
+            if (order.status === 'preparing') {
+              statusStyle = 'style="background-color: #f97316; color: white;"';
+            } else if (order.status === 'completed') {
+              statusStyle = 'style="background-color: #22c55e; color: white;"';
+            }
             
             html += `
               <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
                 <div class="flex-1">
                   <p class="text-gray-800"><strong>Order #${orderNumber}</strong> • ${date}</p>
                 </div>
-                <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold ${colorClass}">
+                <span class="inline-block px-3 py-1 rounded-full text-sm font-semibold" ${statusStyle}>
                   ${order.status}
                 </span>
                 <div class="w-20 text-right text-gray-700 text-sm font-semibold">Lot: ${parkingNumber}</div>
