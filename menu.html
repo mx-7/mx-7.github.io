@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu - Lafa Restaurant</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link
+      rel="stylesheet"
+      href="/node_modules/@abdulrysr/saudi-riyal-new-symbol-font/style.css"
+    />
+    <style>
+      .avatar-button img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: none;
+      }
+      .avatar-button img:not([src=""]) {
+        display: block;
+      }
+      .avatar-button i {
+        font-size: 1.2rem;
+        color: #6b7280;
+        position: relative;
+        z-index: 10;
+      }
+      .menu-container {
+        min-height: calc(100vh - 72px);
+        padding-top: 100px;
+      }
+      .dish-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+      }
+      .dish-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      }
+      .dish-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        background-color: #f0f0f0;
+      }
+      .dish-info {
+        padding: 16px;
+      }
+      .dish-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+      }
+      .dish-price {
+        font-size: 24px;
+        font-weight: 700;
+        color: #8b5cf6;
+        margin-bottom: 8px;
+      }
+      .dish-location {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 12px;
+      }
+      .view-details-btn {
+        width: 100%;
+        padding: 10px;
+        background-color: #8b5cf6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .view-details-btn:hover {
+        background-color: #7c3aed;
+      }
+      .stars-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .stars-container svg {
+        width: 18px;
+        height: 18px;
+      }
+      .rating-value {
+        font-weight: 600;
+        color: #f59e0b;
+      }
+      .rating-count {
+        font-size: 12px;
+        color: #666;
+      }
+      .filter-container {
+        position: relative;
+        display: inline-block;
+      }
+      .filter-btn {
+        background-color: #8b5cf6;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .filter-btn:hover {
+        background-color: #7c3aed;
+      }
+      .filter-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 100;
+        min-width: 160px;
+        margin-top: 8px;
+        display: none;
+      }
+      .filter-dropdown.show {
+        display: block;
+      }
+      .filter-option {
+        padding: 12px 16px;
+        cursor: pointer;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background-color 0.2s;
+        font-size: 14px;
+        color: #333;
+      }
+      .filter-option:last-child {
+        border-bottom: none;
+      }
+      .filter-option:hover {
+        background-color: #f3f4f6;
+      }
+      .filter-option.active {
+        background-color: #ede9fe;
+        color: #8b5cf6;
+        font-weight: 600;
+      }
+      #avatar-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #mobile-avatar-container {
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      @media (max-width: 767px) {
+        #mobile-avatar-container {
+          display: flex;
+          margin-left: 1rem;
+        }
+      }
+      .avatar-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background-color: #e5e7eb;
+        overflow: hidden;
+        position: relative;
+        border: 2px solid #8b5cf6;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .avatar-button:hover {
+        transform: scale(1.1);
+      }
+      .avatar-button img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <header
+        class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-3"
+      >
+        <div class="container mx-auto px-4">
+          <div class="flex items-center justify-between">
+            <a
+              href="index.html"
+              style="color: rgba(139, 92, 246)"
+              class="text-2xl md:text-3xl font-bold hover:opacity-80 transition-colors px-2"
+            >
+              lafa restaurant
+            </a>
+            <nav class="hidden md:flex items-center space-x-4">
+              <div id="avatar-container"></div>
+              <a
+                href="cart.html"
+                class="text-purple-500 hover:text-purple-700 transition-colors text-2xl relative"
+              >
+                <i class="bx bx-shopping-bag"></i>
+                <span id="cartNotification" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+              </a>
+              <button
+                id="logoutBtn"
+                class="px-5 py-2 rounded-2xl bg-purple-500 text-white hover:bg-purple-600 transition-all duration-300"
+              >
+                Logout
+              </button>
+            </nav>
+            <div class="md:hidden flex items-center space-x-2">
+              <div id="mobile-avatar-container"></div>
+              <a
+                href="cart.html"
+                class="text-purple-500 hover:text-purple-700 transition-colors text-2xl relative"
+              >
+                <i class="bx bx-shopping-bag"></i>
+                <span id="mobileCartNotification" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+              </a>
+              <button
+                id="mobileLogoutBtn"
+                class="px-4 py-2 bg-purple-500 text-white rounded-2xl hover:bg-purple-600 transition-all duration-300"
+              >
+                Logout
+              </button>
+            </div>
+        </div>
+      </header>
+
+      <main class="menu-container">
+        <div class="container mx-auto px-4">
+          <div class="flex justify-between items-center mb-2">
+            <h1 class="text-4xl font-bold text-gray-800">Our Menu</h1>
+            <div class="filter-container">
+              <button class="filter-btn" id="filterBtn">
+                <i class="bx bx-filter-alt"></i>
+                <span>Filter</span>
+              </button>
+              <div class="filter-dropdown" id="filterDropdown">
+                <div class="filter-option" data-sort="price">Price: Low to High</div>
+                <div class="filter-option" data-sort="price-desc">Price: High to Low</div>
+                <div class="filter-option" data-sort="rating">Rating: High to Low</div>
+                <div class="filter-option" data-sort="new">Newest First</div>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-8">Browse all our delicious dishes</p>
+
+          <div id="loading-container" class="flex justify-center items-center py-16 w-full">
+            <div class="text-center">
+              <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-700"></div>
+              <p class="mt-3 text-gray-600">Loading menu...</p>
+            </div>
+          </div>
+          <div id="dishes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+        </div>
+      </main>
+
+      <footer class="bg-gray-800 text-white pt-6 pb-4 text-sm mt-12">
+        <div class="container mx-auto px-4">
+          <div
+            class="border-t border-gray-700 mt-4 pt-4 text-center text-gray-400"
+          >
+            <p>© 2025 Lafa Restaurant. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
+      window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
+    <script src="js/supabase.js"></script>
+    <script>
+      let allHotels = [];
+      let currentSort = null;
+
+      document.addEventListener("DOMContentLoaded", async function () {
+        console.log("Menu page DOMContentLoaded fired");
+        
+        // Setup logout
+        try {
+          document.getElementById("logoutBtn").addEventListener("click", signOut);
+          document
+            .getElementById("mobileLogoutBtn")
+            .addEventListener("click", signOut);
+        } catch (e) {
+          console.error("Error setting up logout buttons:", e);
+        }
+
+        // Setup filter dropdown
+        setupFilterDropdown();
+
+        // Give supabase.js time to fully load
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Load user avatar
+        await loadUserAvatar();
+
+        // BEFORE loading dishes, check if we need to restore scroll
+        const savedScroll = sessionStorage.getItem("menuScrollPos");
+        console.log("Checking for saved scroll in sessionStorage:", savedScroll);
+        
+        // Load all dishes using the same function as hotel-management
+        console.log("Starting to load dishes...");
+        await loadAllDishes();
+        
+        // Now restore scroll position after all content is loaded
+        if (savedScroll) {
+          const scrollValue = parseInt(savedScroll);
+          console.log("Restoring scroll to:", scrollValue);
+          // Scroll immediately after content is rendered
+          window.scrollTo(0, scrollValue);
+          console.log("Current scroll position after scrollTo:", window.scrollY);
+          sessionStorage.removeItem("menuScrollPos");
+          console.log("Scroll restored!");
+        }
+      });
+
+      function setupFilterDropdown() {
+        const filterBtn = document.getElementById("filterBtn");
+        const filterDropdown = document.getElementById("filterDropdown");
+        const filterOptions = document.querySelectorAll(".filter-option");
+
+        filterBtn.addEventListener("click", () => {
+          filterDropdown.classList.toggle("show");
+        });
+
+        filterOptions.forEach(option => {
+          option.addEventListener("click", () => {
+            const sortType = option.dataset.sort;
+            
+            // Remove active class from all options
+            filterOptions.forEach(opt => opt.classList.remove("active"));
+            
+            // Add active class to clicked option
+            option.classList.add("active");
+            
+            // Sort the hotels
+            currentSort = sortType;
+            sortAndDisplayHotels(sortType);
+            
+            // Close dropdown
+            filterDropdown.classList.remove("show");
+          });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", (e) => {
+          if (!e.target.closest(".filter-container")) {
+            filterDropdown.classList.remove("show");
+          }
+        });
+      }
+
+      function sortAndDisplayHotels(sortType) {
+        let sorted = [...allHotels];
+
+        switch(sortType) {
+          case "price":
+            sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
+            break;
+          case "price-desc":
+            sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
+            break;
+          case "rating":
+            sorted.sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0));
+            break;
+          case "new":
+            sorted.sort((a, b) => (b.id || 0) - (a.id || 0));
+            break;
+          default:
+            sorted = allHotels;
+        }
+
+        const dishesGrid = document.getElementById("dishes-grid");
+        dishesGrid.innerHTML = "";
+        sorted.forEach((hotel) => {
+          const card = createDishCard(hotel);
+          dishesGrid.appendChild(card);
+        });
+      }
+
+      async function loadUserAvatar() {
+        try {
+          const user = await window.checkUser(false);
+          if (!user) {
+            console.log("No user logged in");
+            return;
+          }
+
+          const { data: profile, error } = await window.supabase
+            .from("profiles")
+            .select("avatar_url")
+            .eq("id", user.id)
+            .single();
+
+          if (error) {
+            console.error("Error loading profile:", error);
+            return;
+          }
+
+          const avatarUrl = profile?.avatar_url || "";
+          const avatarBtn = window.createAvatarButton(avatarUrl, "profile.html", false);
+          
+          const container = document.getElementById("avatar-container");
+          if (container) {
+            container.appendChild(avatarBtn.element);
+          }
+          
+          const mobileContainer = document.getElementById("mobile-avatar-container");
+          if (mobileContainer) {
+            const mobileAvatarBtn = window.createAvatarButton(avatarUrl, "profile.html", false);
+            mobileContainer.appendChild(mobileAvatarBtn.element);
+          }
+          // Save reference for later updates
+          window.avatarButtonRef = avatarBtn;
+        } catch (error) {
+          console.error("Error in loadUserAvatar:", error);
+        }
+      }
+
+      async function loadAllDishes() {
+        try {
+          console.log("Loading all dishes...");
+          
+          const loadingContainer = document.getElementById("loading-container");
+          const dishesGrid = document.getElementById("dishes-grid");
+          
+          // Show loading
+          if (loadingContainer) loadingContainer.classList.remove("hidden");
+          dishesGrid.classList.add("hidden");
+          
+          const { data: hotels, error } = await window.supabase
+            .from("hotels")
+            .select(`id, name, description, price, ratings(rating)`);
+
+          if (error) {
+            console.error("Error loading hotels:", error);
+            displayError("Failed to load menu: " + error.message);
+            if (loadingContainer) loadingContainer.classList.add("hidden");
+            return;
+          }
+          
+          // Calculate average ratings
+          if (hotels && hotels.length > 0) {
+            hotels.forEach(hotel => {
+              const ratings = hotel.ratings || [];
+              hotel.average_rating = ratings.length > 0 
+                ? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length 
+                : 0;
+              hotel.total_ratings = ratings.length;
+            });
+          }
+
+          console.log("Hotels loaded:", hotels);
+
+          if (!hotels || hotels.length === 0) {
+            dishesGrid.innerHTML = `
+              <div class="col-span-full text-center py-12">
+                <i class="bx bx-inbox text-6xl text-gray-300 mb-4"></i>
+                <p class="text-gray-600 text-lg">No dishes available yet</p>
+              </div>
+            `;
+            if (loadingContainer) loadingContainer.classList.add("hidden");
+            dishesGrid.classList.remove("hidden");
+            return;
+          }
+
+          // Get main images for all hotels at once with timeout
+          console.log("Fetching images for " + hotels.length + " hotels...");
+          try {
+            const imagePromise = window.supabase
+              .from("hotel_images")
+              .select("hotel_id, image_url")
+              .eq("is_main", true);
+            
+            // Timeout after 5 seconds
+            const timeoutPromise = new Promise((_, reject) => 
+              setTimeout(() => reject(new Error("Image query timeout")), 5000)
+            );
+            
+            const { data: images, error: imgError } = await Promise.race([imagePromise, timeoutPromise]);
+            
+            if (imgError) {
+              console.error("Error loading images:", imgError);
+            } else if (images) {
+              // Create a map of hotel_id -> image_url for quick lookup
+              const imageMap = {};
+              images.forEach(img => {
+                imageMap[img.hotel_id] = img.image_url;
+              });
+              
+              // Assign images to hotels
+              hotels.forEach(hotel => {
+                hotel.image_url = imageMap[hotel.id] || null;
+                console.log("Image for " + hotel.name + ":", hotel.image_url);
+              });
+            }
+          } catch (error) {
+            console.error("Error fetching images:", error);
+            console.log("Continuing without images due to:", error.message);
+          }
+
+          // Store all hotels for sorting
+          allHotels = hotels;
+
+          dishesGrid.innerHTML = "";
+
+          hotels.forEach((hotel) => {
+            const card = createDishCard(hotel);
+            dishesGrid.appendChild(card);
+          });
+          
+          // Hide loading, show content
+          if (loadingContainer) loadingContainer.classList.add("hidden");
+          dishesGrid.classList.remove("hidden");
+          
+          console.log("Menu loaded successfully!");
+        } catch (error) {
+          console.error("Error in loadAllDishes:", error);
+          displayError("An unexpected error occurred: " + error.message);
+          const loadingContainer = document.getElementById("loading-container");
+          if (loadingContainer) loadingContainer.classList.add("hidden");
+        }
+      }
+
+      function createDishCard(hotel) {
+        // Create a link element instead of relying on click callbacks
+        const link = document.createElement("a");
+        // Default href without scroll - will be updated on click
+        link.href = `hotel-details.html?id=${hotel.id}`;
+        link.className = "dish-card block no-underline";
+        link.style.textDecoration = "none";
+        link.style.color = "inherit";
+        
+        // Capture scroll position at click time, not at card creation time
+        link.addEventListener("click", function(e) {
+          const currentScroll = window.scrollY;
+          console.log("Clicked dish: " + hotel.name + ", current scroll position:", currentScroll);
+          // Update href with current scroll position before navigating
+          this.href = `hotel-details.html?id=${hotel.id}&scroll=${currentScroll}`;
+        }, false);
+        
+        // Create the content
+        const rating = hotel.average_rating || hotel.rating || 0;
+        const totalRatings = hotel.total_ratings || hotel.totalRatings || 0;
+        const starsHtml = window.generateDetailStarRating 
+          ? window.generateDetailStarRating(rating)
+          : '<div class="text-amber-500">★★★★★</div>';
+        const imageUrl = hotel.image_url || hotel.image || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2U1ZTdlYiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4=';
+        
+        link.innerHTML = `
+          <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col cursor-pointer">
+            <div class="relative w-full" style="height: 200px;">
+              <img src="${imageUrl}" alt="${hotel.name}" class="w-full h-full object-cover" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2U1ZTdlYiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5ObyBJbWFnZTwvdGV4dD48L3N2Zz4='">
+            </div>
+            <div class="p-4 flex flex-col justify-between flex-grow">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-1">${hotel.name || "Untitled"}</h3>
+                <p class="text-sm text-gray-600 mb-2">${hotel.description || "No description"}</p>
+                <div class="flex items-center gap-1">
+                  <span class="text-sm font-bold text-amber-500">${Number(rating).toFixed(1)}</span>
+                  <div class="flex items-center">
+                    ${starsHtml}
+                  </div>
+                  <span class="text-xs text-gray-600">(${totalRatings})</span>
+                </div>
+              </div>
+              <div class="text-xl font-bold text-purple-600 mt-2"><span class="icon-saudi_riyal">&#xea;</span>${Number(hotel.price || 0).toFixed(2)}</div>
+            </div>
+          </div>
+        `;
+        
+        return link;
+      }
+
+      function displayError(message) {
+        const dishesGrid = document.getElementById("dishes-grid");
+        dishesGrid.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <i class="bx bx-error text-6xl text-red-400 mb-4"></i>
+            <p class="text-gray-600 text-lg">${message}</p>
+          </div>
+        `;
+      }
+
+      async function signOut() {
+        try {
+          await window.supabase.auth.signOut();
+          window.location.href = "index.html";
+        } catch (error) {
+          console.error("Logout error:", error);
+          window.location.href = "index.html";
+        }
+      }
+
+      // Update cart notification badge
+      async function updateCartNotification() {
+        try {
+          const { data: { user } } = await window.supabase.auth.getUser();
+          if (!user) return;
+
+          // Get cart items count
+          let cartCount = 0;
+          const { data: cart } = await window.supabase
+            .from("carts")
+            .select("id")
+            .eq("user_id", user.id)
+            .single();
+
+          if (cart) {
+            const { count } = await window.supabase
+              .from("cart_items")
+              .select("*", { count: "exact", head: true })
+              .eq("cart_id", cart.id);
+            cartCount = count || 0;
+          }
+
+          // Get incomplete orders count
+          const { count: incompleteOrders } = await window.supabase
+            .from("orders")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id)
+            .neq("status", "completed");
+
+          const totalNotifications = cartCount + (incompleteOrders || 0);
+
+          // Update both desktop and mobile badges
+          const cartNotif = document.getElementById("cartNotification");
+          const mobileCartNotif = document.getElementById("mobileCartNotification");
+
+          if (totalNotifications > 0) {
+            cartNotif.textContent = totalNotifications;
+            cartNotif.classList.remove("hidden");
+            mobileCartNotif.textContent = totalNotifications;
+            mobileCartNotif.classList.remove("hidden");
+          } else {
+            cartNotif.classList.add("hidden");
+            mobileCartNotif.classList.add("hidden");
+          }
+        } catch (error) {
+          console.error("Error updating cart notification:", error);
+        }
+      }
+
+      // Update notification every 5 seconds
+      setInterval(updateCartNotification, 5000);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile - Lafa Restaurant</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link
+      rel="stylesheet"
+      href="/node_modules/@abdulrysr/saudi-riyal-new-symbol-font/style.css"
+    />
+    <style>
+      .profile-container {
+        min-height: calc(100vh - 72px);
+        padding-top: 72px;
+      }
+      .avatar-placeholder {
+        background-color: #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: #9ca3af;
+      }
+      .profile-card {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+        background: white;
+      }
+      .profile-header {
+        background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+        padding: 2rem 0;
+      }
+      .avatar-upload {
+        position: relative;
+        cursor: default;
+      }
+      .avatar-upload:hover::after,
+      .avatar-upload:active::after,
+      .avatar-upload:focus::after {
+        display: none;
+      }
+      .avatar-upload input[type="file"] {
+        display: none;
+      }
+      #file-upload-status {
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+      }
+      .camera-icon {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: rgba(139, 92, 246, 0.9);
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        border: 2px solid white;
+        font-size: 1rem;
+      }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      .pulse-animation {
+        animation: pulse 2s infinite;
+      }
+      .loading-spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top-color: white;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .avatar-container {
+        position: relative;
+        width: 128px;
+        height: 128px;
+        margin: 0 auto;
+      }
+      .direct-upload-btn {
+        position: absolute;
+        bottom: -10px;
+        right: -10px;
+        background: #8b5cf6;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .direct-upload-btn:hover,
+      .direct-upload-btn:active {
+        transform: scale(1.1);
+      }
+      #avatar-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #mobile-avatar-container {
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      @media (max-width: 767px) {
+        #mobile-avatar-container {
+          display: flex;
+          margin-left: 1rem;
+        }
+      }
+      .avatar-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background-color: #e5e7eb;
+        overflow: hidden;
+        position: relative;
+        border: 2px solid #8b5cf6;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .avatar-button:hover {
+        transform: scale(1.1);
+      }
+      .avatar-button img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-3">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between">
+          <a
+            href="index.html"
+            style="color: rgba(139, 92, 246)"
+            class="text-2xl md:text-3xl font-bold hover:opacity-80 transition-colors px-2"
+          >
+            lafa restaurant
+          </a>
+          <nav class="hidden md:flex items-center space-x-4">
+            <div id="avatar-container"></div>
+            <a
+              href="cart.html"
+              class="text-purple-500 hover:text-purple-700 transition-colors text-2xl relative"
+            >
+              <i class="bx bx-shopping-bag"></i>
+              <span id="cartNotification" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+            </a>
+            <button
+              id="logoutBtn"
+              class="px-5 py-2 rounded-2xl bg-purple-500 text-white hover:bg-purple-600 transition-all duration-300"
+            >
+              Logout
+            </button>
+          </nav>
+          <div class="md:hidden flex items-center space-x-2">
+            <div id="mobile-avatar-container"></div>
+            <a
+              href="cart.html"
+              class="text-purple-500 hover:text-purple-700 transition-colors text-2xl relative"
+            >
+              <i class="bx bx-shopping-bag"></i>
+              <span id="mobileCartNotification" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+            </a>
+            <button
+              id="mobileLogoutBtn"
+              class="px-4 py-2 bg-purple-500 text-white rounded-2xl hover:bg-purple-600 transition-all duration-300"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="profile-container bg-gray-50">
+      <div class="container mx-auto px-4 py-8">
+        <div class="max-w-3xl mx-auto">
+          <div class="profile-card">
+            <div class="profile-header">
+              <div class="flex flex-col items-center">
+                <div class="avatar-container">
+                  <div
+                    class="avatar-upload w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg mb-2 relative"
+                  >
+                    <img
+                      id="profile-avatar"
+                      src=""
+                      alt="Profile Avatar"
+                      class="w-full h-full object-cover hidden"
+                      onerror="this.classList.add('hidden'); document.getElementById('avatar-placeholder').classList.remove('hidden');"
+                    />
+                    <div
+                      id="avatar-placeholder"
+                      class="w-full h-full avatar-placeholder pulse-animation"
+                    >
+                      <i class="bx bx-user"></i>
+                    </div>
+                  </div>
+                  <div
+                    class="direct-upload-btn"
+                    id="upload-avatar-btn"
+                    title="Change profile picture"
+                  >
+                    <i class="bx bx-camera"></i>
+                  </div>
+                  <input
+                    type="file"
+                    id="avatar-file-input"
+                    accept="image/*"
+                    class="hidden"
+                  />
+                </div>
+                <div
+                  id="file-upload-status"
+                  class="text-white/80 h-5 mt-4"
+                ></div>
+                <h1
+                  class="text-2xl font-bold text-white mt-2 mb-1"
+                  id="profile-username"
+                >
+                  Loading...
+                </h1>
+                <p class="text-white/80 mb-2" id="profile-email">Loading...</p>
+                <button
+                  type="button"
+                  id="remove-avatar"
+                  class="text-white/90 text-sm hover:text-white underline transition-colors focus:outline-none"
+                >
+                  Remove avatar
+                </button>
+              </div>
+            </div>
+            <div class="p-6">
+              <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-800 mb-2">
+                  Profile Information
+                </h2>
+                <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p class="text-sm text-gray-500">Username</p>
+                      <p class="font-medium text-gray-800" id="info-username">
+                        Loading...
+                      </p>
+                    </div>
+                    <div>
+                      <p class="text-sm text-gray-500">Email</p>
+                      <p class="font-medium text-gray-800" id="info-email">
+                        Loading...
+                      </p>
+                    </div>
+                    <div>
+                      <p class="text-sm text-gray-500">Account Role</p>
+                      <p class="font-medium text-gray-800" id="info-role">
+                        Loading...
+                      </p>
+                    </div>
+                    <div>
+                      <p class="text-sm text-gray-500">Member Since</p>
+                      <p class="font-medium text-gray-800" id="info-created">
+                        Loading...
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="update-status" class="hidden mt-4 p-3 rounded-lg"></div>
+              <div class="mt-8 text-center">
+                <a
+                  id="hotel-management-btn"
+                  href="hotel-management.html"
+                  class="hidden inline-block px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition mb-3"
+                >
+                  <i class="bx bx-food-menu mr-2"></i>
+                  Menu Management
+                </a>
+              </div>
+              <div class="mt-2 text-center">
+                <a
+                  id="admin-dashboard-btn"
+                  href="admin-dashboard.html"
+                  class="hidden inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition mb-3"
+                >
+                  <i class="bx bx-bar-chart-alt-2 mr-2"></i>
+                  Admin Dashboard
+                </a>
+              </div>
+              <div class="mt-8 text-center">
+                <a
+                  href="index.html"
+                  class="inline-block px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition"
+                >
+                  <i class="bx bx-arrow-back mr-2"></i>
+                  Back to Homepage
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="bg-gray-800 text-white pt-6 pb-4 text-sm">
+      <div class="container mx-auto px-4">
+        <div
+          class="border-t border-gray-700 mt-4 pt-4 text-center text-gray-400"
+        >
+          <p>© 2025 Lafa Restaurant. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
+      window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
+    <script src="js/supabase.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        const user = await checkUser(true);
+        if (!user) {
+          return;
+        }
+        
+        // Set up avatar buttons
+        const avatarUrl = window.userAvatarUrl && window.userAvatarUrl.trim() !== "" ? window.userAvatarUrl : "";
+        
+        // Create desktop avatar
+        const desktopAvatarBtn = window.createAvatarButton(avatarUrl, "profile.html", false);
+        const desktopContainer = document.getElementById("avatar-container");
+        if (desktopContainer) {
+          desktopContainer.appendChild(desktopAvatarBtn.element);
+        }
+
+        // Create mobile avatar
+        const mobileAvatarBtn = window.createAvatarButton(avatarUrl, "profile.html", false);
+        const mobileContainer = document.getElementById("mobile-avatar-container");
+        if (mobileContainer) {
+          mobileContainer.appendChild(mobileAvatarBtn.element);
+        }
+        
+        document.getElementById("logoutBtn").addEventListener("click", signOut);
+        document
+          .getElementById("mobileLogoutBtn")
+          .addEventListener("click", signOut);
+        await loadProfileData(user);
+        document
+          .getElementById("upload-avatar-btn")
+          .addEventListener("click", function () {
+            document.getElementById("avatar-file-input").click();
+          });
+        document
+          .getElementById("avatar-file-input")
+          .addEventListener("change", async function (e) {
+            if (!e.target.files || !e.target.files[0]) return;
+            const file = e.target.files[0];
+            const statusElement = document.getElementById("file-upload-status");
+            if (!file.type.match("image.*")) {
+              statusElement.textContent = "Please select an image file";
+              statusElement.style.color = "#f87171";
+              return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+              statusElement.textContent = "Image must be less than 5MB";
+              statusElement.style.color = "#f87171";
+              return;
+            }
+            statusElement.innerHTML =
+              '<span class="loading-spinner mr-2"></span> Uploading...';
+            statusElement.style.color = "#ffffff";
+            try {
+              await uploadAvatar(file);
+              statusElement.textContent = "✓ Upload successful!";
+              statusElement.style.color = "#a3e635";
+              const placeholder = document.getElementById("avatar-placeholder");
+              if (placeholder) {
+                placeholder.classList.remove("pulse-animation");
+              }
+              setTimeout(() => {
+                statusElement.textContent = "";
+              }, 3000);
+            } catch (error) {
+              statusElement.textContent = "Upload failed: " + error.message;
+              statusElement.style.color = "#f87171";
+            }
+          });
+        document
+          .getElementById("remove-avatar")
+          .addEventListener("click", async function () {
+            const statusElement = document.getElementById("file-upload-status");
+            statusElement.innerHTML =
+              '<span class="loading-spinner mr-2"></span> Removing...';
+            statusElement.style.color = "#ffffff";
+            try {
+              await updateAvatar(null);
+              statusElement.textContent = "✓ Avatar removed";
+              statusElement.style.color = "#a3e635";
+              setTimeout(() => {
+                statusElement.textContent = "";
+              }, 3000);
+            } catch (error) {
+              statusElement.textContent = "Failed to remove avatar";
+              statusElement.style.color = "#f87171";
+            }
+          });
+      });
+      async function uploadAvatar(file) {
+        try {
+          const user = await checkUser();
+          if (!user) {
+            throw new Error("You must be logged in to upload an avatar");
+          }
+          
+          // Get user profile to get username
+          const { data: profile, error: profileError } = await window.supabase
+            .from("profiles")
+            .select("username")
+            .eq("id", user.id)
+            .single();
+          
+          if (profileError || !profile) {
+            throw new Error("Failed to fetch user profile");
+          }
+          
+          const username = profile.username || user.id;
+          
+          let fileToUpload = file;
+          if (file.size > 1 * 1024 * 1024) {
+            fileToUpload = await compressImage(file);
+          }
+          const fileExt = file.name.split(".").pop();
+          const fileName = `avatar-${username}.${fileExt}`;
+          const filePath = fileName;
+          
+          console.log("[Avatar] Prepared to upload as:", filePath);
+          
+          // Step 2: Upload new avatar
+          console.log("[Avatar] Uploading new avatar:", filePath);
+          
+          // Get authentication token
+          const { data: sessionData } = await window.supabase.auth.getSession();
+          const token = sessionData?.session?.access_token;
+          
+          if (!token) {
+            throw new Error("No authentication token available");
+          }
+          
+          console.log("[Avatar] Got auth token, uploading...");
+          
+          const uploadUrl = `https://oscrktdwatdnkzgcupgh.supabase.co/storage/v1/object/avatars/${filePath}`;
+          
+          const restResponse = await fetch(uploadUrl, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'x-upsert': 'true',
+              'Cache-Control': 'no-cache, no-store, must-revalidate',
+            },
+            body: fileToUpload,
+          });
+          
+          console.log("[Avatar] Upload response status:", restResponse.status);
+          
+          if (!restResponse.ok) {
+            const errorText = await restResponse.text();
+            console.error("[Avatar] Upload failed:", errorText);
+            throw new Error(`Upload failed with status ${restResponse.status}`);
+          }
+          
+          console.log("[Avatar] File uploaded successfully:", filePath);
+          
+          // Verify file was written by checking it directly
+          console.log("[Avatar] Verifying file was written to storage...");
+          
+          // Wait a moment for storage to sync
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          // Try to get file info directly (this proves the file exists)
+          const getUrl = `https://oscrktdwatdnkzgcupgh.supabase.co/storage/v1/object/info/public/avatars/${filePath}`;
+          const getResponse = await fetch(getUrl, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          
+          if (getResponse.ok) {
+            const fileInfo = await getResponse.json();
+            console.log("[Avatar] ✓ File verified in storage - size:", fileInfo.size, "bytes");
+          } else {
+            console.warn("[Avatar] ⚠ Could not verify file - but proceeding anyway");
+          }
+          
+          const { data: publicUrlData } = window.supabase.storage
+            .from("avatars")
+            .getPublicUrl(filePath);
+          if (!publicUrlData || !publicUrlData.publicUrl) {
+            throw new Error("Failed to generate public URL");
+          }
+          const publicUrl = publicUrlData.publicUrl;
+          const secureUrl = publicUrl.replace("http:", "https:");
+
+          // Add cache-busting query parameter to force browser to reload the image
+          const cacheBustedUrl = secureUrl + "?t=" + new Date().getTime();
+
+          console.log("[Avatar] Public URL:", secureUrl);
+          console.log("[Avatar] Cache-busted URL:", cacheBustedUrl);
+          
+          await updateAvatar(secureUrl);
+          const avatarImg = document.getElementById("profile-avatar");
+          avatarImg.onload = function () {
+            avatarImg.classList.remove("hidden");
+            document
+              .getElementById("avatar-placeholder")
+              .classList.add("hidden");
+          };
+          avatarImg.onerror = function () {
+            avatarImg.classList.add("hidden");
+            document
+              .getElementById("avatar-placeholder")
+              .classList.remove("hidden");
+          };
+          avatarImg.src = cacheBustedUrl; // Use the cache-busted URL here
+          return secureUrl;
+        } catch (error) {
+          console.error("Error uploading avatar:", error);
+          showStatus("error", "Failed to upload avatar: " + error.message);
+          throw error;
+        }
+      }
+      async function compressImage(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+              const canvas = document.createElement("canvas");
+              let width = img.width;
+              let height = img.height;
+              const maxDimension = 800;
+              if (width > height) {
+                if (width > maxDimension) {
+                  height = Math.round((height * maxDimension) / width);
+                  width = maxDimension;
+                }
+              } else {
+                if (height > maxDimension) {
+                  width = Math.round((width * maxDimension) / height);
+                  height = maxDimension;
+                }
+              }
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext("2d");
+              ctx.drawImage(img, 0, 0, width, height);
+              canvas.toBlob(
+                (blob) => {
+                  if (blob) {
+                    resolve(
+                      new File([blob], file.name, {
+                        type: "image/jpeg",
+                        lastModified: Date.now(),
+                      })
+                    );
+                  } else {
+                    reject(new Error("Canvas to Blob conversion failed"));
+                  }
+                },
+                "image/jpeg",
+                0.85
+              );
+            };
+          };
+          reader.onerror = (error) => reject(error);
+        });
+      }
+      async function loadProfileData(user) {
+        try {
+          const { data: profile, error } = await window.supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+          if (error) {
+            console.error("Error fetching profile:", error);
+            showStatus("error", "Failed to load profile information");
+            return;
+          }
+          if (profile) {
+            document.getElementById("profile-username").textContent =
+              profile.username || "No Username Set";
+            document.getElementById("profile-email").textContent = user.email;
+            document.getElementById("info-username").textContent =
+              profile.username || "Not set";
+            document.getElementById("info-email").textContent = user.email;
+            document.getElementById("info-role").textContent =
+              profile.role || "User";
+            const createdAt = user.created_at
+              ? new Date(user.created_at).toLocaleDateString()
+              : "Unknown";
+            document.getElementById("info-created").textContent = createdAt;
+            if (profile.avatar_url) {
+              const avatarImg = document.getElementById("profile-avatar");
+              avatarImg.onload = function () {
+                avatarImg.classList.remove("hidden");
+                document
+                  .getElementById("avatar-placeholder")
+                  .classList.add("hidden");
+              };
+              avatarImg.onerror = function () {
+                this.classList.add("hidden");
+                document
+                  .getElementById("avatar-placeholder")
+                  .classList.remove("hidden");
+                if (profile.avatar_url.startsWith("http:")) {
+                  const secureUrl = profile.avatar_url.replace(
+                    "http:",
+                    "https:"
+                  );
+                  setTimeout(() => {
+                    this.src = secureUrl;
+                  }, 500);
+                }
+              };
+
+              // Process avatar URL
+              let avatarUrl = profile.avatar_url;
+              if (
+                avatarUrl.includes("supabase") &&
+                avatarUrl.startsWith("http:")
+              ) {
+                avatarUrl = avatarUrl.replace("http:", "https:");
+              }
+
+              // Add cache busting parameter
+              const cacheBustedUrl = avatarUrl + "?t=" + new Date().getTime();
+
+              avatarImg.src = cacheBustedUrl;
+              window.userAvatarUrl = avatarUrl; // Store original URL without cache busting
+            } else {
+              document.getElementById("profile-avatar").classList.add("hidden");
+              document
+                .getElementById("avatar-placeholder")
+                .classList.remove("hidden");
+            }
+            const hotelManagementBtn = document.getElementById(
+              "hotel-management-btn"
+            );
+            const adminDashboardBtn = document.getElementById(
+              "admin-dashboard-btn"
+            );
+            if (profile.role === "admin" || profile.role === "owner" || profile.role === "employee") {
+              if (profile.role === "admin" || profile.role === "owner") {
+                hotelManagementBtn.classList.remove("hidden");
+              }
+              adminDashboardBtn.classList.remove("hidden");
+            }
+          } else {
+            showStatus("error", "Profile not found");
+          }
+        } catch (error) {
+          console.error("Error in loadProfileData:", error);
+          showStatus("error", "An unexpected error occurred");
+        }
+      }
+      async function updateAvatar(avatarUrl) {
+        try {
+          const user = await checkUser();
+          if (!user) {
+            showStatus("error", "You must be logged in to update your avatar");
+            return;
+          }
+          const { error } = await window.supabase
+            .from("profiles")
+            .update({
+              avatar_url: avatarUrl,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", user.id);
+          if (error) {
+            console.error("Error updating avatar:", error);
+            showStatus("error", "Failed to update avatar: " + error.message);
+            return;
+          }
+          const avatarImg = document.getElementById("profile-avatar");
+          const placeholder = document.getElementById("avatar-placeholder");
+          if (avatarUrl) {
+            // Add cache-busting parameter here too
+            const cacheBustedUrl = avatarUrl + "?t=" + new Date().getTime();
+
+            avatarImg.onload = function () {
+              avatarImg.classList.remove("hidden");
+              placeholder.classList.add("hidden");
+            };
+            avatarImg.onerror = function () {
+              this.classList.add("hidden");
+              placeholder.classList.remove("hidden");
+            };
+            avatarImg.src = cacheBustedUrl;
+          } else {
+            avatarImg.classList.add("hidden");
+            placeholder.classList.remove("hidden");
+            placeholder.classList.add("pulse-animation");
+          }
+          // Update the global avatar URL
+          window.userAvatarUrl = avatarUrl || null;
+          
+          // Update the avatar button in the header
+          const desktopContainer = document.getElementById("avatar-container");
+          const mobileContainer = document.getElementById("mobile-avatar-container");
+          
+          if (desktopContainer && window.avatarButtonRef) {
+            window.avatarButtonRef.updateAvatar(avatarUrl || "");
+          }
+          if (mobileContainer && window.mobileAvatarButtonRef) {
+            window.mobileAvatarButtonRef.updateAvatar(avatarUrl || "");
+          }
+          
+          showStatus(
+            "success",
+            avatarUrl
+              ? "Avatar updated successfully"
+              : "Avatar removed successfully"
+          );
+        } catch (error) {
+          console.error("Error in updateAvatar:", error);
+          showStatus("error", "An unexpected error occurred");
+        }
+      }
+      function showStatus(type, message) {
+        const statusElement = document.getElementById("update-status");
+        statusElement.classList.remove(
+          "hidden",
+          "bg-green-100",
+          "text-green-800",
+          "bg-red-100",
+          "text-red-800"
+        );
+        if (type === "success") {
+          statusElement.classList.add("bg-green-100", "text-green-800");
+        } else if (type === "error") {
+          statusElement.classList.add("bg-red-100", "text-red-800");
+        }
+        statusElement.textContent = message;
+        statusElement.classList.remove("hidden");
+        setTimeout(() => {
+          statusElement.classList.add("hidden");
+        }, 3000);
+      }
+
+      // Update cart notification badge
+      async function updateCartNotification() {
+        try {
+          const { data: { user } } = await window.supabase.auth.getUser();
+          if (!user) return;
+
+          // Get cart items count
+          let cartCount = 0;
+          const { data: cart } = await window.supabase
+            .from("carts")
+            .select("id")
+            .eq("user_id", user.id)
+            .single();
+
+          if (cart) {
+            const { count } = await window.supabase
+              .from("cart_items")
+              .select("*", { count: "exact", head: true })
+              .eq("cart_id", cart.id);
+            cartCount = count || 0;
+          }
+
+          // Get incomplete orders count
+          const { count: incompleteOrders } = await window.supabase
+            .from("orders")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id)
+            .neq("status", "completed");
+
+          const totalNotifications = cartCount + (incompleteOrders || 0);
+
+          // Update both desktop and mobile badges
+          const cartNotif = document.getElementById("cartNotification");
+          const mobileCartNotif = document.getElementById("mobileCartNotification");
+
+          if (totalNotifications > 0) {
+            cartNotif.textContent = totalNotifications;
+            cartNotif.classList.remove("hidden");
+            mobileCartNotif.textContent = totalNotifications;
+            mobileCartNotif.classList.remove("hidden");
+          } else {
+            cartNotif.classList.add("hidden");
+            mobileCartNotif.classList.add("hidden");
+          }
+        } catch (error) {
+          console.error("Error updating cart notification:", error);
+        }
+      }
+
+      // Update notification every 5 seconds
+      setInterval(updateCartNotification, 5000);
+    </script>
+  </body>
+</html>

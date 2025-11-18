@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Credit Card Payment</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+  </head>
+  <body class="bg-gray-50">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-3">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between">
+          <a href="cart.html" class="text-purple-600 hover:text-purple-700 text-2xl">
+            <i class="bx bx-arrow-back"></i>
+          </a>
+          <h1 class="text-2xl font-bold text-purple-600">Credit Card Payment</h1>
+          <div class="w-8"></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="pt-24 pb-16">
+      <div class="container mx-auto px-4 max-w-2xl">
+        <!-- Order Summary -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h2 class="text-xl font-bold text-gray-800 mb-4">Order Summary</h2>
+          <div id="orderSummary" class="space-y-3">
+            <!-- Summary will be populated here -->
+          </div>
+          <div class="border-t pt-4 mt-4">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-gray-600">Subtotal:</span>
+              <span id="summarySubtotal" class="font-semibold">$0.00</span>
+            </div>
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-gray-600">Tax (15%):</span>
+              <span id="summaryTax" class="font-semibold">$0.00</span>
+            </div>
+            <div class="flex justify-between items-center text-lg font-bold text-purple-600 border-t pt-3">
+              <span>Total:</span>
+              <span id="summaryTotal">$0.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Credit Card Form -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-6">Card Details</h2>
+          
+          <form id="creditCardForm" class="space-y-6">
+            <!-- Card Number -->
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">
+                <i class="bx bx-credit-card text-purple-600 mr-1"></i>
+                Card Number
+              </label>
+              <input
+                type="text"
+                id="cardNumber"
+                placeholder="1234 5678 9012 3456"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                maxlength="19"
+                required
+              />
+              <p class="text-sm text-gray-500 mt-1">Enter 16-digit card number</p>
+            </div>
+
+            <!-- Card Holder Name -->
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">
+                <i class="bx bx-user text-purple-600 mr-1"></i>
+                Card Holder Name
+              </label>
+              <input
+                type="text"
+                id="cardholderName"
+                placeholder="John Doe"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                required
+              />
+            </div>
+
+            <!-- Expiry Date and CVV Row -->
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Expiry Date -->
+              <div>
+                <label class="block text-gray-700 font-semibold mb-2">
+                  <i class="bx bx-calendar text-purple-600 mr-1"></i>
+                  Expiry Date
+                </label>
+                <input
+                  type="text"
+                  id="expiryDate"
+                  placeholder="MM/YY"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  maxlength="5"
+                  required
+                />
+              </div>
+
+              <!-- CVV -->
+              <div>
+                <label class="block text-gray-700 font-semibold mb-2">
+                  <i class="bx bx-lock text-purple-600 mr-1"></i>
+                  CVV
+                </label>
+                <input
+                  type="text"
+                  id="cvv"
+                  placeholder="123"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  maxlength="4"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Billing Address -->
+            <div>
+              <label class="block text-gray-700 font-semibold mb-2">
+                <i class="bx bx-map text-purple-600 mr-1"></i>
+                Billing Address
+              </label>
+              <input
+                type="text"
+                id="billingAddress"
+                placeholder="Street Address"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 mb-3"
+                required
+              />
+              <div class="grid grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  id="city"
+                  placeholder="City"
+                  class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  required
+                />
+                <input
+                  type="text"
+                  id="zipCode"
+                  placeholder="ZIP Code"
+                  class="px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Security Notice -->
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-start gap-3">
+              <i class="bx bx-shield text-blue-600 text-2xl mt-1"></i>
+              <div>
+                <p class="text-sm text-blue-800">
+                  <strong>Secure Payment:</strong> Your payment information is encrypted and secure. We do not store your credit card details.
+                </p>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="w-full px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold flex items-center justify-center gap-2"
+            >
+              <i class="bx bx-lock"></i>
+              Complete Payment
+            </button>
+
+            <!-- Back Button -->
+            <a
+              href="cart.html"
+              class="w-full px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors font-semibold text-center block"
+            >
+              Cancel Payment
+            </a>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
+      window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
+    <script src="js/supabase.js"></script>
+    <script>
+      let orderData = null;
+
+      function generateOrderNumber(orderId) {
+        // Generate order number: 6-digit sequential based on ID
+        // Start from 100000 and add the orderId for sequential numbers
+        const orderNum = (100000 + orderId).toString().slice(-6);
+        return orderNum;
+      }
+
+      // Load order data from sessionStorage
+      document.addEventListener("DOMContentLoaded", async function () {
+        try {
+          console.log("Credit Card Payment page loaded");
+          
+          // Get order data from sessionStorage
+          const storedOrderData = sessionStorage.getItem("pendingOrderData");
+          console.log("Checking sessionStorage for pendingOrderData");
+          console.log("Stored data exists:", !!storedOrderData);
+          
+          if (!storedOrderData) {
+            alert("No order found. Please go back and try again.");
+            window.location.href = "cart.html";
+            return;
+          }
+
+          orderData = JSON.parse(storedOrderData);
+          console.log("Order data loaded:", orderData);
+          console.log("Order items count:", orderData.items ? orderData.items.length : 0);
+          console.log("Order total:", orderData.total);
+
+          // Display order summary
+          displayOrderSummary();
+          
+          // Don't clear the stored data immediately - user might go back
+        } catch (error) {
+          console.error("Error loading page:", error);
+          alert("Error loading order data: " + error.message);
+        }
+      });
+
+      function displayOrderSummary() {
+        if (!orderData || !orderData.items) return;
+
+        const summaryDiv = document.getElementById("orderSummary");
+        let html = "";
+
+        orderData.items.forEach((item) => {
+          html += `
+            <div class="flex justify-between items-center py-2 border-b">
+              <div>
+                <p class="font-semibold text-gray-800">${item.hotel_name}</p>
+                <p class="text-sm text-gray-500">Qty: ${item.quantity}</p>
+              </div>
+              <span class="font-semibold text-gray-800">
+                <span class="icon-saudi_riyal" style="display: inline-block; margin-right: 2px;">&#xea;</span>${(item.total).toFixed(2)}
+              </span>
+            </div>
+          `;
+        });
+
+        summaryDiv.innerHTML = html;
+
+        // Update totals
+        const subtotal = orderData.subtotal;
+        const tax = orderData.tax;
+        const total = orderData.total;
+
+        document.getElementById("summarySubtotal").innerHTML = 
+          `<span class="icon-saudi_riyal" style="display: inline-block; margin-right: 2px;">&#xea;</span>${subtotal.toFixed(2)}`;
+        document.getElementById("summaryTax").innerHTML = 
+          `<span class="icon-saudi_riyal" style="display: inline-block; margin-right: 2px;">&#xea;</span>${tax.toFixed(2)}`;
+        document.getElementById("summaryTotal").innerHTML = 
+          `<span class="icon-saudi_riyal" style="display: inline-block; margin-right: 2px;">&#xea;</span>${total.toFixed(2)}`;
+      }
+
+      // Format card number input
+      document.getElementById("cardNumber").addEventListener("input", function (e) {
+        let value = e.target.value.replace(/\s/g, "");
+        let formattedValue = "";
+        for (let i = 0; i < value.length; i++) {
+          if (i > 0 && i % 4 === 0) {
+            formattedValue += " ";
+          }
+          formattedValue += value[i];
+        }
+        e.target.value = formattedValue;
+      });
+
+      // Format expiry date input
+      document.getElementById("expiryDate").addEventListener("input", function (e) {
+        let value = e.target.value.replace(/\D/g, "");
+        if (value.length >= 2) {
+          value = value.substring(0, 2) + "/" + value.substring(2, 4);
+        }
+        e.target.value = value;
+      });
+
+      // Only allow numbers for CVV
+      document.getElementById("cvv").addEventListener("input", function (e) {
+        e.target.value = e.target.value.replace(/\D/g, "");
+      });
+
+      // Handle form submission
+      document.getElementById("creditCardForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        // Get form values
+        const cardNumber = document.getElementById("cardNumber").value.replace(/\s/g, "");
+        const cardholderName = document.getElementById("cardholderName").value;
+        const expiryDate = document.getElementById("expiryDate").value;
+        const cvv = document.getElementById("cvv").value;
+        const billingAddress = document.getElementById("billingAddress").value;
+        const city = document.getElementById("city").value;
+        const zipCode = document.getElementById("zipCode").value;
+
+        // Validate inputs
+        if (cardNumber.length !== 16) {
+          alert("Please enter a valid 16-digit card number");
+          return;
+        }
+
+        if (!expiryDate.match(/^\d{2}\/\d{2}$/)) {
+          alert("Please enter expiry date in MM/YY format");
+          return;
+        }
+
+        if (cvv.length < 3 || cvv.length > 4) {
+          alert("Please enter a valid CVV (3-4 digits)");
+          return;
+        }
+
+        console.log("Processing payment with:");
+        console.log("Card ending in:", cardNumber.slice(-4));
+        console.log("Cardholder:", cardholderName);
+        console.log("Billing Address:", billingAddress, city, zipCode);
+
+        try {
+          // Check if supabase is available
+          if (!window.supabase) {
+            console.error("Supabase not initialized");
+            alert("Payment system not ready. Please refresh the page and try again.");
+            return;
+          }
+
+          // Get current user
+          const { data: { user }, error: userError } = await window.supabase.auth.getUser();
+          if (userError || !user) {
+            console.error("User error:", userError);
+            alert("User not found. Please log in again.");
+            window.location.href = "index.html";
+            return;
+          }
+
+          // Create order in database with only required fields
+          // Valid status values (from orders table check constraint):
+          // 'pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'
+          const { data: order, error: orderError } = await window.supabase
+            .from("orders")
+            .insert([
+              {
+                user_id: user.id,
+                total_amount: orderData.total,
+                status: "preparing",
+              },
+            ])
+            .select()
+            .single();
+
+          if (orderError) {
+            console.error("Error creating order:", orderError);
+            alert("Failed to create order: " + orderError.message);
+            return;
+          }
+
+          console.log("Order created:", order);
+
+          // Assign parking lot for the order (or reuse if user has existing parking)
+          let parkingSpotNumber = null;
+          try {
+            // First check if user already has a parking spot
+            const { data: userParking } = await window.supabase
+              .from("parking_lots")
+              .select("id, spot_number, is_available")
+              .eq("user_id", user.id)
+              .limit(1);
+
+            let parkingLotId = null;
+            
+            if (userParking && userParking.length > 0) {
+              // Reuse existing parking
+              parkingLotId = userParking[0].id;
+              parkingSpotNumber = userParking[0].spot_number;
+              console.log("Reusing existing parking for user:", parkingLotId, "Spot:", parkingSpotNumber);
+              
+              const { error: updateError } = await window.supabase
+                .from("parking_lots")
+                .update({ 
+                  order_id: order.id, 
+                  is_available: false,
+                  updated_at: new Date().toISOString() 
+                })
+                .eq("id", parkingLotId);
+              
+              if (updateError) {
+                console.error("Error updating parking:", updateError);
+              } else {
+                console.log("Parking updated successfully");
+              }
+            } else {
+              // Get first available parking spot (must be truly available)
+              const { data: availableParking, error: queryError } = await window.supabase
+                .from("parking_lots")
+                .select("id, spot_number, is_available, user_id, order_id")
+                .eq("is_available", true)
+                .is("user_id", null)
+                .order("spot_number", { ascending: true })
+                .limit(1);
+
+              console.log("Available parking query result:", availableParking, "Error:", queryError);
+
+              if (availableParking && availableParking.length > 0) {
+                parkingLotId = availableParking[0].id;
+                parkingSpotNumber = availableParking[0].spot_number;
+                console.log("Assigning new parking:", parkingLotId, "Spot:", parkingSpotNumber);
+                
+                const { error: assignError } = await window.supabase
+                  .from("parking_lots")
+                  .update({ 
+                    is_available: false, 
+                    user_id: user.id, 
+                    order_id: order.id,
+                    updated_at: new Date().toISOString()
+                  })
+                  .eq("id", parkingLotId);
+                
+                if (assignError) {
+                  console.error("Error assigning parking:", assignError);
+                } else {
+                  console.log("Parking assigned successfully");
+                  
+                  // Verify the update was applied
+                  const { data: verifyParking } = await window.supabase
+                    .from("parking_lots")
+                    .select("id, spot_number, is_available, user_id, order_id")
+                    .eq("id", parkingLotId)
+                    .single();
+                  
+                  console.log("Verification - parking after update:", verifyParking);
+                }
+              } else {
+                console.warn("No available parking spots found!");
+              }
+            }
+
+            // Update order with parking_lot_id
+            if (parkingLotId) {
+              const { error: orderUpdateError } = await window.supabase
+                .from("orders")
+                .update({ parking_lot_id: parkingLotId })
+                .eq("id", order.id);
+              
+              if (orderUpdateError) {
+                console.error("Error updating order with parking_lot_id:", orderUpdateError);
+              } else {
+                console.log("Order updated with parking_lot_id:", parkingLotId);
+              }
+            }
+
+            console.log("Parking assignment complete - Spot number:", parkingSpotNumber);
+          } catch (parkingException) {
+            console.error("Exception assigning parking:", parkingException);
+          }
+
+          // Create order items
+          const orderItems = orderData.items.map((item) => ({
+            order_id: order.id,
+            hotel_id: item.hotel_id,
+            quantity: item.quantity,
+            price: item.price,
+          }));
+
+          const { error: itemInsertError } = await window.supabase
+            .from("order_items")
+            .insert(orderItems);
+
+          if (itemInsertError) {
+            console.error("Error creating order items:", itemInsertError);
+            alert("Failed to create order items");
+            return;
+          }
+
+          console.log("Order items created successfully");
+
+          // Clear cart items
+          const { error: clearError } = await window.supabase
+            .from("cart_items")
+            .delete()
+            .eq("cart_id", orderData.cart_id);
+
+          if (clearError) {
+            console.error("Error clearing cart:", clearError);
+          }
+
+          // Show success message overlay
+          const successOverlay = document.createElement("div");
+          successOverlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+          `;
+          
+          const successBox = document.createElement("div");
+          successBox.style.cssText = `
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+          `;
+          
+          // Use the parking spot number we captured earlier
+          let parkingNumber = parkingSpotNumber || "—";
+          
+          console.log("Parking number for display:", parkingNumber);
+          
+          const orderNumber = generateOrderNumber(order.id);
+          
+          successBox.innerHTML = `
+            <div style="font-size: 48px; color: #10b981; margin-bottom: 20px;">✓</div>
+            <h2 style="color: #333; margin-bottom: 10px; font-size: 24px;">Payment Successful!</h2>
+            <p style="color: #666; margin-bottom: 8px;">Order #<strong>${orderNumber}</strong></p>
+            <p style="color: #666; margin-bottom: 12px; padding: 10px; background: #f0f9ff; border-radius: 8px; font-size: 18px;"><strong>Parking Lot: ${parkingNumber}</strong></p>
+            <p style="color: #666;">Card ending in <strong>${cardNumber.slice(-4)}</strong> has been charged</p>
+            <button onclick="window.location.href='cart.html'" style="margin-top: 20px; padding: 10px 20px; background: #8b5cf6; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s;">Back to Cart</button>
+          `;
+          
+          successOverlay.appendChild(successBox);
+          document.body.appendChild(successOverlay);
+        } catch (error) {
+          console.error("Payment error:", error);
+          alert("Payment failed. Please try again.");
+        }
+      });
+    </script>
+  </body>
+</html>

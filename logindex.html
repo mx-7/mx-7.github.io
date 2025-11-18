@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/auth.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/custom.css" />
+    <link
+      rel="stylesheet"
+      href="/node_modules/@abdulrysr/saudi-riyal-new-symbol-font/style.css"
+    />
+    <style>
+      .social_icon:hover {
+        color: rgba(139, 92, 246);
+        border-color: rgba(139, 92, 246);
+      }
+      .btn {
+        background-color: rgba(139, 92, 246) !important;
+      }
+      .btn:hover {
+        background-color: rgba(139, 92, 246, 0.8) !important;
+      }
+      .btn.transparent {
+        background: none !important;
+        border-color: #fff;
+      }
+      .btn.transparent:hover {
+        background-color: rgba(139, 92, 246, 0.1) !important;
+        border-color: rgba(139, 92, 246);
+      }
+      .auth-container:before {
+        background-image: linear-gradient(
+          -45deg,
+          rgba(139, 92, 246) 0%,
+          rgba(139, 92, 246, 0.8) 100%
+        ) !important;
+      }
+      .input-field input:focus {
+        background-color: rgba(139, 92, 246, 0.05);
+      }
+      .input-field input:focus + i {
+        color: rgba(139, 92, 246);
+      }
+      a[href="#"] {
+        color: rgba(139, 92, 246);
+      }
+      a[href="#"]:hover {
+        color: rgba(139, 92, 246, 0.8);
+      }
+      .h-captcha {
+        margin: 15px 0;
+      }
+      .captcha-error {
+        color: #e53e3e;
+        font-size: 14px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        display: none;
+      }
+      .captcha-error.show {
+        display: block;
+        animation: fadeIn 0.3s ease-in;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .verification-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        max-width: 90%;
+        width: 400px;
+        text-align: center;
+        display: none;
+      }
+      .verification-popup.show {
+        display: block;
+        animation: popIn 0.3s ease-out forwards;
+      }
+      .verification-popup h3 {
+        color: rgba(139, 92, 246);
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+      }
+      .verification-popup p {
+        margin-bottom: 20px;
+        color: #4b5563;
+        line-height: 1.6;
+      }
+      .verification-popup button {
+        background-color: rgba(139, 92, 246);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+      .verification-popup button:hover {
+        background-color: rgba(139, 92, 246, 0.8);
+      }
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        display: none;
+      }
+      .overlay.show {
+        display: block;
+      }
+      @keyframes popIn {
+        from {
+          transform: translate(-50%, -60%);
+          opacity: 0;
+        }
+        to {
+          transform: translate(-50%, -50%);
+          opacity: 1;
+        }
+      }
+      .login-error-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        max-width: 90%;
+        width: 400px;
+        text-align: center;
+        display: none;
+      }
+      .login-error-popup.show {
+        display: block;
+        animation: popIn 0.3s ease-out forwards;
+      }
+      .login-error-popup h3 {
+        color: #e53e3e;
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+      }
+      .login-error-popup p {
+        margin-bottom: 20px;
+        color: #4b5563;
+        line-height: 1.6;
+      }
+      .login-error-popup button {
+        background-color: rgba(139, 92, 246);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+      .login-error-popup button:hover {
+        background-color: rgba(139, 92, 246, 0.8);
+      }
+      #username-taken-popup h3 {
+        color: #f59e0b;
+      }
+      #avatar-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .avatar-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background-color: #e5e7eb;
+        overflow: hidden;
+        position: relative;
+        border: 2px solid #8b5cf6;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .avatar-button:hover {
+        transform: scale(1.1);
+      }
+      .avatar-button img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md py-3">
+      <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between">
+          <a
+            href="index.html"
+            style="color: rgba(139, 92, 246)"
+            class="text-2xl md:text-3xl font-bold hover:opacity-80 transition-colors px-2 hotel-logo"
+          >
+            lafa restaurant
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <div class="auth-container">
+      <div class="form_container">
+        <div class="signin_signup">
+          <form action="#" class="sign_in_form" id="signInForm">
+            <h2 class="title">Sign In</h2>
+
+            <div class="input-field">
+              <i class="bx bx-envelope"></i>
+              <input
+                type="email"
+                placeholder="Email"
+                id="signInEmail"
+                required
+              />
+            </div>
+
+            <div class="input-field">
+              <i class="bx bx-lock-alt"></i>
+              <input
+                type="password"
+                placeholder="Password"
+                id="signInPassword"
+                minlength="6"
+                required
+              />
+            </div>
+
+            <div class="w-full flex flex-col items-center mb-4 px-3 space-y-2">
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  class="w-4 h-4 rounded-md border-gray-300"
+                  style="accent-color: rgba(139, 92, 246)"
+                />
+                <span class="ml-2 text-sm text-gray-600">Remember me</span>
+              </label>
+              <div>
+                <a
+                  href="#"
+                  style="color: rgba(139, 92, 246)"
+                  class="text-sm hover:opacity-80 font-medium"
+                >
+                  Forgot password?
+                </a>
+              </div>
+            </div>
+
+            <input type="submit" value="Login" class="btn" />
+            <p class="social_text">Or Sign in with social platforms</p>
+
+            <div class="social_media">
+              <a href="#" class="social_icon"
+                ><i class="bx bxl-facebook"></i
+              ></a>
+              <a href="#" class="social_icon"><i class="bx bxl-google"></i></a>
+              <a href="#" class="social_icon"><i class="bx bxl-twitter"></i></a>
+              <a href="#" class="social_icon"
+                ><i class="bx bxl-linkedin"></i
+              ></a>
+            </div>
+          </form>
+
+          <form action="#" class="sign_up_form" id="signUpForm">
+            <div class="input-field">
+              <i class="bx bx-user"></i>
+              <input
+                type="text"
+                placeholder="Username"
+                id="signUpName"
+                required
+              />
+            </div>
+
+            <div class="input-field">
+              <i class="bx bx-envelope"></i>
+              <input
+                type="email"
+                placeholder="Email"
+                id="signUpEmail"
+                required
+              />
+            </div>
+
+            <div class="input-field">
+              <i class="bx bx-lock-alt"></i>
+              <input
+                type="password"
+                placeholder="Password"
+                id="signUpPassword"
+                minlength="6"
+                required
+              />
+            </div>
+
+            <div
+              id="h-captcha-container"
+              class="h-captcha"
+              data-sitekey="10000000-ffff-ffff-ffff-000000000001"
+              data-callback="onCaptchaVerify"
+              data-expired-callback="onCaptchaExpired"
+            ></div>
+            <div id="captcha-error" class="captcha-error">
+              Please complete the CAPTCHA verification
+            </div>
+
+            <input
+              type="submit"
+              value="Sign up"
+              class="btn"
+              style="background-color: rgba(139, 92, 246)"
+            />
+            <p class="social_text">Or Sign up with social platforms</p>
+
+            <div class="social_media">
+              <a href="#" class="social_icon"
+                ><i class="bx bxl-facebook"></i
+              ></a>
+              <a href="#" class="social_icon"><i class="bx bxl-google"></i></a>
+              <a href="#" class="social_icon"><i class="bx bxl-twitter"></i></a>
+              <a href="#" class="social_icon"
+                ><i class="bx bxl-linkedin"></i
+              ></a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="panel_container">
+        <div class="panel left_panel">
+          <div class="content">
+            <h3>New here?</h3>
+            <p>
+              Join us to discover exceptional dishes and fine dining experiences. Sign up now to
+              access exclusive menu deals and personalized recommendations.
+            </p>
+            <button class="btn transparent" id="sign_up_btn">Sign up</button>
+          </div>
+        </div>
+
+        <div class="panel right_panel">
+          <div class="content">
+            <h3>One of us?</h3>
+            <p>
+              Sign in to access your account. View your orders, manage your
+              profile, and continue your journey with Lafa Restaurant.
+            </p>
+            <button class="btn transparent" id="sign_in_btn">Sign in</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="verification-popup" id="verification-popup">
+      <h3>Email Verification Required</h3>
+      <p>
+        Thank you for signing up! Please check your email
+        <span id="user-email" class="font-semibold"></span> to verify your
+        account.
+      </p>
+      <p class="text-sm text-gray-500 mb-4">
+        You need to verify your email before you can log in.
+      </p>
+      <button id="close-popup">Got it</button>
+    </div>
+
+    <div class="verification-popup" id="username-taken-popup">
+      <h3>Username Already Taken</h3>
+      <p>
+        The username <span id="taken-username" class="font-semibold"></span> is
+        already in use.
+      </p>
+      <p class="text-sm text-gray-500 mb-4">
+        Please choose a different username and try again.
+      </p>
+      <button id="close-username-popup">Try Again</button>
+    </div>
+
+    <div class="login-error-popup" id="login-error-popup">
+      <h3>Login Failed</h3>
+      <p>The email or password you entered is incorrect.</p>
+      <p class="text-sm text-gray-500 mb-4">Please check then try again.</p>
+      <button id="close-login-error">Try Again</button>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script
+      src="https://js.hcaptcha.com/1/api.js?onload=onHCaptchaLoad&render=explicit"
+      async
+      defer
+    ></script>
+
+    <script>
+      const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
+      window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+      let captchaToken = null;
+      let widgetId = null;
+
+      function onCaptchaVerify(token) {
+        captchaToken = token;
+        console.log("hCaptcha verified:", token);
+      }
+
+      function onCaptchaExpired() {
+        captchaToken = null;
+        console.log("hCaptcha token expired");
+      }
+
+      function onHCaptchaLoad() {
+        console.log("hCaptcha script loaded");
+
+        if (document.getElementById("h-captcha-container")) {
+          widgetId = hcaptcha.render("h-captcha-container", {
+            sitekey: "10000000-ffff-ffff-ffff-000000000001",
+            theme: "light",
+            size: "normal",
+            callback: onCaptchaVerify,
+            "expired-callback": onCaptchaExpired,
+          });
+          console.log("hCaptcha widget rendered with ID:", widgetId);
+        } else {
+          console.error("hCaptcha container not found");
+        }
+      }
+
+      const sign_in_btn = document.querySelector("#sign_in_btn");
+      const sign_up_btn = document.querySelector("#sign_up_btn");
+      const container = document.querySelector(".auth-container");
+
+      sign_up_btn.addEventListener("click", () => {
+        container.classList.add("sign_up_mode");
+      });
+
+      sign_in_btn.addEventListener("click", () => {
+        container.classList.remove("sign_up_mode");
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        document
+          .getElementById("signInForm")
+          .addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const email = document.getElementById("signInEmail").value;
+            const password = document.getElementById("signInPassword").value;
+            await signInWithEmail(email, password);
+          });
+
+        async function signInWithEmail(email, password) {
+          try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email,
+              password,
+            });
+
+            if (error) {
+              console.error("Login error:", error.message);
+              document.getElementById("overlay").classList.add("show");
+              document
+                .getElementById("login-error-popup")
+                .classList.add("show");
+              return;
+            }
+
+            console.log("Login successful!");
+            
+            // Check user role and redirect accordingly
+            const user = data.user;
+            const { data: profile } = await supabase
+              .from("profiles")
+              .select("role")
+              .eq("id", user.id)
+              .single();
+
+            if (profile) {
+              if (profile.role === "employee") {
+                // Redirect employees to employee dashboard
+                window.location.href = "employee-dashboard.html";
+              } else if (profile.role === "owner" || profile.role === "admin") {
+                // Redirect admins and owners to admin dashboard
+                window.location.href = "admin-dashboard.html";
+              } else {
+                // Redirect regular customers to home page
+                window.location.href = "index.html";
+              }
+            } else {
+              // Default to home page if no profile
+              window.location.href = "index.html";
+            }
+          } catch (err) {
+            console.error("Login exception:", err);
+            document.getElementById("overlay").classList.add("show");
+            document.getElementById("login-error-popup").classList.add("show");
+          }
+        }
+
+        document
+          .getElementById("signUpForm")
+          .addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const email = document.getElementById("signUpEmail").value;
+            const password = document.getElementById("signUpPassword").value;
+            const username = document.getElementById("signUpName").value;
+            const captchaErrorElement =
+              document.getElementById("captcha-error");
+
+            if (!captchaToken) {
+              console.error("Please complete the CAPTCHA challenge");
+              captchaErrorElement.classList.add("show");
+              captchaErrorElement.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+              });
+              return;
+            }
+
+            captchaErrorElement.classList.remove("show");
+
+            try {
+              const result = await signUp(email, password, username);
+
+              if (!result.success) {
+                console.error("Sign up error:", result.message);
+                if (
+                  result.message.includes("username") ||
+                  result.code === "USERNAME_TAKEN"
+                ) {
+                  document.getElementById("taken-username").textContent =
+                    username;
+                  document.getElementById("overlay").classList.add("show");
+                  document
+                    .getElementById("username-taken-popup")
+                    .classList.add("show");
+                } else {
+                  alert("Sign up failed: " + result.message);
+                }
+              } else {
+                console.log("Sign up successful!");
+
+                document.getElementById("user-email").textContent = email;
+                document.getElementById("overlay").classList.add("show");
+                document
+                  .getElementById("verification-popup")
+                  .classList.add("show");
+
+                document.getElementById("signUpForm").reset();
+                container.classList.remove("sign_up_mode");
+              }
+            } catch (err) {
+              console.error("Sign up exception:", err);
+            } finally {
+              if (widgetId) {
+                hcaptcha.reset(widgetId);
+                captchaToken = null;
+              }
+            }
+          });
+
+        document
+          .getElementById("close-popup")
+          .addEventListener("click", function () {
+            document.getElementById("overlay").classList.remove("show");
+            document
+              .getElementById("verification-popup")
+              .classList.remove("show");
+          });
+
+        document
+          .getElementById("close-username-popup")
+          .addEventListener("click", function () {
+            document.getElementById("overlay").classList.remove("show");
+            document
+              .getElementById("username-taken-popup")
+              .classList.remove("show");
+          });
+
+        document
+          .getElementById("close-login-error")
+          .addEventListener("click", function () {
+            document.getElementById("overlay").classList.remove("show");
+            document
+              .getElementById("login-error-popup")
+              .classList.remove("show");
+          });
+
+        try {
+          checkUser(false);
+        } catch (error) {
+          console.error("Error checking user status:", error);
+        }
+      });
+    </script>
+    <script src="js/supabase.js"></script>
+  </body>
+</html>

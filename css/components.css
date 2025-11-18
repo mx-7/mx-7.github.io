@@ -1,0 +1,203 @@
+@import "https://unpkg.com/@abdulrysr/saudi-riyal-new-symbol-font/style.css";
+
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.scroll-btn:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.hero-section {
+  height: 90vh;
+}
+
+#hero-text {
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.hotel-container > div {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
+  transition: box-shadow 0.2s;
+}
+.hotel-container > div:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 8px 24px !important;
+}
+
+.text-center.p-6.bg-white.rounded-lg.shadow-md,
+.text-center.p-6.bg-white.rounded-lg.shadow-md.hover\:shadow-lg,
+.text-center.p-6.bg-white.rounded-lg.shadow-md.hover\:shadow-lg.transition-shadow {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
+}
+
+.rating-star {
+  position: relative;
+  z-index: 0;
+}
+
+.rating-star.selected {
+  color: #000 !important;
+}
+.rating-star.selected::before {
+  content: "\2605";
+  color: #000;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  font-size: inherit;
+  display: block;
+  z-index: 1;
+}
+
+.rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start !important;
+  align-items: center;
+  gap: 0.2rem;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  transform: none;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+
+.rating > * {
+  float: right;
+}
+
+.rating label {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  min-height: 2rem;
+  max-width: 2rem;
+  max-height: 2rem;
+  aspect-ratio: 1 / 1;
+  margin: 0 0.08rem;
+  position: relative;
+  vertical-align: middle;
+}
+
+.rating label:after {
+  transition: all 0.4s ease-out;
+  -webkit-font-smoothing: antialiased;
+  position: absolute;
+  content: "☆";
+  color: #444;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 2rem;
+  line-height: 2rem;
+  animation: 1s pulse ease;
+}
+
+.rating label:before {
+  font-size: 1.6rem;
+  line-height: 1.6rem;
+}
+
+.rating label:hover:after {
+  color: #555;
+  text-shadow: 0 0 15px #555;
+}
+
+.rating input {
+  display: none;
+}
+
+.rating input:checked + label:after,
+.rating input:checked ~ label:after {
+  content: "★";
+  color: #f9bf3b;
+  text-shadow: 0 0 20px #f9bf3b;
+}
+
+.mb-6.p-4.bg-gray-50.rounded-lg {
+  display: block;
+  margin: 0 0 1.5rem 0;
+  padding: 1.25rem;
+  text-align: left;
+}
+
+@keyframes pulse {
+  50% {
+    color: #555;
+    text-shadow: 0 0 15px #666;
+  }
+}
+
+body {
+  background-color: #111;
+}
+
+.hotel-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 300px;
+  height: 400px;
+  margin: 10px;
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hotel-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hotel-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.hotel-card h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin: 10px 0;
+}
+
+.hotel-card .view-details {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #6b46c1;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.hotel-card .view-details:hover {
+  background-color: #553c9a;
+}

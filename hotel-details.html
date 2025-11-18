@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dish Details - Restaurant</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/custom.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@abdulrysr/saudi-riyal-new-symbol-font/style.css"
+    />
+    <style>
+      .bg-light-gray {
+        background-color: #000000;
+        color: #ffffff;
+      }
+      .bg-light-gray a {
+        color: #ffffff;
+      }
+      .bg-light-gray a:hover {
+        color: #cccccc;
+      }
+      .bg-light-gray h3,
+      .bg-light-gray h4,
+      .bg-light-gray p,
+      .bg-light-gray li {
+        color: #ffffff;
+      }
+      .hotel-details-container {
+        min-height: 70vh;
+        padding-top: 100px;
+      }
+      .booking-section {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+      }
+      .carousel-container {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+      }
+      .carousel-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+      .carousel-item {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        top: 0;
+        left: 0;
+      }
+      .carousel-item.active {
+        opacity: 1;
+      }
+      .carousel-control {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        z-index: 10;
+      }
+      .carousel-control:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+      .carousel-control.prev {
+        left: 10px;
+      }
+      .carousel-control.next {
+        right: 10px;
+      }
+      .carousel-indicators {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+      }
+      .carousel-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+      }
+      .carousel-indicator.active {
+        background-color: white;
+      }
+      .image-count-badge {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        z-index: 5;
+      }
+      #avatar-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      @media (max-width: 767px) {
+        #avatar-container {
+          display: none;
+        }
+      }
+      .avatar-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background-color: #e5e7eb;
+        overflow: hidden;
+        position: relative;
+        border: 2px solid #8b5cf6;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .avatar-button:hover {
+        transform: scale(1.1);
+      }
+      .avatar-button img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .avatar-button i {
+        position: relative;
+        z-index: 10;
+      }
+      #mobile-avatar-container {
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      @media (max-width: 767px) {
+        #mobile-avatar-container {
+          display: flex;
+          margin-left: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <header
+        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white py-3 shadow-md"
+      >
+        <div class="container mx-auto px-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <button
+                id="backBtn"
+                class="text-purple-600 hover:text-purple-700 transition-colors text-2xl hidden"
+              >
+                <i class="bx bx-arrow-back"></i>
+              </button>
+              <a
+                href="index.html"
+                class="text-2xl md:text-3xl font-bold text-purple-600 px-2 hover:opacity-80 transition-colors"
+              >
+                lafa restaurant
+              </a>
+            </div>
+            <nav class="hidden md:flex items-center gap-3">
+              <div id="avatar-container"></div>
+              <a
+                href="cart.html"
+                class="text-purple-500 hover:text-purple-700 transition-colors text-2xl relative"
+              >
+                <i class="bx bx-shopping-bag"></i>
+                <span id="cartNotification" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+              </a>
+              <button
+                id="logoutBtn"
+                class="px-5 py-2 rounded-2xl bg-purple-500 text-white hover:bg-purple-600 transition-all duration-300"
+              >
+                Logout
+              </button>
+            </nav>
+            <div class="md:hidden flex items-center gap-2">
+              <div id="mobile-avatar-container"></div>
+              <a
+                href="cart.html"
+                class="text-purple-500 hover:text-purple-700 transition-colors text-2xl relative"
+              >
+                <i class="bx bx-shopping-bag"></i>
+                <span id="mobileCartNotification" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+              </a>
+              <button
+                id="mobileLogoutBtn"
+                class="px-4 py-2 bg-purple-500 text-white rounded-2xl hover:bg-purple-600 transition-all duration-300"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main class="flex-grow">
+        <div class="container mx-auto px-4 hotel-details-container">
+          <div id="hotel-details" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div
+              class="flex justify-center items-center col-span-1 md:col-span-2"
+            >
+              <div class="animate-pulse">Loading details...</div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <footer class="bg-light-gray pt-6 pb-4 text-sm">
+        <div class="container mx-auto px-4">
+          <div
+            class="grid grid-cols-1 md:grid-cols-4 gap-4 divide-y md:divide-y-0 md:divide-x divide-gray-600/5"
+          >
+            <div class="pb-4 md:pb-0 md:pr-4">
+              <h3 class="text-xl font-bold text-teal-600 mb-2">lafa restaurant</h3>
+              <p class="text-gray-600 mb-2">
+                Luxury accommodations for the discerning traveler. Experience
+                comfort and elegance at every destination you take with us
+                <i class="fa fa-trademark" aria-hidden="true"></i>.
+              </p>
+            </div>
+            <div class="py-4 md:py-0 md:px-4">
+              <h4 class="text-md font-semibold text-gray-800 mb-2">
+                Quick Links
+              </h4>
+              <ul class="space-y-1">
+                <li>
+                  <a
+                    href="about-us.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >About Us</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="cancellation-policy.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >Cancellation Policy</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="special-offers.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >Special Offers</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="py-4 md:py-0 md:px-4">
+              <h4 class="text-md font-semibold text-gray-800 mb-2">Support</h4>
+              <ul class="space-y-1">
+                <li>
+                  <a
+                    href="help-center.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >Help Center</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="terms-and-conditions.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >Terms & Conditions</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="privacy-policy.html"
+                    class="text-gray-600 hover:text-teal-600 transition-colors"
+                    >Privacy Policy</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="pt-4 md:pt-0 md:pl-4">
+              <h4 class="text-md font-semibold text-gray-800 mb-2">Contact</h4>
+              <ul class="space-y-1">
+                <li class="text-gray-600">Riadh,644 KSU</li>
+                <li class="text-gray-600">+(966)555555555</li>
+                <li class="text-gray-600">contact@lafahotel.com</li>
+              </ul>
+            </div>
+          </div>
+          <div
+            class="border-t border-gray-600/5 mt-4 pt-4 text-center text-gray-600"
+          >
+            <p>© 2025 Lafa Restaurant. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
+      window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
+    <script src="js/supabase.js"></script>
+    <script>
+      // Show back button if coming from menu.html
+      console.log("Referrer:", document.referrer);
+      if (document.referrer.includes("menu.html")) {
+        console.log("Coming from menu.html, showing back button");
+        const backBtn = document.getElementById("backBtn");
+        backBtn.classList.remove("hidden");
+        
+        backBtn.addEventListener("click", function(e) {
+          console.log("Back button clicked - e.target:", e.target);
+          console.log("Back button clicked - proceeding to menu.html");
+          window.location.href = "menu.html";
+        }, false);
+      }
+      console.log("Back button setup complete");
+      
+      // Check if scroll position was passed in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const scrollPos = urlParams.get("scroll");
+      const hotelId = urlParams.get("id");
+      console.log("Scroll param from URL:", scrollPos);
+      
+      if (scrollPos) {
+        // Store it for when we come back
+        sessionStorage.setItem("menuScrollPos", scrollPos);
+        console.log("Stored scroll position in sessionStorage:", scrollPos);
+      }
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        try {
+          const user = await checkUser(true);
+          if (!user) {
+            return;
+          }
+          updateAuthButtons();
+          if (hotelId) {
+            loadHotelDetails(hotelId);
+          } else {
+            document.getElementById(
+              "hotel-details"
+            ).innerHTML = `<div class="col-span-1 md:col-span-2 text-center py-16">
+                <h2 class="text-2xl font-bold text-red-600 mb-4">Hotel Not Found</h2>
+                <p class="mb-6">The hotel you're looking for could not be found.</p>
+                <a href="index.html" class="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors">
+                  Return to Home
+                </a>
+              </div>`;
+          }
+        } catch (error) {
+          console.error("Error checking user status:", error);
+        }
+      });
+      function updateAuthButtons() {
+        const logoutBtn = document.getElementById("logoutBtn");
+        const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
+        
+        if (window.isLoggedIn) {
+          logoutBtn.textContent = "Logout";
+          mobileLogoutBtn.textContent = "Logout";
+          logoutBtn.addEventListener("click", signOut);
+          mobileLogoutBtn.addEventListener("click", signOut);
+
+          const avatarUrl = window.userAvatarUrl && window.userAvatarUrl.trim() !== "" ? window.userAvatarUrl : "";
+          
+          // Create avatar button
+          const desktopAvatarBtn = window.createAvatarButton(avatarUrl, "profile.html", false);
+          const desktopContainer = document.getElementById("avatar-container");
+          if (desktopContainer) {
+            desktopContainer.appendChild(desktopAvatarBtn.element);
+          }
+          // Save reference for later updates
+          window.avatarButtonRef = desktopAvatarBtn;
+
+          // Also append to mobile container
+          const mobileContainer = document.getElementById("mobile-avatar-container");
+          if (mobileContainer) {
+            const mobileAvatarBtn = window.createAvatarButton(avatarUrl, "profile.html", false);
+            mobileContainer.appendChild(mobileAvatarBtn.element);
+            // Save reference for mobile avatar
+            window.mobileAvatarButtonRef = mobileAvatarBtn;
+          }
+        } else {
+          logoutBtn.textContent = "Login";
+          mobileLogoutBtn.textContent = "Login";
+          logoutBtn.addEventListener("click", function () {
+            window.location.href = "logindex.html";
+          });
+          mobileLogoutBtn.addEventListener("click", function () {
+            window.location.href = "logindex.html";
+          });
+        }
+      }
+      
+      async function getHotelMainImage(hotelId) {
+        try {
+          const { data, error } = await window.supabase
+            .from("hotel_images")
+            .select("image_url")
+            .eq("hotel_id", hotelId)
+            .eq("is_main", true)
+            .single();
+          if (error) {
+            console.error("Error fetching main image:", error);
+            return null;
+          }
+          return data?.image_url || null;
+        } catch (error) {
+          console.error("Error in getHotelMainImage function:", error);
+          return null;
+        }
+      }
+      async function getHotelAdditionalImages(hotelId) {
+        try {
+          const { data, error } = await window.supabase
+            .from("hotel_images")
+            .select("image_url")
+            .eq("hotel_id", hotelId)
+            .eq("is_main", false);
+          if (error) {
+            console.error("Error fetching additional images:", error);
+            return [];
+          }
+          return data || [];
+        } catch (error) {
+          console.error("Error in getHotelAdditionalImages function:", error);
+          return [];
+        }
+      }
+      async function loadHotelDetails(id) {
+        try {
+          let hotel = null;
+          const { data, error } = await window.supabase
+            .from("hotels")
+            .select(`*, ratings(rating)`)
+            .eq("id", parseInt(id))
+            .single();
+          if (error) {
+            console.error("Error fetching hotel details:", error);
+            document.getElementById(
+              "hotel-details"
+            ).innerHTML = `<div class="col-span-1 md:col-span-2 text-center py-16">
+                <h2 class="text-2xl font-bold text-red-600 mb-4">Hotel Not Found</h2>
+                <p class="mb-6">The hotel you're looking for could not be found.</p>
+                <a href="index.html" class="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors">
+                  Return to Home
+                </a>
+              </div>`;
+            return;
+          }
+          if (data) {
+            const ratings = data.ratings || [];
+            const average_rating = ratings.length > 0 
+              ? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length 
+              : 0;
+            const total_ratings = ratings.length;
+            hotel = {
+              ...data,
+              rating: average_rating || 0,
+              totalRatings: total_ratings || 0,
+            };
+          } else {
+            console.log("Using sample data instead");
+            hotel = window.sampleHotels.find((h) => h.id === parseInt(id));
+            if (hotel && !hotel.rating) {
+              hotel.rating = 4.5;
+            }
+            hotel.totalRatings = 0;
+          }
+          if (!hotel) {
+            document.getElementById(
+              "hotel-details"
+            ).innerHTML = `<div class="col-span-1 md:col-span-2 text-center py-16">
+                <h2 class="text-2xl font-bold text-red-600 mb-4">Hotel Not Found</h2>
+                <p class="mb-6">The hotel you're looking for could not be found.</p>
+                <a href="index.html" class="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors">
+                  Return to Home
+                </a>
+              </div>`;
+            return;
+          }
+          const mainImageUrl = await getHotelMainImage(hotel.id);
+          const additionalImages = await window.getHotelAdditionalImages(
+            hotel.id
+          );
+          const allImages = [
+            {
+              id: "main",
+              image_url: mainImageUrl || "media/placeholder-hotel.jpg",
+            },
+            ...additionalImages,
+          ];
+          const fullStars = Math.floor(hotel.rating);
+          const hasHalfStar = hotel.rating % 1 >= 0.5;
+          const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+          let starsHtml = "";
+          for (let i = 0; i < fullStars; i++) {
+            starsHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-yellow-500">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+            </svg>`;
+          }
+          if (hasHalfStar) {
+            starsHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="text-yellow-500">
+              <defs>
+                <linearGradient id="half-${hotel.rating}">
+                  <stop offset="50%" stop-color="currentColor" />
+                  <stop offset="50%" stop-color="#CBD5E0" />
+                </linearGradient>
+              </defs>
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="url(#half-${hotel.rating})"/>
+            </svg>`;
+          }
+          for (let i = 0; i < emptyStars; i++) {
+            starsHtml += `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#CBD5E0" class="text-gray-300">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+            </svg>`;
+          }
+          document.getElementById("hotel-details").innerHTML = `
+            <div class="md:col-span-1">
+              <div class="rounded-xl overflow-hidden shadow-lg">
+                <div class="carousel-container h-80">
+                  <div class="carousel-inner">
+                    ${allImages
+                      .map(
+                        (img, index) => `
+                      <div class="carousel-item ${index === 0 ? "active" : ""}">
+                        <img src="${img.image_url}" alt="${
+                          hotel.name
+                        } - Image ${
+                          index + 1
+                        }" class="w-full h-80 object-cover">
+                      </div>
+                    `
+                      )
+                      .join("")}
+                  </div>
+                  ${
+                    allImages.length > 1
+                      ? `
+                    <button class="carousel-control prev" aria-label="Previous image">&lt;</button>
+                    <button class="carousel-control next" aria-label="Next image">&gt;</button>
+                    <div class="carousel-indicators">
+                      ${allImages
+                        .map(
+                          (_, index) => `
+                        <div class="carousel-indicator ${
+                          index === 0 ? "active" : ""
+                        }" data-index="${index}"></div>
+                      `
+                        )
+                        .join("")}
+                    </div>
+                  `
+                      : ""
+                  }
+                  <div class="image-count-badge">1/${allImages.length}</div>
+                </div>
+              </div>
+            </div>
+            <div class="md:col-span-1">
+              <h1 class="text-3xl font-bold text-gray-800 mb-2">${
+                hotel.name
+              }</h1>
+              <div class="flex items-center mb-4">
+                <span class="text-lg font-bold text-gray-800 mr-2">${hotel.rating.toFixed(
+                  1
+                )}</span>
+                <div class="flex items-center text-amber-500">
+                  ${starsHtml}
+                </div>
+                <span class="ml-2 text-sm text-gray-600">(${
+                  hotel.totalRatings
+                })</span>
+              </div>
+              <p class="text-gray-600 mb-6">
+                ${hotel.description || "No description available"}
+              </p>
+              <div class="booking-section mt-4">
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <div class="text-2xl font-bold text-gray-800"><span class="icon-saudi_riyal">&#xea;</span>${
+                      hotel.price
+                    }</div>
+                  </div>
+                </div>
+                <div class="flex items-center justify-center gap-4 mb-4">
+                  <button id="addToCartBtn" class="w-10 h-10 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center" title="Add to Cart">
+                    <i class="bx bx-cart text-lg"></i>
+                  </button>
+                  <button id="decreaseQtyBtn" class="w-10 h-10 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-bold text-lg">−</button>
+                  <input id="quantityInput" type="text" value="1" class="w-16 text-center px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" readonly>
+                  <button id="increaseQtyBtn" class="w-10 h-10 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-bold text-lg">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="md:col-span-2 mt-4">
+              <div class="mb-6 p-5 bg-gray-50 rounded-lg shadow-sm">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Rate & Review</h3>
+                <div class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Your Rating</label>
+                    <div class="flex gap-1 mb-3" id="ratingStarsContainer">
+                      <i class="bx bxs-star text-2xl text-gray-300 rating-star cursor-pointer hover:text-amber-500" data-value="1"></i>
+                      <i class="bx bxs-star text-2xl text-gray-300 rating-star cursor-pointer hover:text-amber-500" data-value="2"></i>
+                      <i class="bx bxs-star text-2xl text-gray-300 rating-star cursor-pointer hover:text-amber-500" data-value="3"></i>
+                      <i class="bx bxs-star text-2xl text-gray-300 rating-star cursor-pointer hover:text-amber-500" data-value="4"></i>
+                      <i class="bx bxs-star text-2xl text-gray-300 rating-star cursor-pointer hover:text-amber-500" data-value="5"></i>
+                    </div>
+                    <input type="hidden" id="ratingValue">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+                    <textarea id="commentText" rows="2" placeholder="Tell us about your stay..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 resize-none"></textarea>
+                    <div class="mt-3 md:flex md:items-center md:justify-between">
+                      <p id="combinedMessage" class="text-sm mb-3 md:mb-0"></p>
+                      <button id="submitFeedbackBtn" class="mt-2 md:mt-0 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        Submit Feedback
+                      </button>
+                    </div>
+                  </div>
+                  <div id="existingFeedback" class="hidden"></div>
+                </div>
+              </div>
+              <div class="mt-10">
+                <h3 class="text-xl font-semibold text-gray-800 mb-5">Customer Reviews</h3>
+                <div id="reviewsContainer" class="space-y-4">
+                  <div class="animate-pulse text-center py-6 text-gray-500">
+                    Loading reviews...
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          setupImageCarousel();
+          setupQuantityButtons();
+          setupAddToCart(hotel);
+          setupRatingSystem();
+          loadHotelReviews();
+        } catch (error) {
+          console.error("Error loading hotel details:", error);
+          document.getElementById(
+            "hotel-details"
+          ).innerHTML = `<div class="col-span-1 md:col-span-2 text-center py-16">
+              <h2 class="text-2xl font-bold text-red-600 mb-4">Error Loading Hotel</h2>
+              <p class="mb-6">Sorry, there was a problem loading the hotel details.</p>
+              <a href="index.html" class="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors">
+                Return to Home
+              </a>
+            </div>`;
+        }
+      }
+      function setupQuantityButtons() {
+        const decreaseBtn = document.getElementById("decreaseQtyBtn");
+        const increaseBtn = document.getElementById("increaseQtyBtn");
+        const quantityInput = document.getElementById("quantityInput");
+        
+        if (!decreaseBtn || !increaseBtn || !quantityInput) return;
+        
+        decreaseBtn.addEventListener("click", () => {
+          let qty = parseInt(quantityInput.value) || 1;
+          if (qty > 1) {
+            quantityInput.value = qty - 1;
+          }
+        });
+        
+        increaseBtn.addEventListener("click", () => {
+          let qty = parseInt(quantityInput.value) || 1;
+          if (qty < 10) {
+            quantityInput.value = qty + 1;
+          }
+        });
+      }
+      function setupAddToCart(hotel) {
+        const addToCartBtn = document.getElementById("addToCartBtn");
+        const quantityInput = document.getElementById("quantityInput");
+        
+        if (!addToCartBtn) return;
+        
+        addToCartBtn.addEventListener("click", async function() {
+          const quantity = parseInt(quantityInput.value) || 1;
+          const success = await window.addToCart(hotel.id, quantity, hotel.price);
+          if (success) {
+            quantityInput.value = "1"; // Reset quantity
+          }
+        });
+      }
+      function setupImageCarousel() {
+        const carouselContainer = document.querySelector(".carousel-container");
+        const carouselItems = document.querySelectorAll(".carousel-item");
+        const prevButton = document.querySelector(".carousel-control.prev");
+        const nextButton = document.querySelector(".carousel-control.next");
+        const indicators = document.querySelectorAll(".carousel-indicator");
+        const imageCountBadge = document.querySelector(".image-count-badge");
+        let currentIndex = 0;
+        function updateCarousel() {
+          carouselItems.forEach((item, index) => {
+            item.classList.toggle("active", index === currentIndex);
+          });
+          indicators.forEach((indicator, index) => {
+            indicator.classList.toggle("active", index === currentIndex);
+          });
+          if (imageCountBadge) {
+            imageCountBadge.textContent = `${currentIndex + 1}/${
+              carouselItems.length
+            }`;
+          }
+        }
+        if (prevButton) {
+          prevButton.addEventListener("click", () => {
+            currentIndex =
+              (currentIndex - 1 + carouselItems.length) % carouselItems.length;
+            updateCarousel();
+          });
+        }
+        if (nextButton) {
+          nextButton.addEventListener("click", () => {
+            currentIndex = (currentIndex + 1) % carouselItems.length;
+            updateCarousel();
+          });
+        }
+        indicators.forEach((indicator, index) => {
+          indicator.addEventListener("click", () => {
+            currentIndex = index;
+            updateCarousel();
+          });
+        });
+        updateCarousel();
+      }
+      async function setupRatingSystem() {
+        const stars = document.querySelectorAll(
+          "#ratingStarsContainer .rating-star"
+        );
+        const submitBtn = document.getElementById("submitFeedbackBtn");
+        const combinedMessage = document.getElementById("combinedMessage");
+        const commentInput = document.getElementById("commentText");
+        const ratingValueInput = document.getElementById("ratingValue");
+        const existingFeedback = document.getElementById("existingFeedback");
+        let selectedRating = 0;
+        let hasRated = false;
+        let hasCommented = false;
+        try {
+          const user = await checkUser();
+          if (!user) {
+            stars.forEach((star) => star.classList.add("cursor-not-allowed"));
+            commentInput.disabled = true;
+            submitBtn.disabled = true;
+            combinedMessage.textContent =
+              "You must be logged in to rate and comment";
+            combinedMessage.className = "text-sm text-red-600";
+            return;
+          }
+          const { data, error } = await window.supabase
+            .from("ratings")
+            .select("id, rating, comment, created_at")
+            .eq("user_id", user.id)
+            .eq("hotel_id", parseInt(hotelId))
+            .limit(1);
+          if (error) {
+            console.error("Error checking existing rating:", error);
+            combinedMessage.textContent = "Error checking your rating status";
+            combinedMessage.className = "text-sm text-red-600";
+            return;
+          }
+          if (data && data.length > 0) {
+            const ratingData = data[0];
+            selectedRating = ratingData.rating;
+            hasRated = true;
+            ratingValueInput.value = selectedRating;
+            stars.forEach((star, i) => {
+              star.classList.toggle("text-amber-500", i < selectedRating);
+              star.classList.toggle("text-gray-300", i >= selectedRating);
+            });
+            if (ratingData.comment) {
+              hasCommented = true;
+              commentInput.value = ratingData.comment;
+              commentInput.disabled = false;
+              submitBtn.disabled = false;
+              combinedMessage.textContent =
+                "You can update your feedback if you'd like";
+              combinedMessage.className = "text-sm text-blue-600";
+            } else {
+              combinedMessage.textContent =
+                "You've rated this hotel. Add a comment if you'd like";
+              combinedMessage.className = "text-sm text-blue-600";
+            }
+          }
+          stars.forEach((star, idx) => {
+            const starValue = parseInt(star.getAttribute("data-value"));
+            star.addEventListener("mouseenter", () => {
+              stars.forEach((s, i) => {
+                s.classList.toggle("text-amber-500", i < starValue);
+                s.classList.toggle("text-gray-300", i >= starValue);
+              });
+            });
+            star.addEventListener("mouseleave", () => {
+              stars.forEach((s, i) => {
+                s.classList.toggle("text-amber-500", i < selectedRating);
+                s.classList.toggle("text-gray-300", i >= selectedRating);
+              });
+            });
+            star.addEventListener("click", () => {
+              selectedRating = starValue;
+              ratingValueInput.value = selectedRating;
+              submitBtn.disabled = false;
+              stars.forEach((s, i) => {
+                s.classList.toggle("text-amber-500", i < selectedRating);
+                s.classList.toggle("text-gray-300", i >= selectedRating);
+              });
+              combinedMessage.textContent = "";
+              combinedMessage.className = "text-sm text-blue-600";
+              console.log("Star clicked, rating set to:", selectedRating);
+            });
+          });
+          submitBtn.addEventListener("click", async () => {
+            const rating = parseInt(ratingValueInput.value) || 0;
+            const comment = commentInput.value.trim();
+            console.log("Submitting rating:", rating);
+            console.log("Submitting comment:", comment);
+            if (rating === 0 && comment === "") {
+              combinedMessage.textContent =
+                "Please rate and/or comment before submitting";
+              combinedMessage.className = "text-sm text-red-600";
+              return;
+            }
+            submitBtn.disabled = true;
+            stars.forEach((star) => star.classList.add("pointer-events-none"));
+            commentInput.disabled = true;
+            combinedMessage.textContent = "Submitting your feedback...";
+            combinedMessage.className = "text-sm text-blue-600";
+            try {
+              let result;
+              if (comment) {
+                result = await window.submitComment(hotelId, comment, rating);
+              } else {
+                result = await window.submitHotelRating(hotelId, rating);
+              }
+              if (result.success) {
+                combinedMessage.textContent = result.message;
+                combinedMessage.className = "text-sm text-green-600";
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1500);
+              } else {
+                combinedMessage.textContent = result.message;
+                combinedMessage.className = "text-sm text-red-600";
+                submitBtn.disabled = false;
+                stars.forEach((star) =>
+                  star.classList.remove("pointer-events-none")
+                );
+                commentInput.disabled = false;
+              }
+            } catch (error) {
+              console.error("Error submitting feedback:", error);
+              combinedMessage.textContent =
+                "An error occurred while submitting your feedback";
+              combinedMessage.className = "text-sm text-red-600";
+              submitBtn.disabled = false;
+              stars.forEach((star) =>
+                star.classList.remove("pointer-events-none")
+              );
+              commentInput.disabled = false;
+            }
+          });
+        } catch (error) {
+          console.error("Error in setupRatingSystem:", error);
+        }
+      }
+      async function loadHotelReviews() {
+        try {
+          const comments = await window.fetchHotelComments(hotelId);
+          const reviewsContainer = document.getElementById("reviewsContainer");
+          if (!reviewsContainer) {
+            console.error("Reviews container not found");
+            return;
+          }
+          reviewsContainer.innerHTML = "";
+          if (comments.length === 0) {
+            reviewsContainer.innerHTML = `
+              <div class="text-center py-6">
+                <p class="text-gray-500">No reviews yet. Be the first to leave a review!</p>
+              </div>
+            `;
+            return;
+          }
+          const reviewElements = [];
+          for (const comment of comments) {
+            try {
+              const profile = await window.getUserProfile(comment.user_id);
+              const commentDate = new Date(comment.created_at);
+              const formattedDate = `${commentDate.toLocaleDateString()} at ${commentDate.toLocaleTimeString(
+                [],
+                { hour: "2-digit", minute: "2-digit" }
+              )}`;
+              const reviewElement = document.createElement("div");
+              reviewElement.className = "bg-white rounded-lg p-5 shadow-sm";
+              reviewElement.innerHTML = `
+                <div class="flex items-start">
+                  <div class="mr-4">
+                    ${
+                      profile && profile.avatar_url
+                        ? `<img src="${profile.avatar_url}" alt="${
+                            profile.username || "User"
+                          }" class="w-12 h-12 rounded-full object-cover">`
+                        : `<div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 text-lg font-semibold">
+                        ${
+                          profile && profile.username
+                            ? profile.username.substring(0, 1).toUpperCase()
+                            : "G"
+                        }
+                      </div>`
+                    }
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                      <h4 class="font-semibold text-gray-800">${
+                        profile ? profile.username || "Anonymous User" : "Guest"
+                      }</h4>
+                      <div class="flex items-center">
+                        <span class="text-amber-500 mr-1">${comment.rating.toFixed(
+                          1
+                        )}</span>
+                        <div class="flex">
+                          ${Array.from(
+                            { length: 5 },
+                            (_, i) =>
+                              `<i class="bx ${
+                                i < comment.rating
+                                  ? "bxs-star text-amber-500"
+                                  : "bx-star text-gray-300"
+                              } text-sm"></i>`
+                          ).join("")}
+                        </div>
+                      </div>
+                    </div>
+                    <p class="text-gray-600 mb-2">${comment.comment}</p>
+                    <p class="text-xs text-gray-400">${formattedDate}</p>
+                  </div>
+                </div>
+              `;
+              reviewElements.push(reviewElement);
+            } catch (error) {
+              console.error("Error processing comment:", error);
+            }
+          }
+          reviewElements.forEach((element) => {
+            reviewsContainer.appendChild(element);
+          });
+        } catch (error) {
+          console.error("Error loading hotel reviews:", error);
+          const reviewsContainer = document.getElementById("reviewsContainer");
+          if (reviewsContainer) {
+            reviewsContainer.innerHTML = `
+              <div class="text-center py-6">
+                <p class="text-red-500">Error loading reviews. Please try again later.</p>
+              </div>
+            `;
+          }
+        }
+      }
+
+      // Update cart notification badge
+      async function updateCartNotification() {
+        try {
+          const { data: { user } } = await window.supabase.auth.getUser();
+          if (!user) return;
+
+          // Get cart items count
+          let cartCount = 0;
+          const { data: cart } = await window.supabase
+            .from("carts")
+            .select("id")
+            .eq("user_id", user.id)
+            .single();
+
+          if (cart) {
+            const { count } = await window.supabase
+              .from("cart_items")
+              .select("*", { count: "exact", head: true })
+              .eq("cart_id", cart.id);
+            cartCount = count || 0;
+          }
+
+          // Get incomplete orders count
+          const { count: incompleteOrders } = await window.supabase
+            .from("orders")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id)
+            .neq("status", "completed");
+
+          const totalNotifications = cartCount + (incompleteOrders || 0);
+
+          // Update both desktop and mobile badges
+          const cartNotif = document.getElementById("cartNotification");
+          const mobileCartNotif = document.getElementById("mobileCartNotification");
+
+          if (totalNotifications > 0) {
+            cartNotif.textContent = totalNotifications;
+            cartNotif.classList.remove("hidden");
+            mobileCartNotif.textContent = totalNotifications;
+            mobileCartNotif.classList.remove("hidden");
+          } else {
+            cartNotif.classList.add("hidden");
+            mobileCartNotif.classList.add("hidden");
+          }
+        } catch (error) {
+          console.error("Error updating cart notification:", error);
+        }
+      }
+
+      // Update notification every 5 seconds
+      setInterval(updateCartNotification, 5000);
+    </script>
+  </body>
+</html>

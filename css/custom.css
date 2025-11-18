@@ -1,0 +1,93 @@
+:root {
+  --lafa-purple: rgb(124, 58, 237);
+  --lafa-purple-hover: rgba(124, 58, 237, 0.8);
+  --lafa-purple-light: rgba(124, 58, 237, 0.1);
+}
+
+.bg-lafa-purple {
+  background-color: var(--lafa-purple) !important;
+}
+.bg-lafa-purple-light {
+  background-color: var(--lafa-purple-light) !important;
+}
+.hover\:bg-lafa-purple:hover {
+  background-color: var(--lafa-purple) !important;
+}
+.hover\:bg-lafa-purple-hover:hover {
+  background-color: var(--lafa-purple-hover) !important;
+}
+
+.text-lafa-purple {
+  color: var(--lafa-purple) !important;
+}
+.hover\:text-lafa-purple:hover {
+  color: var(--lafa-purple) !important;
+}
+
+.border-lafa-purple {
+  border-color: var(--lafa-purple) !important;
+}
+.hover\:border-lafa-purple:hover {
+  border-color: var(--lafa-purple) !important;
+}
+
+.bg-purple-500,
+.bg-purple-600,
+.bg-purple-700,
+.bg-purple-800 {
+  background-color: var(--lafa-purple) !important;
+}
+.text-purple-500,
+.text-purple-600,
+.text-purple-700,
+.text-purple-800 {
+  color: var(--lafa-purple) !important;
+}
+.hover\:bg-purple-500:hover,
+.hover\:bg-purple-600:hover,
+.hover\:bg-purple-700:hover {
+  background-color: var(--lafa-purple-hover) !important;
+}
+.hover\:text-purple-500:hover,
+.hover\:text-purple-600:hover {
+  color: var(--lafa-purple) !important;
+}
+.border-purple-500,
+.border-purple-600 {
+  border-color: var(--lafa-purple) !important;
+}
+
+@font-face {
+  font-family: "SaudiRiyalSymbol";
+  src: url("https://cdn.jsdelivr.net/npm/@abdulrysr/saudi-riyal-new-symbol-font@1.0.8/fonts/saudi-riyal-symbol.woff2") format("woff2"),
+       url("https://cdn.jsdelivr.net/npm/@abdulrysr/saudi-riyal-new-symbol-font@1.0.8/fonts/saudi-riyal-symbol.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.icon-saudi_riyal {
+  font-family: "SaudiRiyalSymbol", sans-serif;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 2px;
+}
+
+.saudi-riyal-symbol {
+  font-weight: bold;
+  display: inline-block;
+  margin-right: 2px;
+}
+
+@media (max-width: 768px) {
+  .icon-saudi_riyal:empty:before {
+    content: "SAR ";
+    font-family: sans-serif;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .saudi-riyal-symbol {
+    font-size: 0.95em;
+  }
+}

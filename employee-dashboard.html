@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Dashboard - Orders & Management</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link
+      rel="stylesheet"
+      href="/node_modules/@abdulrysr/saudi-riyal-new-symbol-font/style.css"
+    />
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .admin-container {
+        min-height: calc(100vh - 72px);
+        padding: 20px;
+        background: #f9fafb;
+      }
+      .dashboard-header {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        flex: 1;
+        min-width: 150px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+      }
+      .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #8b5cf6;
+        margin: 10px 0;
+      }
+      .stat-label {
+        font-size: 14px;
+        color: #6b7280;
+        font-weight: 500;
+      }
+      .orders-container {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .order-row {
+        display: grid;
+        grid-template-columns: 100px 150px 120px 120px 120px 120px 100px;
+        gap: 12px;
+        padding: 12px 0;
+        border-bottom: 1px solid #e5e7eb;
+        align-items: center;
+        font-size: 14px;
+      }
+      .order-row:last-child {
+        border-bottom: none;
+      }
+      .order-row.header {
+        font-weight: 600;
+        background: #f9fafb;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+      }
+      .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+      }
+      .status-pending { background: #fef08a; color: #854d0e; }
+      .status-preparing { background: #fed7aa; color: #92400e; }
+      .status-ready { background: #bbf7d0; color: #065f46; }
+      .status-completed { background: #d1fae5; color: #065f46; }
+      .status-cancelled { background: #fee2e2; color: #991b1b; }
+      .complete-btn {
+        background: #10b981;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .complete-btn:hover {
+        background: #059669;
+      }
+      .complete-btn:disabled {
+        background: #d1d5db;
+        cursor: not-allowed;
+      }
+      h2 {
+        color: #1f2937;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+      .header-top {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-bottom: 20px;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: white;
+        padding: 10px 14px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        min-width: fit-content;
+      }
+      .user-details {
+        text-align: right;
+        min-width: 120px;
+      }
+      .user-name {
+        font-weight: 600;
+        color: #1f2937;
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .user-id {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .logout-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .logout-btn:hover {
+        background: #dc2626;
+      }
+      @media (max-width: 768px) {
+        .header-top {
+          flex-direction: column;
+          align-items: flex-end;
+        }
+        .user-info {
+          width: 100%;
+          justify-content: flex-end;
+        }
+        .user-details {
+          min-width: auto;
+        }
+      }
+      @media (max-width: 1200px) {
+        .order-row {
+          grid-template-columns: 80px 120px 100px 100px 100px 80px 80px;
+          font-size: 12px;
+        }
+      }
+      @media (max-width: 768px) {
+        .order-row {
+          grid-template-columns: 1fr;
+          gap: 4px;
+          padding: 12px;
+        }
+        .order-row.header {
+          display: none;
+        }
+        .order-row::before {
+          content: attr(data-label);
+          font-weight: 600;
+          display: block;
+          margin-bottom: 4px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-container">
+      <div class="max-w-7xl mx-auto">
+        <div class="header-top">
+          <div class="user-info">
+            <div class="user-details">
+              <div class="user-name" id="userName">Employee Name</div>
+              <div class="user-id" id="userId">ID: -</div>
+            </div>
+            <button class="logout-btn" onclick="logout()"><i class="bx bx-log-out mr-1"></i>Logout</button>
+          </div>
+        </div>
+
+        <div class="dashboard-header">
+          <h1 class="text-3xl font-bold text-gray-800 mb-4">Employee Dashboard</h1>
+          <p class="text-gray-600 mb-6">Order Management</p>
+
+          <!-- Stats Grid -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="stat-card">
+              <i class="bx bx-check-circle text-3xl" style="color: #8b5cf6;"></i>
+              <div class="stat-value" id="completedOrders">0</div>
+              <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+              <i class="bx bx-hourglass text-3xl" style="color: #8b5cf6;"></i>
+              <div class="stat-value" id="pendingOrders">0</div>
+              <div class="stat-label">Pending</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="orders-container">
+          <h2 class="text-xl font-bold text-gray-800 mb-6">All Orders</h2>
+          <div style="overflow-x: auto;">
+            <div class="order-row header">
+              <div>Order ID</div>
+              <div>Customer Email</div>
+              <div>Total Amount</div>
+              <div>Status</div>
+              <div>Date</div>
+              <div>Parking</div>
+            </div>
+            <div id="ordersTable">
+              <div class="text-center py-8 text-gray-500">Loading orders...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://oscrktdwatdnkzgcupgh.supabase.co";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zY3JrdGR3YXRkbmt6Z2N1cGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4NTYwMDAsImV4cCI6MjA2MTQzMjAwMH0.zUHA_KjhPsUYpOjzybACn1si_SRSAf7BiJPqjgV2ThE";
+      window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    </script>
+    <script src="js/supabase.js"></script>
+    <script>
+      let currentUser = null;
+
+      document.addEventListener("DOMContentLoaded", async function () {
+        try {
+          const user = await checkUser(true);
+          if (!user) return;
+
+          currentUser = user;
+
+          // Check if user is an employee
+          const { data: profile } = await window.supabase
+            .from("profiles")
+            .select("role, username")
+            .eq("id", user.id)
+            .single();
+
+          if (!profile || profile.role !== "employee") {
+            alert("You don't have permission to access this page");
+            window.location.href = "index.html";
+            return;
+          }
+
+          // Display user info
+          document.getElementById("userName").textContent = profile.username || "Employee";
+          document.getElementById("userId").textContent = "ID: " + user.id.substring(0, 12);
+
+          loadDashboard();
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      });
+
+      async function loadDashboard() {
+        try {
+          console.log("Loading dashboard...");
+          
+          // Get all orders
+          const { data: orders, error: ordersError } = await window.supabase
+            .from("orders")
+            .select(`
+              id,
+              user_id,
+              total_amount,
+              status,
+              created_at,
+              parking_lot_id,
+              parking_lots!fk_parking_lot(spot_number),
+              order_items(quantity, hotel_id, hotels(name))
+            `)
+            .order("created_at", { ascending: false });
+
+          if (ordersError) {
+            console.error("Error loading orders:", ordersError);
+            return;
+          }
+
+          console.log("Orders loaded:", orders);
+
+          // Get all user profiles to map user_id to email
+          const { data: profiles } = await window.supabase
+            .from("profiles")
+            .select("id, email");
+
+          const profileMap = {};
+          if (profiles) {
+            profiles.forEach(p => {
+              profileMap[p.id] = p.email;
+            });
+          }
+
+          // Add email to orders
+          const ordersWithEmail = orders.map(order => ({
+            ...order,
+            email: profileMap[order.user_id] || "Unknown"
+          }));
+
+          // Calculate stats
+          const completedOrders = ordersWithEmail.filter(o => o.status === "completed").length;
+          const pendingOrders = ordersWithEmail.filter(o => o.status !== "completed").length;
+
+          // Update stats
+          document.getElementById("completedOrders").textContent = completedOrders;
+          document.getElementById("pendingOrders").textContent = pendingOrders;
+
+          // Display orders
+          displayOrders(ordersWithEmail);
+        } catch (error) {
+          console.error("Error in loadDashboard:", error);
+        }
+      }
+
+      function generateOrderNumber(orderId) {
+        const orderNum = (100000 + orderId).toString().slice(-6);
+        return orderNum;
+      }
+
+      function getStatusClass(status) {
+        const classes = {
+          pending: "status-pending",
+          confirmed: "status-ready",
+          preparing: "status-preparing",
+          ready: "status-ready",
+          completed: "status-completed",
+          cancelled: "status-cancelled"
+        };
+        return classes[status] || "status-pending";
+      }
+
+      function displayOrders(orders) {
+        const table = document.getElementById("ordersTable");
+        table.innerHTML = orders.map(order => {
+          const orderNumber = generateOrderNumber(order.id);
+          const date = new Date(order.created_at).toLocaleDateString();
+          const email = order.email || "Unknown";
+          const parkingSpot = order.parking_lots?.spot_number || "—";
+          const isPreparing = order.status === "preparing";
+
+          return `
+            <div class="order-row" data-label="${orderNumber}">
+              <div><strong>${orderNumber}</strong></div>
+              <div>${email}</div>
+              <div><span class="icon-saudi_riyal">&#xea;</span>${order.total_amount.toFixed(2)}</div>
+              <div><span class="status-badge ${getStatusClass(order.status)}">${order.status}</span></div>
+              <div>${date}</div>
+              <div>${parkingSpot}</div>
+              <div>
+                ${isPreparing ? `<button class="complete-btn" onclick="markCompleted(${order.id})">Mark Done</button>` : '—'}
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      async function markCompleted(orderId) {
+        try {
+          // Update order status to completed
+          const { error: updateError } = await window.supabase
+            .from("orders")
+            .update({ status: "completed" })
+            .eq("id", orderId);
+
+          if (updateError) {
+            console.error("Error updating order:", updateError.message);
+            showToast("Error marking order as completed", "error");
+            return;
+          }
+
+          // Show success toast
+          showToast("✓ Order marked as completed!", "success");
+
+          // Reload dashboard to show updated status
+          setTimeout(() => {
+            loadDashboard();
+          }, 500);
+        } catch (error) {
+          console.error("Error:", error);
+          showToast("An error occurred while updating the order", "error");
+        }
+      }
+
+      async function logout() {
+        try {
+          const { error } = await window.supabase.auth.signOut();
+          if (error) {
+            console.error("Logout error:", error);
+            showToast("Error logging out", "error");
+            return;
+          }
+          // Redirect to login page
+          window.location.href = "logindex.html";
+        } catch (err) {
+          console.error("Logout exception:", err);
+          showToast("An error occurred during logout", "error");
+        }
+      }
+    </script>
+  </body>
+</html>
